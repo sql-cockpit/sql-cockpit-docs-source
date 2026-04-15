@@ -1,0 +1,131 @@
+[
+  {
+    "name": "dashboard-home",
+    "path": "/",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/dashboard-guide.md",
+        "heading": "## Dashboard Screenshot",
+        "alt": "SQL Cockpit dashboard home page",
+        "caption": "The SQL Cockpit home dashboard with the main navigation and operator landing view."
+      },
+      {
+        "markdownPath": "docs/operations/estate-overview.md",
+        "heading": "## Screenshot",
+        "alt": "Estate Overview home page in SQL Cockpit",
+        "caption": "Estate Overview is the SQL Cockpit home page and summarizes saved SQL Server instances, health, capacity, and SQL Agent risk."
+      }
+    ]
+  },
+  {
+    "name": "instance-manager",
+    "path": "/instance-manager",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/operations/instance-manager.md",
+        "heading": "## Screenshot",
+        "alt": "Instance Manager page in SQL Cockpit",
+        "caption": "Instance Manager stores and tests reusable SQL Server instance profiles for server-level workflows."
+      }
+    ]
+  },
+  {
+    "name": "connection-manager",
+    "path": "/connection-manager",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/operations/connection-manager.md",
+        "heading": "## Screenshot",
+        "alt": "Connection Manager page in SQL Cockpit",
+        "caption": "Connection Manager stores reusable database-level connection profiles and validates them against live SQL Server metadata."
+      }
+    ]
+  },
+  {
+    "name": "server-explorer",
+    "path": "/server-explorer",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/dashboard-guide.md",
+        "heading": "## Server Explorer Screenshot",
+        "alt": "Server Explorer page in SQL Cockpit",
+        "caption": "Server Explorer loads live SQL Server metadata so operators can browse databases, schemas, and objects from saved instance profiles."
+      },
+      {
+        "markdownPath": "docs/operations/common-tasks.md",
+        "heading": "## Server Explorer Screenshot",
+        "alt": "Server Explorer page in SQL Cockpit",
+        "caption": "Use Server Explorer when you want to browse a live server and narrow the scope by one or more databases."
+      }
+    ]
+  },
+  {
+    "name": "agent-manager",
+    "path": "/agent-manager",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/operations/sql-agent-manager.md",
+        "heading": "## Screenshot",
+        "alt": "SQL Agent Manager page in SQL Cockpit",
+        "caption": "SQL Agent Manager loads live Agent jobs, schedules, and runtime history for the selected SQL Server instance."
+      }
+    ]
+  },
+  {
+    "name": "fleet",
+    "path": "/fleet",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/dashboard-guide.md",
+        "heading": "## Fleet Screenshot",
+        "alt": "Fleet page in SQL Cockpit",
+        "caption": "Fleet gives operators a sync-row-oriented view for filtering and reviewing the current sync configuration estate."
+      }
+    ]
+  },
+  {
+    "name": "inspector",
+    "path": "/inspector",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/dashboard-guide.md",
+        "heading": "## Inspector Screenshot",
+        "alt": "Inspector page in SQL Cockpit",
+        "caption": "Inspector focuses on one sync row and its detailed configuration, state, and related workflow context."
+      }
+    ]
+  },
+  {
+    "name": "batch-copilot",
+    "path": "/batch-copilot",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/dashboard-guide.md",
+        "heading": "## Batch Copilot Screenshot",
+        "alt": "Batch Copilot page in SQL Cockpit",
+        "caption": "Batch Copilot helps profile table shape and reason about safer BatchSize starting points."
+      }
+    ]
+  },
+  {
+    "name": "bulk-intake",
+    "path": "/bulk-intake",
+    "waitForLoadState": "networkidle",
+    "docsTargets": [
+      {
+        "markdownPath": "docs/user/sync-configuration-workflow.md",
+        "heading": "## Bulk Intake Screenshot",
+        "alt": "Bulk Intake page in SQL Cockpit",
+        "caption": "Bulk Intake previews CSV imports before writing rows into Sync.TableConfig."
+      }
+    ]
+  }
+]
