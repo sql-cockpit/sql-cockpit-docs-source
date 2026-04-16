@@ -1,60 +1,95 @@
-```
-# Dependencies
-.venv/
-venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
+# Examples and test data
+examples/
+test/
+tests/
+testing/
 
-# Build artifacts
-dist/
-build/
-target/
-# Documentation build outputs
-/site/
-/docs/_build/
-/docs/build/
+# Documentation builds
+_site/
+_build/
+doc/_build/
 
-# Environment
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# Logs
+*.log
+
+# Environment specific
 .env
 .env.local
-*.env.*
+.env.*
 
-# Environment files
-.env
-.env.local
-*.env.*
-
-# IDE files
+# IDE specific
 .vscode/
 .idea/
+*.iml
+*.ipr
+*.iws
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
-*.tmp
-
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+.directory
+*.nib
+.vagrant/
+.sass-cache
+.trash/
+.nfs*
+.hg/
+.svn/
+.git/
+
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# JavaScript specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled and build artifacts
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
 # Coverage reports
 coverage/
 htmlcov/
 .coverage
 
-# Gradle
-# Dependency directories
-node_modules/
-__pycache__/
+# MyPy cache
 .mypy_cache/
 .pytest_cache/
-venv/
-.venv/
-target/
-.gradle/
 
 # Compressed files
 *.zip
@@ -79,4 +114,3 @@ target/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-```

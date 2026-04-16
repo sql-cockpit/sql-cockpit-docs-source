@@ -115,7 +115,7 @@ Comments can be added via:
 Example Giscus integration in `extra_javascript`:
 ```javascript
 <script src="https://giscus.app/client.js"
-        data-repo="your-org/sql-cockpit"
+        data-repo="sql-cockpit/sql-cockpit"
         data-repo-id="..."
         data-category="Documentation"
         data-category-id="..."
