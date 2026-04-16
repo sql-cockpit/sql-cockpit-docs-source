@@ -5,6 +5,8 @@ site_url: https://your-domain.github.io/sql-cockpit/
 repo_name: sql-cockpit
 repo_url: https://github.com/your-org/sql-cockpit
 
+docs_dir: .
+
 theme:
   name: material
   palette:
