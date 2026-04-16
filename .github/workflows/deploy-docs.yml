@@ -28,14 +28,20 @@ jobs:
         run: |
           pip install -r requirements-docs.txt
 
-      - name: Build documentation
+      - name: Build and deploy versioned documentation
         run: |
-          mkdocs build --clean
-
-      - name: Deploy to sql-cockpit-docs-site
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          deploy_key: ${{ secrets.GH_ACTIONS_DEPLOY_KEY }}
-          external_repository: sql-cockpit/sql-cockpit-docs-site
-          publish_branch: master
-          publish_dir: ./site
+          # Configure git for mike
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Deploy initial version if gh-pages branch doesn't exist or is empty
+          if ! git ls-remote --exit-code origin gh-pages >/dev/null 2>&1; then
+            echo "Creating new gh-pages branch with initial version..."
+            mike deploy --push --update-aliases 1.0 latest
+          else
+            echo "Deploying new version to existing gh-pages branch..."
+            # Fetch the gh-pages branch for mike to work with
+            git fetch origin gh-pages:gh-pages
+            # Deploy new version (you can change the version number as needed)
+            mike deploy --push --update-aliases 1.0 latest
+          fi

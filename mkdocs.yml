@@ -109,6 +109,7 @@ nav:
     - Overview: developer/index.md
     - System Map: developer/system-map.md
     - Local Development: developer/local-development.md
+    - Versioning: VERSIONING.md
   - Glossary: glossary.md
   - Contributing: CONTRIBUTING.md
 
@@ -154,14 +155,20 @@ plugins:
       caption_position: bottom
       background: white
       shadow: true
-  # Versioning support (requires mike to be installed separately)
-  # Run: pip install mike
-  # Then use: mike deploy --push 1.0 latest
-  # - version:
-  #     provider: mike
+  # Versioning support with mike
+  - mike:
+      alias_type: copy
+      redirect_template: null
+      canonical_version: latest
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
 
 # Customization
 extra:
+  # Version selector for mike (must be under extra)
+  version:
+    provider: mike
   # Social links in footer
   social:
     - icon: fontawesome/brands/github
