@@ -35,7 +35,7 @@ jobs:
       - name: Deploy to sql-cockpit-docs-site
         uses: peaceiris/actions-gh-pages@v4
         with:
-          deploy_key: ${{ secrets.DEPLOY_KEY }}
+          deploy_key: ${{ secrets.GH_ACTIONS_DEPLOY_KEY }}
           external_repository: sql-cockpit/sql-cockpit-docs-site
           publish_branch: master
           publish_dir: ./site
