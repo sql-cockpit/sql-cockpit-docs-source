@@ -6,11 +6,11 @@ site_author: SQL Cockpit Team
 
 # Repository
 repo_name: sql-cockpit
-repo_url: https://github.com/your-org/sql-cockpit
+repo_url: https://github.com/sql-cockpit/sql-cockpit
 edit_uri: edit/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2024 SQL Cockpit Team
+copyright: Copyright &copy; 2026 - SQL Cockpit
 
 # Theme
 theme:
@@ -165,13 +165,13 @@ extra:
   # Social links in footer
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/your-org/sql-cockpit
+      link: https://github.com/sql-cockpit/sql-cockpit
     - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/your-org/sql-cockpit
+      link: https://hub.docker.com/r/sql-cockpit/sql-cockpit
     - icon: fontawesome/brands/linkedin
-      link: https://linkedin.com/company/your-org
+      link: https://linkedin.com/company/sql-cockpit
     - icon: fontawesome/solid/envelope
-      link: mailto:info@sqlcockpit.example.com
+      link: mailto:support@sql-cockpit.com
   # Generator meta tag for privacy
   generator: false
   # Consent management for privacy compliance
@@ -231,7 +231,7 @@ markdown_extensions:
   - pymdownx.magiclink:
       normalize_issue_symbols: true
       repo_url_shorthand: true
-      user: your-org
+      user: sql-cockpit
       repo: sql-cockpit
   - pymdownx.mark
   - pymdownx.smartsymbols
