@@ -1,0 +1,20 @@
+<!-- SVG Logo for SQL Cockpit -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#1976d2"/>
+  
+  <!-- Database Icon -->
+  <ellipse cx="100" cy="70" rx="50" ry="15" fill="#ffffff"/>
+  <path d="M 50 70 L 50 130 C 50 138.28 72.39 145 100 145 C 127.61 145 150 138.28 150 130 L 150 70" 
+        fill="#ffffff" stroke="#1976d2" stroke-width="2"/>
+  <path d="M 50 100 L 150 100" stroke="#1976d2" stroke-width="2" fill="none"/>
+  <path d="M 50 115 L 150 115" stroke="#1976d2" stroke-width="2" fill="none"/>
+  
+  <!-- SQL Text -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">SQL</text>
+  
+  <!-- Cockpit Indicator -->
+  <circle cx="100" cy="45" r="8" fill="#ff9800"/>
+  <path d="M 95 45 L 100 40 L 105 45" stroke="#ffffff" stroke-width="2" fill="none"/>
+</svg>

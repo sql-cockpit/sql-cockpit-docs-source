@@ -1,11 +1,24 @@
 ```
+# Dependencies
+.venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+
+# Build artifacts
+dist/
+build/
+target/
 # Documentation build outputs
 /site/
 /docs/_build/
 /docs/build/
 
-# Logs
-*.log
+# Environment
+.env
+.env.local
+*.env.*
 
 # Environment files
 .env
@@ -15,6 +28,10 @@
 # IDE files
 .vscode/
 .idea/
+
+# Logs and temp files
+*.log
+*.tmp
 *.swp
 *.swo
 *.tmp
@@ -28,6 +45,7 @@ coverage/
 htmlcov/
 .coverage
 
+# Gradle
 # Dependency directories
 node_modules/
 __pycache__/

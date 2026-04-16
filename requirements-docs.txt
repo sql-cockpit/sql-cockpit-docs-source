@@ -1,3 +1,17 @@
+# Core MkDocs and Material theme
 mkdocs>=1.6
 mkdocs-material>=9.6
+
+# Image lightbox plugin
 mkdocs-glightbox>=0.5.2
+
+# Social cards (image generation for link previews)
+pillow>=10.0
+cairosvg>=2.7
+
+# Versioning support
+mike>=2.0
+
+# Additional utilities
+# mkdocs-redirects>=1.2  # For URL redirects if needed
+# mkdocs-minify-plugin>=0.7  # For additional minification options
