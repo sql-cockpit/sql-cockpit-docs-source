@@ -1,0 +1,2554 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for SQL Cockpit - PowerShell-based SQL tooling suite">
+      
+      
+        <meta name="author" content="SQL Cockpit Team">
+      
+      
+        <link rel="canonical" href="https://your-domain.github.io/sql-cockpit/latest/operations/common-tasks/">
+      
+      
+        <link rel="prev" href="../../user/sync-configuration-workflow/">
+      
+      
+        <link rel="next" href="../connection-manager/">
+      
+      
+        
+          <link rel="alternate" href="/" hreflang="en">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Common Tasks - SQL Cockpit Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website">
+<meta property="og:title" content="Common Tasks - SQL Cockpit Docs">
+<meta property="og:description" content="Documentation for SQL Cockpit - PowerShell-based SQL tooling suite">
+<meta property="og:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/common-tasks.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://your-domain.github.io/sql-cockpit/latest/operations/common-tasks/">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Common Tasks - SQL Cockpit Docs">
+<meta property="twitter:description" content="Documentation for SQL Cockpit - PowerShell-based SQL tooling suite">
+<meta property="twitter:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/common-tasks.png">
+<link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#common-tasks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SQL Cockpit Docs" class="md-header__button md-logo" aria-label="SQL Cockpit Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SQL Cockpit Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Common Tasks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sql-cockpit/sql-cockpit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    sql-cockpit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SQL Cockpit Docs" class="md-nav__button md-logo" aria-label="SQL Cockpit Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    SQL Cockpit Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sql-cockpit/sql-cockpit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    sql-cockpit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/dashboard-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/connection-and-instance-profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection and Instance Profiles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/sync-configuration-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Configuration Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tasks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#run-one-sync-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run one sync manually
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regenerate-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regenerate documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-docs-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the docs server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-docs-server-and-api-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the docs server and API workspace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-local-rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the local REST API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-dashboard-in-development-watch-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the dashboard in development watch mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse-live-server-objects-by-server-and-one-or-more-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browse live server objects by server and one or more databases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trace-one-rest-api-endpoint-against-direct-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trace one REST API endpoint against direct PowerShell
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the MCP server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-a-live-tableconfig-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export a live TableConfig diagram
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find-sync-rows-by-server-or-table-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find sync rows by server or table name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profile-one-table-and-estimate-a-batchsize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profile one table and estimate a BatchSize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summarize-local-run-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summarize local run logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#review-the-latest-runtime-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review the latest runtime state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-new-sync-rows-from-the-web-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create new sync rows from the web app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pause-a-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pause a sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resume-a-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resume a sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reseed-incremental-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reseed incremental state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#server-explorer-screenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server Explorer Screenshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connection-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../estate-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estate Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instance-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instance Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql-agent-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Agent Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualize-tableconfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualize TableConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/config-tables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config Tables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9">
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/system-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/local-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VERSIONING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#run-one-sync-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run one sync manually
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regenerate-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regenerate documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-docs-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the docs server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-docs-server-and-api-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the docs server and API workspace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-local-rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the local REST API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-dashboard-in-development-watch-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the dashboard in development watch mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse-live-server-objects-by-server-and-one-or-more-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browse live server objects by server and one or more databases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trace-one-rest-api-endpoint-against-direct-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trace one REST API endpoint against direct PowerShell
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-the-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start the MCP server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-a-live-tableconfig-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export a live TableConfig diagram
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find-sync-rows-by-server-or-table-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find sync rows by server or table name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profile-one-table-and-estimate-a-batchsize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profile one table and estimate a BatchSize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summarize-local-run-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summarize local run logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#review-the-latest-runtime-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review the latest runtime state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-new-sync-rows-from-the-web-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create new sync rows from the web app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pause-a-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pause a sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resume-a-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resume a sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reseed-incremental-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reseed incremental state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#server-explorer-screenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server Explorer Screenshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="common-tasks"><a class="headerlink" href="#common-tasks" title="Permanent link">¶</a>Common Tasks</h1>
+<h2 id="run-one-sync-manually"><a class="headerlink" href="#run-one-sync-manually" title="Permanent link">¶</a>Run one sync manually</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Sync-ConfiguredSqlTable</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>  <span class="n">-SyncName</span> <span class="s2">"Aptos_style"</span> <span class="p">`</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>  <span class="n">-TrustServerCertificate</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<h2 id="regenerate-documentation"><a class="headerlink" href="#regenerate-documentation" title="Permanent link">¶</a>Regenerate documentation</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nb">cd </span><span class="n">docs</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">python</span> <span class="n">scripts</span><span class="p">/</span><span class="n">generate_config_docs</span><span class="p">.</span><span class="n">py</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">mkdocs</span> <span class="n">build</span> <span class="p">-</span><span class="n">-strict</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<h2 id="start-the-docs-server"><a class="headerlink" href="#start-the-docs-server" title="Permanent link">¶</a>Start the docs server</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncDocsServer</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>  <span class="n">-ListenPrefix</span> <span class="s2">"http://127.0.0.1:8000/"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Open:</p>
+<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>http://127.0.0.1:8000/
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Operational notes:</p>
+<ul>
+<li>confirmed: if MkDocs is available, the script uses <code>mkdocs serve</code>, so edits under <code>docs/</code> reload in the browser.</li>
+<li>confirmed: if MkDocs is unavailable, the script serves the generated <code>site/</code> folder over HTTP so Material search still works.</li>
+<li>confirmed: no database config tables or runtime sync flags are read or changed by this script.</li>
+<li>operational risk: low, because it only exposes local documentation files. Keep the listener on loopback unless you explicitly want other machines to reach the docs.</li>
+</ul>
+<h2 id="start-the-docs-server-and-api-workspace"><a class="headerlink" href="#start-the-docs-server-and-api-workspace" title="Permanent link">¶</a>Start the docs server and API workspace</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span>
+<span class="normal"><a href="#__codelineno-4-5">5</a></span>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span>
+<span class="normal"><a href="#__codelineno-4-7">7</a></span>
+<span class="normal"><a href="#__codelineno-4-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncWorkspace</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a>  <span class="n">-DocsListenPrefix</span> <span class="s2">"http://127.0.0.1:8000/"</span> <span class="p">`</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>  <span class="n">-ApiListenPrefix</span> <span class="s2">"http://127.0.0.1:8080/"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This starts:</p>
+<ul>
+<li>the docs site at <code>http://127.0.0.1:8000/</code></li>
+<li>the REST API at <code>http://127.0.0.1:8080/health</code></li>
+<li>the built-in SQL Cockpit web app at <code>http://127.0.0.1:8080/</code></li>
+</ul>
+<p>Operational notes:</p>
+<ul>
+<li>storage location for settings: launcher parameters only. No new database config table columns or runtime flags are introduced.</li>
+<li>confirmed: the dashboard is served by a Node process launched through <code>Start-SqlTablesSyncRestApi.ps1</code>, not by a PowerShell <code>HttpListener</code>.</li>
+<li>confirmed: all <code>Docs*</code> switches are optional; the workspace launcher can start with only the required config-database arguments plus defaults for docs hosting.</li>
+<li>confirmed: the launcher writes one stdout log and one stderr log per child process under <code>.\Logs</code>.</li>
+<li>confirmed: the workspace launcher now polls the docs URL, <code>GET /health</code>, and the dashboard root until they respond or the child process exits, instead of relying on one fixed post-start delay.</li>
+<li>confirmed: the readiness polling now treats a successful HTTP response as the source of truth and no longer fails early just because the wrapper process changes state during dev-mode startup handoff.</li>
+<li>confirmed: when the Node or docs child process exits early, the launcher writes the tail of the child stdout or stderr log into the console summary so startup failures are visible without opening the log files first.</li>
+<li>confirmed: when you keep the default loopback ports and Windows has reserved one of them, the launcher now moves to the next available port automatically and prints the final URLs it chose.</li>
+<li>confirmed: if you explicitly pass <code>-ApiListenPrefix</code> or <code>-DocsListenPrefix</code>, the launcher treats that as operator intent and fails fast instead of silently changing the requested port.</li>
+<li>operational risk: medium if you point the API at the wrong config database, because the web app and write endpoints can create rows in <code>Sync.TableConfig</code>.</li>
+<li>safe change procedure: start on loopback, wait for the readiness summary to report success, note any auto-selected replacement ports, validate the docs URL, validate <code>GET /health</code>, open the web app, and keep new rows disabled until you have reviewed them.</li>
+</ul>
+<h2 id="start-the-local-rest-api"><a class="headerlink" href="#start-the-local-rest-api" title="Permanent link">¶</a>Start the local REST API</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nb">Push-Location</span> <span class="p">.\</span><span class="n">webapp</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">npm</span> <span class="n">install</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nb">Pop-Location</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncRestApi</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>  <span class="n">-ListenPrefix</span> <span class="s2">"http://127.0.0.1:8080/"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Then validate:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="s2">"http://127.0.0.1:8080/health"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Open the built-in dashboard:</p>
+<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a>http://127.0.0.1:8080/
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Use it when you want to:</p>
+<ul>
+<li>create one sync row with a preview step</li>
+<li>create and manage reusable server-level instance profiles through <code>Instance Manager</code></li>
+<li>create and manage reusable database connections through <code>Connection Manager</code></li>
+<li>discover visible SQL Server instances from the same connection-management page when you do not already know the host name</li>
+<li>download a CSV template from the live schema</li>
+<li>preview a bulk CSV import before inserting rows</li>
+<li>review the current sync list after inserts</li>
+<li>filter the fleet by mode, enabled state, and last status</li>
+<li>inspect one sync row in full detail</li>
+<li>browse a live SQL Server inventory by server and database through <code>Server Explorer</code></li>
+<li>define server connections, save them for reuse in the browser, and run a connection check from a selected connection when needed</li>
+<li>shape and review the add-server modal workflow that applies a browse target without persisting a registry</li>
+<li>generate migration SQL from an existing sync row</li>
+<li>run advisory table batch analysis from the same browser surface</li>
+<li>operate from the SQL Cockpit workspace, which keeps the sidebar, KPI cards, inspector, and fleet selection usable on desktop and mobile-sized windows</li>
+</ul>
+<h2 id="start-the-dashboard-in-development-watch-mode"><a class="headerlink" href="#start-the-dashboard-in-development-watch-mode" title="Permanent link">¶</a>Start the dashboard in development watch mode</h2>
+<p>Use this when you want CSS and JavaScript changes to auto-reload and the custom Node host to auto-restart in development without rerunning the PowerShell launcher.</p>
+<p>From the web app folder:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nb">cd </span><span class="p">.\</span><span class="n">webapp</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span> <span class="p">--</span> <span class="p">-</span><span class="n">-configServer</span> <span class="s2">"NASCAR"</span> <span class="p">-</span><span class="n">-configDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">-</span><span class="n">-configSchema</span> <span class="s2">"Sync"</span> <span class="p">-</span><span class="n">-configIntegratedSecurity</span> <span class="p">-</span><span class="n">-trustServerCertificate</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Or through the repository launcher:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span>
+<span class="normal"><a href="#__codelineno-9-3">3</a></span>
+<span class="normal"><a href="#__codelineno-9-4">4</a></span>
+<span class="normal"><a href="#__codelineno-9-5">5</a></span>
+<span class="normal"><a href="#__codelineno-9-6">6</a></span>
+<span class="normal"><a href="#__codelineno-9-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncRestApi</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7"></a>  <span class="n">-DevMode</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Workspace launcher equivalent:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span>
+<span class="normal"><a href="#__codelineno-10-4">4</a></span>
+<span class="normal"><a href="#__codelineno-10-5">5</a></span>
+<span class="normal"><a href="#__codelineno-10-6">6</a></span>
+<span class="normal"><a href="#__codelineno-10-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncWorkspace</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7"></a>  <span class="n">-DevMode</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Development mode notes:</p>
+<ul>
+<li>confirmed: <code>-DevMode</code> forces the Node host into Next.js development mode even when <code>.next/BUILD_ID</code> exists.</li>
+<li>confirmed: starting <code>Start-SqlTablesSyncRestApi.ps1</code> or <code>Start-SqlTablesSyncWorkspace.ps1</code> without <code>-DevMode</code> now prints a warning when <code>webapp/.next/BUILD_ID</code> exists, because frontend CSS and JavaScript edits will not auto-appear in the browser in that mode.</li>
+<li>confirmed: CSS and JavaScript edits in <code>webapp/</code> will hot-reload through the existing dashboard server process.</li>
+<li>confirmed: <code>Start-SqlTablesSyncRestApi.ps1 -DevMode</code> now launches Node with <code>--watch-path</code> scoped to <code>webapp/server.js</code>, so custom-host edits restart the API process without letting unrelated Next.js dev file churn repeatedly restart the listener.</li>
+<li>confirmed: REST API routes still run through <code>Invoke-SqlTablesSyncRestOperation.ps1</code>; only the Next.js rendering mode changes.</li>
+<li>confirmed: PowerShell-side files such as <code>Invoke-SqlTablesSyncRestOperation.ps1</code> and <code>SqlTablesSync.Tools.psm1</code> are loaded per request, so route-handler behavior changes there normally do not need a Node restart.</li>
+<li>confirmed: <code>Start-SqlTablesSyncWorkspace.ps1</code> keeps the child docs/API PowerShell windows visible in development while their stdout and stderr continue to be redirected into <code>.\Logs</code>.</li>
+<li>future implementation note: keep those child windows visible in development so operators can identify and close the docs/API processes intentionally. For production-mode hosting, prefer a non-interactive model that hides child windows entirely and runs the API/docs under a service manager, scheduled task, IIS, or another background host.</li>
+<li>confirmed: <code>Start-SqlTablesSyncRestApi.ps1 -DevMode</code> now writes a lock file at <code>webapp/.sql-cockpit-dev-lock.json</code> while the dev server is active and removes it when the process exits cleanly.</li>
+<li>confirmed: <code>npm run build</code> now clears stale <code>.next</code> output before <code>next build</code>, but no longer uses the previous dev-lock guard or the <code>SQL_COCKPIT_ALLOW_BUILD_WITH_DEV_SERVER</code> override path.</li>
+<li>safe change procedure: still stop active <code>npm run dev</code> sessions before production builds to avoid confusion about which runtime instance you are validating.</li>
+<li>operational risk: development mode is slower than production mode and should not be your default for normal operator use.</li>
+</ul>
+<p>Call the batch-size endpoint:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-11-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-11-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-11-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-11-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-11-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-11-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-11-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-11-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-11-10">10</a></span>
+<span class="normal"><a href="#__codelineno-11-11">11</a></span>
+<span class="normal"><a href="#__codelineno-11-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nb">Invoke-RestMethod</span> <span class="n">-Method</span> <span class="n">Post</span> <span class="n">-Uri</span> <span class="s2">"http://127.0.0.1:8080/api/tables/batch-size-recommendation"</span> <span class="p">`</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a>  <span class="n">-ContentType</span> <span class="s2">"application/json"</span> <span class="p">`</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3"></a>  <span class="n">-Body</span> <span class="p">(@{</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4"></a>      <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"DAYTONA"</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6"></a>          <span class="n">database</span> <span class="p">=</span> <span class="s2">"Reporting_PEA"</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7"></a>          <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8"></a>          <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9"></a>      <span class="p">}</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10"></a>      <span class="n">schema</span> <span class="p">=</span> <span class="s2">"dbo"</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11"></a>      <span class="n">table</span> <span class="p">=</span> <span class="s2">"tbl_ReportingBaseData_001"</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12"></a>  <span class="p">}</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="n">-Depth</span> <span class="n">5</span><span class="p">)</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<h2 id="browse-live-server-objects-by-server-and-one-or-more-databases"><a class="headerlink" href="#browse-live-server-objects-by-server-and-one-or-more-databases" title="Permanent link">¶</a>Browse live server objects by server and one or more databases</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span>
+<span class="normal"><a href="#__codelineno-12-4">4</a></span>
+<span class="normal"><a href="#__codelineno-12-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Get-ServerObjects</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a>  <span class="n">-ServerName</span> <span class="s2">"nascar"</span> <span class="p">`</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a>  <span class="n">-IntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5"></a>  <span class="n">-AsJson</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Or through the REST API:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
+<span class="normal"><a href="#__codelineno-13-2">2</a></span>
+<span class="normal"><a href="#__codelineno-13-3">3</a></span>
+<span class="normal"><a href="#__codelineno-13-4">4</a></span>
+<span class="normal"><a href="#__codelineno-13-5">5</a></span>
+<span class="normal"><a href="#__codelineno-13-6">6</a></span>
+<span class="normal"><a href="#__codelineno-13-7">7</a></span>
+<span class="normal"><a href="#__codelineno-13-8">8</a></span>
+<span class="normal"><a href="#__codelineno-13-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nb">Invoke-RestMethod</span> <span class="n">-Method</span> <span class="n">Post</span> <span class="n">-Uri</span> <span class="s2">"http://127.0.0.1:8080/api/servers/explorer"</span> <span class="p">`</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a>  <span class="n">-ContentType</span> <span class="s2">"application/json"</span> <span class="p">`</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a>  <span class="n">-Body</span> <span class="p">(@{</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a>      <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6"></a>          <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7"></a>          <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8"></a>      <span class="p">}</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9"></a>  <span class="p">}</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="n">-Depth</span> <span class="n">5</span><span class="p">)</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Operational notes:</p>
+<ul>
+<li>storage location: none yet. Both the script and endpoint return live SQL Server catalog metadata and do not persist explorer state.</li>
+<li>valid values:</li>
+<li>any non-empty <code>ServerName</code> or <code>serverName</code></li>
+<li>one accessible database name</li>
+<li>multiple accessible database names through repeated <code>databaseName</code> query keys or the <code>databaseNames</code> JSON array</li>
+<li>defaults:</li>
+<li>the script and endpoint require a server</li>
+<li>the dashboard Server Explorer page loads from saved Instance Manager profiles</li>
+<li>the first saved instance profile is selected when Server Explorer opens without a route target</li>
+<li>choosing an instance profile refreshes the available database checkbox list using that profile's authentication and certificate settings</li>
+<li>changing the checkbox selection is what triggers the live explorer query</li>
+<li>the dashboard page opens Server Explorer in <code>list</code> view by default and lets the operator switch to <code>visual</code> or <code>graph</code> views without changing the underlying target</li>
+<li>code paths affected: <code>Get-ServerObjects.ps1</code>, <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/app/server-explorer/page.js</code>, and <code>webapp/components/dashboard-client.js</code>.</li>
+<li>operational risk: medium, because live database names, schema counts, and recent object metadata are now exposed through the local API. The implementation is still read-only.</li>
+<li>safe change procedure: validate the response against a low-risk server first, confirm the database picker populates with the expected online databases, then browse one or more low-risk databases while keeping the API on loopback.</li>
+</ul>
+<h2 id="trace-one-rest-api-endpoint-against-direct-powershell"><a class="headerlink" href="#trace-one-rest-api-endpoint-against-direct-powershell" title="Permanent link">¶</a>Trace one REST API endpoint against direct PowerShell</h2>
+<p>Use this when you need to decide whether a failure is in the Node host, the HTTP route surface, or the underlying PowerShell operation.</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-14-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-14-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-14-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-14-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-14-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-14-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-14-10">10</a></span>
+<span class="normal"><a href="#__codelineno-14-11">11</a></span>
+<span class="normal"><a href="#__codelineno-14-12">12</a></span>
+<span class="normal"><a href="#__codelineno-14-13">13</a></span>
+<span class="normal"><a href="#__codelineno-14-14">14</a></span>
+<span class="normal"><a href="#__codelineno-14-15">15</a></span>
+<span class="normal"><a href="#__codelineno-14-16">16</a></span>
+<span class="normal"><a href="#__codelineno-14-17">17</a></span>
+<span class="normal"><a href="#__codelineno-14-18">18</a></span>
+<span class="normal"><a href="#__codelineno-14-19">19</a></span>
+<span class="normal"><a href="#__codelineno-14-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nv">$payload</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="n">serverName</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4"></a>        <span class="n">server</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5"></a>        <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6"></a>        <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="p">}</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="p">}</span> <span class="p">|</span> <span class="nb">ConvertTo-Json</span> <span class="n">-Depth</span> <span class="n">5</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9"></a>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Test-RestApiEndpoint</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11"></a>  <span class="n">-Operation</span> <span class="s2">"getServerExplorer"</span> <span class="p">`</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12"></a>  <span class="n">-ApiBaseUrl</span> <span class="s2">"http://127.0.0.1:8080/"</span> <span class="p">`</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18"></a>  <span class="n">-PayloadJson</span> <span class="nv">$payload</span> <span class="p">`</span>
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19"></a>  <span class="n">-WriteTraceFile</span> <span class="p">`</span>
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20"></a>  <span class="n">-IncludeLogTail</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Operational notes:</p>
+<ul>
+<li>storage location: the script does not write to SQL. When <code>-WriteTraceFile</code> is used it writes one JSON file under <code>.\Logs\RestApiTrace\rest-api-trace-yyyyMMdd-HHmmss.json</code>.</li>
+<li>valid values:</li>
+<li><code>Operation</code>: <code>health</code>, <code>openapi</code>, <code>getConfigs</code>, <code>getConfigTemplate</code>, <code>createConfig</code>, <code>importConfigsFromCsv</code>, <code>getConfigById</code>, <code>getServerExplorer</code>, <code>migrationFromConfig</code>, <code>migrationTableDiff</code>, or <code>batchSizeRecommendation</code></li>
+<li><code>PayloadJson</code> or <code>PayloadPath</code>: valid JSON for the selected operation</li>
+<li><code>Route</code>: optional explicit route override when the default route mapping is not enough</li>
+<li>defaults:</li>
+<li><code>ApiBaseUrl</code>: <code>http://127.0.0.1:8080/</code></li>
+<li><code>Operation</code>: <code>health</code></li>
+<li><code>ConfigSchema</code>: <code>Sync</code></li>
+<li><code>TrustServerCertificate</code>: on</li>
+<li>code paths affected: <code>Test-RestApiEndpoint.ps1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, and <code>.\Logs\WebApp\server-errors-YYYY-MM-DD.jsonl</code> when the traced API call returns a server-side error</li>
+<li>operational risk:</li>
+<li>medium for data sensitivity, because the trace output can include API response bodies, local <code>eventId</code> values, and a tail of the local server-error log</li>
+<li>low for runtime safety, because the script only calls the already-existing API route and direct operation; it does not add new runtime behavior</li>
+<li>safe change procedure:</li>
+<li>keep the listener on loopback</li>
+<li>start with a low-risk operation such as <code>health</code> or <code>getServerExplorer</code> against a low-risk server in your environment</li>
+<li>use the real config DB connection values for the direct PowerShell comparison, otherwise the REST and direct results may differ for environmental reasons instead of code reasons</li>
+<li>redact credentials, connection strings, and business-sensitive object names before sharing trace files outside the trusted support context</li>
+</ul>
+<h2 id="start-the-mcp-server"><a class="headerlink" href="#start-the-mcp-server" title="Permanent link">¶</a>Start the MCP server</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span>
+<span class="normal"><a href="#__codelineno-15-2">2</a></span>
+<span class="normal"><a href="#__codelineno-15-3">3</a></span>
+<span class="normal"><a href="#__codelineno-15-4">4</a></span>
+<span class="normal"><a href="#__codelineno-15-5">5</a></span>
+<span class="normal"><a href="#__codelineno-15-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncMcpServer</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6"></a>  <span class="n">-TrustServerCertificate</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Use this from an MCP-compatible client when you want AI tooling to inspect config rows and generate migrations.</p>
+<p>The MCP server also exposes <code>get_table_batch_size_recommendation</code> for table-level <code>BatchSize</code> analysis.</p>
+<h2 id="export-a-live-tableconfig-diagram"><a class="headerlink" href="#export-a-live-tableconfig-diagram" title="Permanent link">¶</a>Export a live TableConfig diagram</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span>
+<span class="normal"><a href="#__codelineno-16-2">2</a></span>
+<span class="normal"><a href="#__codelineno-16-3">3</a></span>
+<span class="normal"><a href="#__codelineno-16-4">4</a></span>
+<span class="normal"><a href="#__codelineno-16-5">5</a></span>
+<span class="normal"><a href="#__codelineno-16-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Export-TableConfigDiagram</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6"></a>  <span class="n">-TrustServerCertificate</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This reads <code>Sync.TableConfig</code>, writes a DOT file, and renders a Graphviz diagram when <code>dot</code> is available.</p>
+<h2 id="find-sync-rows-by-server-or-table-name"><a class="headerlink" href="#find-sync-rows-by-server-or-table-name" title="Permanent link">¶</a>Find sync rows by server or table name</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1">1</a></span>
+<span class="normal"><a href="#__codelineno-17-2">2</a></span>
+<span class="normal"><a href="#__codelineno-17-3">3</a></span>
+<span class="normal"><a href="#__codelineno-17-4">4</a></span>
+<span class="normal"><a href="#__codelineno-17-5">5</a></span>
+<span class="normal"><a href="#__codelineno-17-6">6</a></span>
+<span class="normal"><a href="#__codelineno-17-7">7</a></span>
+<span class="normal"><a href="#__codelineno-17-8">8</a></span>
+<span class="normal"><a href="#__codelineno-17-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Find-TableSyncConfig</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7"></a>  <span class="n">-MatchOn</span> <span class="n">Source</span> <span class="p">`</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8"></a>  <span class="n">-ServerPattern</span> <span class="s2">"APTOS*"</span> <span class="p">`</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9"></a>  <span class="n">-TablePattern</span> <span class="s2">"hierarchy_group"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Add <code>-IncludeBatchRecommendation</code> when you also want the script to inspect the live source table and compare the current <code>BatchSize</code> with an advisory range.</p>
+<h2 id="profile-one-table-and-estimate-a-batchsize"><a class="headerlink" href="#profile-one-table-and-estimate-a-batchsize" title="Permanent link">¶</a>Profile one table and estimate a BatchSize</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span>
+<span class="normal"><a href="#__codelineno-18-4">4</a></span>
+<span class="normal"><a href="#__codelineno-18-5">5</a></span>
+<span class="normal"><a href="#__codelineno-18-6">6</a></span>
+<span class="normal"><a href="#__codelineno-18-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Get-TableBatchSizeRecommendation</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2"></a>  <span class="n">-Server</span> <span class="s2">"APTOSSQL01"</span> <span class="p">`</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3"></a>  <span class="n">-Database</span> <span class="s2">"Remote_Reporting_PEA"</span> <span class="p">`</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4"></a>  <span class="n">-Schema</span> <span class="s2">"dbo"</span> <span class="p">`</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5"></a>  <span class="n">-Table</span> <span class="s2">"hierarchy_group"</span> <span class="p">`</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6"></a>  <span class="n">-IntegratedSecurity</span> <span class="p">`</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7"></a>  <span class="n">-TrustServerCertificate</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This reads table metadata only and returns row-count, storage, row-width, and advisory <code>BatchSize</code> guidance.</p>
+<p>For the operator trade-offs behind those numbers, see <a href="../batch-size-caveats/">Batch Size Caveats</a>.</p>
+<h2 id="summarize-local-run-logs"><a class="headerlink" href="#summarize-local-run-logs" title="Permanent link">¶</a>Summarize local run logs</h2>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1">1</a></span>
+<span class="normal"><a href="#__codelineno-19-2">2</a></span>
+<span class="normal"><a href="#__codelineno-19-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">Analyze-RunLogs</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2"></a>  <span class="n">-FailedOnly</span> <span class="p">`</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3"></a>  <span class="n">-Latest</span> <span class="n">20</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This reads local <code>.log</code> files under <code>.\Logs</code> and summarizes status, duration, row counts, and the primary failure message.</p>
+<h2 id="review-the-latest-runtime-state"><a class="headerlink" href="#review-the-latest-runtime-state" title="Permanent link">¶</a>Review the latest runtime state</h2>
+<p>Check:</p>
+<ul>
+<li>the <code>Sync.TableConfig</code> row</li>
+<li>the matching <code>Sync.TableState</code> row</li>
+<li>the latest <code>Sync.RunLog</code> row</li>
+<li>recent <code>Sync.RunActionLog</code> rows for that <code>SyncId</code></li>
+</ul>
+<h2 id="create-new-sync-rows-from-the-web-app"><a class="headerlink" href="#create-new-sync-rows-from-the-web-app" title="Permanent link">¶</a>Create new sync rows from the web app</h2>
+<p>Recommended operator flow:</p>
+<ol>
+<li>Start the REST API on loopback.</li>
+<li>Open <code>http://127.0.0.1:8080/</code>.</li>
+<li>Use <code>Instance Manager</code> for server-level instance profiles, <code>Connection Manager</code> for database-level connection profiles under those instances, or <code>Sync Launchpad</code> for direct form entry.</li>
+<li>In either manager, optionally run <code>Discover SQL Servers</code> to find visible instances on the network, then save a low-risk profile and run <code>Test Connection</code> to confirm it reaches the expected SQL Server and exposes the expected inventory.</li>
+<li>Use <code>Agent Manager</code> when you need a read-only SQL Server Agent overview for a saved instance profile.</li>
+<li>Use <code>Preview single row</code> or <code>Preview</code> for CSV first.</li>
+<li>If needed, inspect an existing row before creating a related one.</li>
+<li>Keep new rows disabled unless you are ready for a controlled first run.</li>
+<li>Refresh the fleet view and verify the new rows.</li>
+<li>Optionally generate migration SQL or batch-size advice before scheduling the first live run.</li>
+</ol>
+<p>Dashboard navigation notes:</p>
+<ul>
+<li><code>Estate Overview</code> is now the home page and loads saved Instance Manager profiles through <code>POST /api/sql-estate/overview</code> to summarize SQL Server capacity, health, database state, SQL Agent risk, and current-session network identity.</li>
+<li><code>Sync Overview</code> is the table-sync landing page under the dedicated <code>Table Sync</code> navigation section. It mirrors the previous sync-oriented overview so operators can enter the sync tool without starting from the broader SQL estate home.</li>
+<li>the shell now presents SQL Cockpit as a browser-based SQL tooling suite with a left navigation rail, sticky top header, search bar, and white metric cards.</li>
+<li>the web app now includes a persistent theme toggle in the top header. It stores the operator preference in browser local storage under <code>sql-cockpit-theme</code>.</li>
+<li>the header notification bell now merges dashboard-derived notifications with a live standalone notifications service, while still storing read or archived state in browser local storage.</li>
+<li><code>Ctrl+K</code> now opens a mocked command palette that groups quick links, syncs, tables, and servers from the current in-memory dashboard data. This is a UI-only search layer for now and is intended to be replaced by a backend search API later.</li>
+<li><code>Server Explorer</code> now lets you browse live server-object metadata from saved Instance Manager profiles, then narrow the browse scope by database.</li>
+<li><code>Instance Manager</code> and <code>Connection Manager</code> now use separate browser-local vaults. Instance Manager stores server-level instance profiles first; Connection Manager stores database-level connection profiles under those instances.</li>
+<li><code>Agent Manager</code> now lets you choose a saved instance profile, query live SQL Server Agent metadata from <code>msdb</code>, sort the jobs table, filter by status or enabled state, and expand jobs to review step-level runtime context.</li>
+<li><code>Sync Overview</code>, <code>Sync Launchpad</code>, <code>Fleet View</code>, <code>Live Inspector</code>, <code>Schema Studio</code>, <code>Batch Copilot</code>, and <code>Bulk Intake</code> now live together under the <code>Table Sync</code> navigation section.</li>
+<li><code>Server Explorer</code> stays in the <code>Engineering</code> section.</li>
+<li><code>Fleet View</code> still shows stacked sync cards on smaller viewports and a full table on wider viewports.</li>
+<li><code>Live Inspector</code> can be opened directly with a selected <code>syncId</code> from Fleet View or Overview attention items.</li>
+</ul>
+<p>Operational notes:</p>
+<ul>
+<li>The <code>SQL Cockpit</code> web app writes to <code>Sync.TableConfig</code> through the local REST API.</li>
+<li>theme setting:
+  storage location: browser local storage key <code>sql-cockpit-theme</code>
+  valid values: <code>dark</code>, <code>light</code>
+  default: <code>dark</code> when there is no stored preference
+  code paths affected: <code>webapp/components/dashboard-client.js</code>, <code>webapp/components/dashboard-shell.js</code>, <code>webapp/app/globals.css</code>, and shared UI primitives under <code>webapp/components/</code>
+  operational risk: low, because the preference is client-side only and does not affect API requests, sync execution, or database configuration
+  safe change procedure: use the header toggle to switch theme, then refresh the page to confirm the preference persists for that browser profile</li>
+<li>command palette:
+  storage location: browser memory only for the current page session
+  valid values: query text entered by the operator; no persisted setting yet
+  default: closed, with an empty query until <code>Ctrl+K</code> or the header search trigger opens it
+  code paths affected: <code>webapp/components/dashboard-client.js</code> and <code>webapp/components/dashboard-shell.js</code>
+  operational risk: low, because the current implementation only filters already-loaded client data and route links; it does not change database state or call a new backend API
+  safe change procedure: open the palette with <code>Ctrl+K</code>, verify that sync, table, and server results match the currently loaded fleet data, then use the selected result to route into Fleet or Inspector views</li>
+<li>notifications center:
+  storage location: browser local storage key <code>sql-cockpit-notifications-state</code>
+  valid values: JSON object with <code>readById</code>, <code>archivedById</code>, <code>lastOpenedAt</code>, and <code>browserNotificationsEnabled</code>; items can come from dashboard-derived mock state and from the standalone notifications service over HTTP plus WebSocket, and native browser alerts can be toggled on for newly arriving realtime events when the browser grants permission
+  default: bell menu is closed on page load; notifications start unread unless the browser already has saved state for the matching notification id; archived items stay hidden in that browser profile until storage is cleared or the ids change; <code>browserNotificationsEnabled</code> starts <code>false</code>; if the standalone service is offline the bell still falls back to the dashboard-derived items
+  code paths affected: <code>webapp/components/dashboard-client.js</code>, <code>webapp/components/dashboard-shell.js</code>, <code>webapp/components/notifications-data.js</code>, <code>webapp/components/notifications-menu.js</code>, <code>webapp/server.js</code>, <code>webapp/notifications-server.js</code>, <code>Start-SqlTablesSyncNotificationsServer.ps1</code>, <code>Send-SqlCockpitNotification.ps1</code>, <code>Send-TestSqlCockpitNotifications.ps1</code>, <code>webapp/scripts/send-notification.js</code>, and <code>webapp/scripts/send-test-notifications.js</code>
+  operational risk: low for SQL safety because the feature does not touch SQL tables or sync execution; medium for operator trust because any local caller that can reach the loopback listener can publish an item that appears in the bell menu; medium for local privacy because enabled browser alerts can surface message text outside the active tab
+  safe change procedure: start the workspace or the standalone notifications server, verify <code>GET /health</code> on the notifications listener, send one harmless test notification from PowerShell, confirm the bell unread badge increments without a page refresh, test <code>Mark all read</code>, test one archive action, refresh the page, and confirm the browser preserves the chosen read or archived state for the same notification ids; if native alerts are needed, enable them from the bell menu, approve the browser permission prompt, background the tab, and then send another low-risk test notification</li>
+<li>standalone notifications service:
+  storage location: process parameters plus an in-memory recent-notification buffer inside the Node service; no SQL or config-table storage is used
+  valid values: <code>ListenPrefix</code> as an absolute HTTP or HTTPS prefix, <code>MaxRequestBodyBytes</code> as a positive integer, and notification payload fields <code>id</code>, <code>dedupeKey</code>, <code>title</code>, <code>message</code>, <code>severity</code>, <code>category</code>, <code>actionLabel</code>, <code>actionHref</code>, <code>source</code>, <code>pinned</code>, <code>createdAt</code>, <code>updatedAt</code>, <code>statusText</code>, <code>progressPercent</code>, and <code>metadata</code>
+  default: <code>Start-SqlTablesSyncWorkspace.ps1</code> starts the service automatically on <code>http://127.0.0.1:8090/</code> unless that port is unavailable, in which case the workspace launcher probes a nearby free port and passes the resolved value to both the service and dashboard runtime discovery route
+  code paths affected: <code>Start-SqlTablesSyncWorkspace.ps1</code>, <code>Start-SqlTablesSyncRestApi.ps1</code>, <code>Start-SqlTablesSyncNotificationsServer.ps1</code>, <code>Send-SqlCockpitNotification.ps1</code>, <code>Send-ProgressSqlCockpitNotificationDemo.ps1</code>, <code>webapp/notifications-server.js</code>, <code>webapp/server.js</code>, <code>webapp/scripts/send-notification.js</code>, <code>webapp/components/notifications-data.js</code>, and <code>webapp/components/notifications-menu.js</code>
+  operational risk: medium, because the service trusts any local caller that can reach the listener and keeps only an in-memory buffer, so a restart clears the recent history and an exposed listener would allow spoofed operator messages
+  safe change procedure: keep the listener on loopback, verify the resolved notifications URL in the workspace startup log, send a low-risk test item first, prefer a stable <code>dedupeKey</code> for long-running job updates, verify that repeated progress updates replace one bell item instead of creating many, avoid sensitive payload text, and do not widen exposure beyond the local machine until an authentication design exists</li>
+<li>server explorer:
+  storage location: saved instance profiles come from browser local storage key <code>sql-cockpit-instance-profiles</code>; live response objects are read from SQL Server system catalog views on demand
+  valid values: any saved Instance Manager profile plus zero, one, or many accessible database names; view mode is <code>list</code>, <code>visual</code>, or <code>graph</code>
+  default: dashboard selects the first saved instance profile when Server Explorer opens without a route target; selecting a profile loads the available database list using the profile's auth and certificate settings; changing the database selection triggers the live explorer query; Server Explorer opens in <code>list</code> view
+  code paths affected: <code>Get-ServerObjects.ps1</code>, <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/app/server-explorer/page.js</code>, and <code>webapp/components/dashboard-client.js</code>
+  operational risk: medium, because the current implementation returns live metadata about database names, schema shape, and recently modified objects; it remains read-only and does not persist registration changes
+  safe change procedure: save and test a low-risk instance profile first, confirm the selector shows the expected profile and online databases, then browse one or more low-risk databases and verify the featured-object cards render as expected before widening the target scope</li>
+<li>connection manager:
+  storage location: browser local storage key <code>sql-cockpit-database-connection-profiles</code> for saved database connection profiles; live response objects are read on demand through <code>POST /api/servers/explorer</code>; discovery results live in browser memory for the current page session
+  valid values: any non-empty server and database name that the current auth mode can reach; auth mode per saved connection is <code>Integrated</code> or <code>SQL</code>; saving a profile also requires a non-empty connection name; SQL-auth drafts require a non-empty <code>username</code>; <code>password</code> remains optional and, when present, is still stored in browser local storage with the saved profile
+  default: the connection form starts blank; the inline validation state stays clear until the operator attempts to save or test an incomplete draft; blocked save attempts now raise a toast explaining that the highlighted fields need attention; successful saves now raise a toast only after the browser local-storage write completes; the network discovery scan runs only after the operator clicks <code>Discover SQL Servers</code>; the server check runs only after the operator clicks <code>Test Connection</code>, and that test now raises a success toast with the visible database count or an error toast with the failure message; when the operator clicks <code>Edit</code> on a saved profile or <code>Use Server</code> on a discovered server, the page navigates smoothly to the named <code>#connection-draft-panel</code> target, applies the selected values into the editor, and briefly highlights the panel so the landing point is obvious; saved profiles persist only in the current browser profile on the current machine, and the page now waits for the first browser-storage read before writing profile changes back so a reload does not clear saved connections
+  code paths affected: <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/components/dashboard-client.js</code>, <code>webapp/app/connection-manager/page.js</code>, <code>webapp/app/instance-manager/page.js</code>, and <code>webapp/app/sync-studio/page.js</code>
+  operational risk: medium to high, because saved profiles now live in browser local storage and SQL-auth credentials can be stored there if the operator chooses to save them; the server check exposes live server inventory detail for the selected SQL Server; the discovery scan is broader because it asks SQL Browser-visible hosts on the network to identify themselves; the new inline validation lowers operator error risk for incomplete drafts and the Node API now rejects incomplete test payloads before the request reaches PowerShell, but neither change reduces the sensitivity of stored credentials; low for write safety because the connection-management workflow itself remains read-only
+  safe change procedure: save low-risk connections first, prefer integrated auth where possible, avoid storing SQL passwords unless the local browser profile is trusted, keep connection names unique enough that operators can tell production and non-production profiles apart, use <code>Edit</code> or <code>Use Server</code> to repopulate the draft panel before editing or testing it, run the discovery scan only on trusted networks, and run the server check only against low-risk SQL Servers when validating a new connection</li>
+<li>instance manager:
+  storage location: browser local storage key <code>sql-cockpit-instance-profiles</code> for saved instance profiles; legacy shared key <code>sql-cockpit-connection-profiles</code> is treated as a one-time compatibility source when the instance vault is empty
+  valid values: any non-empty server name that the current auth mode can reach; auth mode per saved instance is <code>Integrated</code> or <code>SQL</code>; saving a profile also requires a non-empty instance name; SQL-auth drafts require a non-empty <code>username</code>; <code>password</code> remains optional and, when present, is stored in browser local storage with the saved profile
+  default: the instance form starts blank; profiles persist only in the current browser profile on the current machine; Agent Manager selects the first saved instance profile when available
+  code paths affected: <code>webapp/components/dashboard-client.js</code>, <code>webapp/app/instance-manager/page.js</code>, <code>webapp/app/agent-manager/page.js</code>, <code>webapp/server.js</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, and <code>SqlTablesSync.Tools.psm1</code>
+  operational risk: medium to high for credential handling because SQL-auth credentials can be stored in browser local storage; medium for metadata exposure because Agent Manager and object-search sync use these profiles to read server-wide metadata
+  safe change procedure: validate the instance profile before using Agent Manager, prefer integrated auth, avoid storing SQL passwords on shared machines, and keep database-level profiles in Connection Manager instead of using instance profiles as source or destination database records</li>
+<li>SQL Agent Manager:
+  storage location: selected instance profile comes from browser local storage key <code>sql-cockpit-instance-profiles</code>; live job data is read on demand from the target instance <code>msdb</code> and is not persisted by SQL Cockpit
+  valid values: any saved instance profile with a reachable server; auth mode is inherited from the saved profile as <code>Integrated</code> or <code>SQL</code>; table filters include free text, enabled state, and job status
+  default: selects the first saved profile when available; no Agent inventory is loaded until the operator clicks <code>Refresh Jobs</code>; sort starts by job name ascending
+  code paths affected: <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/components/dashboard-client.js</code>, <code>webapp/app/agent-manager/page.js</code>, and <code>docs/operations/sql-agent-manager.md</code>
+  operational risk: low for write safety because it is read-only; medium for metadata exposure because job names, schedules, messages, and step context can reveal operational details; medium for credential handling when the selected saved profile contains SQL-auth credentials in browser local storage
+  safe change procedure: validate the saved profile in <code>Instance Manager</code>, prefer integrated auth, refresh a low-risk instance first, verify the source server and job count, then filter before expanding job steps on sensitive instances</li>
+<li>Estate Overview:
+  storage location: selected instance profiles come from browser local storage key <code>sql-cockpit-instance-profiles</code>; live estate data is read on demand from target SQL Server <code>master</code> and <code>msdb</code> metadata and is not persisted by SQL Cockpit
+  valid values: 1 to 30 saved instance profiles with reachable server names; auth mode is inherited from each saved profile as <code>Integrated</code> or <code>SQL</code>
+  default: the home page auto-refreshes once when saved instance profiles are available; failed instance reads return critical rows instead of failing the entire response
+  code paths affected: <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/components/dashboard-client.js</code>, <code>webapp/app/page.js</code>, and <code>docs/operations/estate-overview.md</code>
+  operational risk: low for write safety because it is read-only; medium for metadata exposure because capacity, database state, edition, version, and Agent counts can reveal estate details
+  safe change procedure: validate instances in <code>Instance Manager</code>, refresh one low-risk instance first, verify reported server identity and capacity, then add broader estate profiles</li>
+<li>confirmed: this rebrand changes product naming only. No database config-table columns, runtime flags, valid values, defaults, or code paths for sync execution changed.</li>
+<li>confirmed: the inline connection-draft validation is browser-only. No database config-table columns, runtime flags, REST payload shapes, or sync-engine code paths changed.</li>
+<li>confirmed: backend validation now also rejects incomplete <code>POST /api/servers/explorer</code> and <code>POST /api/databases/metadata</code> request bodies before PowerShell runs. Saved-profile naming rules remain browser-only because connection profiles are still stored only in browser local storage.</li>
+<li>confirmed: saved Connection Manager profiles now live in the database-connection vault, while Instance Manager profiles live in the instance vault used by Agent Manager.</li>
+<li>confirmed: Connection Manager now shows toast feedback for save validation failures, successful browser-local-storage writes after the save completes, and both successful and failed <code>Test Connection</code> attempts.</li>
+<li>confirmed: Instance Manager now opens a centered Object Search Sync progress modal when <code>Sync Server To Search</code> starts, keeps progress and streamed logs out of the draft panel, scopes streamed log lines to the current operation id, shows elapsed time plus separate progress cards for overall server-wide progress and current-database progress, auto-scrolls the streamed log to the newest line, and minimizes an active sync into a floating progress control that also shows elapsed time.</li>
+<li>confirmed: Object Search Sync completion and failure now create local bell notifications and native browser notifications when browser notification permission and the bell menu browser-alert setting allow them.</li>
+<li>confirmed: full Object Search Sync runs now write a durable spool/checkpoint after document build, resume upload/delete offsets on rerun, upsert new documents before deleting stale ids, split failed <code>400 Bad Request</code> upload batches into smaller batches, and log single-document failures with document identity for recovery.</li>
+<li>operational risk: low to medium, because the connection-management UI changes are presentation-only, but the object-search sync engine now changes full-sync ordering to preserve old searchable content until new uploads succeed; failed uploads can leave old stale entries visible rather than emptying the index scope.</li>
+<li>No new config-table columns or flags are introduced by this workflow.</li>
+<li>Bulk import is transactional when <code>Continue on error</code> is off.</li>
+<li>Bulk import can leave partial success behind when <code>Continue on error</code> is on.</li>
+<li>The dashboard also calls the existing migration and batch-analysis endpoints, so double-check the selected sync or manual table target before running advisory tools.</li>
+<li>The dashboard now requires the installed <code>webapp/node_modules</code> runtime, because Node hosts both the UI and the REST routes.</li>
+<li>The workspace launcher now starts a third local process for realtime notifications and prints its URL plus log files alongside the docs and REST API processes.</li>
+</ul>
+<h2 id="pause-a-sync"><a class="headerlink" href="#pause-a-sync" title="Permanent link">¶</a>Pause a sync</h2>
+<p>Set <code>Sync.TableConfig.IsEnabled = 0</code>.</p>
+<p>Notes:</p>
+<ul>
+<li>Safe for future runs.</li>
+<li>Does not stop an already-running process.</li>
+</ul>
+<h2 id="resume-a-sync"><a class="headerlink" href="#resume-a-sync" title="Permanent link">¶</a>Resume a sync</h2>
+<p>Set <code>Sync.TableConfig.IsEnabled = 1</code> and run one controlled test execution.</p>
+<h2 id="reseed-incremental-state"><a class="headerlink" href="#reseed-incremental-state" title="Permanent link">¶</a>Reseed incremental state</h2>
+<p>Only do this deliberately. Typical actions are:</p>
+<ul>
+<li>set <code>LastWatermarkValue</code></li>
+<li>set <code>LastKeyValue</code></li>
+<li>or clear them both</li>
+</ul>
+<p>Always capture the previous values first and understand the effect of <code>FullScanAllow</code>.</p>
+<h2 id="server-explorer-screenshot"><a class="headerlink" href="#server-explorer-screenshot" title="Permanent link">¶</a>Server Explorer Screenshot</h2>
+<!-- AUTO_SCREENSHOT:server-explorer:START -->
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/server-explorer.png" data-title="Server Explorer page in SQL Cockpit" data-desc-position="bottom"><img alt="Server Explorer page in SQL Cockpit" src="../assets/screenshots/server-explorer.png"></a></p>
+<p><em>Use Server Explorer when you want to browse a live server and narrow the scope by one or more databases.</em></p>
+<!-- AUTO_SCREENSHOT:server-explorer:END -->
+
+<h1 id="sql-cockpit-documentation"><a class="headerlink" href="#sql-cockpit-documentation" title="Permanent link">¶</a>SQL Cockpit Documentation</h1>
+<p>This file contains common content that is automatically appended to all pages.</p>
+<!-- Common footer content -->
+<hr>
+<p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
+<p>For support and questions, please visit our <a href="https://github.com/sql-cockpit/sql-cockpit">GitHub repository</a> or contact us at <a href="mailto:support@sql-cockpit.com">support@sql-cockpit.com</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 - SQL Cockpit
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/sql-cockpit/sql-cockpit" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/sql-cockpit/sql-cockpit" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://linkedin.com/company/sql-cockpit" target="_blank" rel="noopener" title="linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:support@sql-cockpit.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4l208 156a48 48 0 0 0 57.6 0l208-156c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48zM0 196v188c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V196L313.6 344.8c-34.1 25.6-81.1 25.6-115.2 0z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden="">
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings">
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="github" checked="">
+      <span class="task-list-indicator"></span>
+      GitHub
+    </label>
+  </li>
+
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-init.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
