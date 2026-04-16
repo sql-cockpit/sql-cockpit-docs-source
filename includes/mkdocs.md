@@ -1,7 +1,3 @@
-# SQL Cockpit Documentation
-
-This file contains common content that is automatically appended to all pages.
-
 <!-- Common footer content -->
 ---
 **SQL Cockpit** - PowerShell-based SQL tooling suite
