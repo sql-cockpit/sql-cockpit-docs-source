@@ -60,6 +60,7 @@
 - Safe change procedure:
   - start on `127.0.0.1`
   - validate `GET /health`
+  - sign in and confirm `Connection Manager` contains a profile that matches the configured `ConfigServer` + `ConfigDatabase` pair when service-host runtime uses a non-interactive account
   - when a route fails or behaves differently than expected, run `Test-RestApiEndpoint.ps1` before changing code so you can compare the REST response with the direct PowerShell operation
   - validate `GET /api/configs/template`
   - run one `previewOnly = true` create request
@@ -89,6 +90,12 @@
 | `MaxRequestBodyBytes` | positive integer | `262144` | Rejects oversized JSON bodies. |
 | `NodeExecutable` | Node.js executable name or path | `node` | Process-level launcher setting for the Node host. |
 | `DevMode` | switch | off | Forces Next.js development mode for dashboard hot reload and starts Node with `--watch-path=webapp/server.js` so the custom host auto-restarts during development without reacting to unrelated Next.js build output churn. |
+
+Credential-resolution behavior for authenticated API requests:
+
+- for operations that use the config DB (`/api/configs*`, migration/config helpers, SQL estate helpers), the server now checks the signed-in user's local SQLite `connectionProfiles` first
+- when it finds a profile with matching `serverName` and `databaseName` for the configured `ConfigServer` and `ConfigDatabase`, it uses that profile's auth fields (`authMode`, `username`, `password`, `trustServerCertificate`, optional `encryptConnection`) for the PowerShell operation
+- if no matching profile exists, it falls back to startup flags (`ConfigIntegratedSecurity`, `ConfigUsername`, `ConfigPassword`, and related switches)
 
 ## Endpoints
 
