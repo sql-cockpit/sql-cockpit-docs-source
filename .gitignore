@@ -10,13 +10,22 @@ __pycache__/
 dist/
 build/
 target/
+# Documentation build outputs
+/site/
+/docs/_build/
+/docs/build/
 
 # Environment
 .env
 .env.local
 *.env.*
 
-# Editors
+# Environment files
+.env
+.env.local
+*.env.*
+
+# IDE files
 .vscode/
 .idea/
 
@@ -24,17 +33,27 @@ target/
 *.log
 *.tmp
 *.swp
+*.swo
+*.tmp
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
 
 # Gradle
+# Dependency directories
+node_modules/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+venv/
+.venv/
+target/
 .gradle/
 
 # Compressed files
