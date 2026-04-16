@@ -1,95 +1,113 @@
-# Examples and test data
-examples/
-test/
-tests/
-testing/
+```
+# Dependencies
+.venv/
+venv/
+node_modules/
 
-# Documentation builds
-_site/
-_build/
-doc/_build/
+# Build artifacts
+dist/
+build/
+target/
 
-# Temporary files
-*.tmp
-*.temp
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py.class
+.Python
+env/
+.venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+
+# Virtual Environment
+ENV/
+.venv/
+env/
+venv/
+ENV/
+.ENV/
+.env.bak/
+.venv.bak/
+
+# IDE
+.vscode/
+.idea/
 *.swp
+*.swo
 *~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Icon?
+.directory
+*.nib
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Icon?
+.directory
+*.nib
 
 # Logs
 *.log
 
-# Environment specific
+# Environment variables
 .env
 .env.local
+*.env
+*.env.*
 .env.*
 
-# IDE specific
-.vscode/
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# OS generated files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Icon?
-.directory
-*.nib
-.vagrant/
-.sass-cache
-.trash/
-.nfs*
-.hg/
-.svn/
-.git/
-
-# Python specific
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# JavaScript specific
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Compiled and build artifacts
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
-# Coverage reports
+# Coverage
 coverage/
 htmlcov/
 .coverage
-
-# MyPy cache
-.mypy_cache/
+.coverage.*
+.nox/
 .pytest_cache/
+.hypothesis/
+
+# Documentation
+docs/_build/
+_site/
+.sphinx/
+docs/.nox/
+
+# MkDocs
+/site/
+.mkdocs.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
+\#*\#
+.DS_Store
+Thumbs.db
 
 # Compressed files
 *.zip
@@ -114,3 +132,4 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+```

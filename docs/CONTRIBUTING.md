@@ -51,3 +51,65 @@ mkdocs build --strict
 - Prefer exact script names such as `Sync-ConfiguredSqlTable.ps1`.
 - Include line numbers when they materially help troubleshooting.
 - Distinguish between direct code confirmation and inference from naming.
+
+## Documentation Versioning
+
+This project uses [mike](https://github.com/jimporter/mike) for versioned documentation deployment. The documentation supports multiple versions that are served from the `gh-pages` branch.
+
+### Versioning Workflow
+
+#### For Maintainers
+
+When releasing a new version of the software, you should also create a corresponding documentation version:
+
+```bash
+# 1. Ensure your changes are committed to the main branch
+git add docs/
+git commit -m "docs: update for version 1.1"
+
+# 2. Deploy the new documentation version
+mike deploy 1.1
+
+# 3. Update the 'latest' alias to point to the new version
+mike deploy --update-aliases 1.1 latest
+
+# 4. Push to gh-pages branch
+mike deploy --push 1.1 latest
+```
+
+#### Version Management Commands
+
+```bash
+# List all deployed versions
+mike list
+
+# Serve a specific version locally for testing
+mike serve 1.0
+mike serve latest
+
+# Set the default version that users see first
+mike set-default 1.1
+
+# Delete an old version (use with caution)
+mike delete 1.0
+```
+
+#### CI/CD Deployment
+
+The GitHub Actions workflow (`.github/workflows/deploy-docs.yml`) automatically deploys documentation on pushes to the `main` branch. The workflow:
+
+1. Checks out the repository with full git history
+2. Installs Python dependencies including `mike`
+3. Configures git credentials for the GitHub Actions bot
+4. Deploys to the `gh-pages` branch using mike
+
+To customize which version is deployed in CI, edit the `deploy-docs.yml` file and modify the `mike deploy` command arguments.
+
+### Best Practices
+
+- **Semantic Versioning**: Use semantic versioning for documentation versions (e.g., `1.0`, `1.1`, `2.0`)
+- **Latest Alias**: Always keep the `latest` alias pointing to the most recent stable version
+- **Backwards Compatibility**: When making breaking changes to documentation structure, consider maintaining older versions for reference
+- **Testing**: Always test new versions locally with `mike serve <version>` before deploying
+
+For more information, see the [mike documentation](https://github.com/jimporter/mike#readme).

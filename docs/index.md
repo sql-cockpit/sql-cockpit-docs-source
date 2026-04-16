@@ -39,6 +39,7 @@ The docs are organized into role-based sections:
 - [Configuration](configuration/reference.md): runtime flags and `Sync.TableConfig` semantics.
 - [Developer Documentation](developer/index.md): local development, repo split, system contracts, and contribution guidance.
 - [Architecture](architecture/overview.md), [Integrations](integrations/overview.md), and [Database](database/config-tables.md): deep technical references.
+- [Versioning Guide](VERSIONING.md): how to manage multiple versions of this documentation.
 
 ## Quick map
 
