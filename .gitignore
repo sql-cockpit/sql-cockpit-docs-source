@@ -1,47 +1,42 @@
 ```
-# Dependencies
-node_modules/
+# Documentation build outputs
+/site/
+/docs/_build/
+/docs/build/
 
-# Editors
-.vscode/
+# Logs
+*.log
 
-# Environment
+# Environment files
 .env
 .env.local
 *.env.*
 
-# Logs and temp files
-*.log
-*.tmp
+# IDE files
+.vscode/
+.idea/
 *.swp
+*.swo
+*.tmp
 
-# Build artifacts
-dist/
-build/
-target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.venv.bak/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
+# OS files
 .DS_Store
 Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Dependency directories
+node_modules/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+venv/
+.venv/
+target/
+.gradle/
 
 # Compressed files
 *.zip
@@ -66,17 +61,4 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-# Coverage
-coverage/
-htmlcov/
-.coverage*
-
-# Testing
-.pytest_cache/
-.mypy_cache/
-
-# OS
-.DS_Store
-Thumbs.db
 ```
