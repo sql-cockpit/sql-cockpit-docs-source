@@ -160,5 +160,4 @@ extra_css:
   - stylesheets/extra.css
 
 watch:
-  - docs
   - mkdocs.yml
