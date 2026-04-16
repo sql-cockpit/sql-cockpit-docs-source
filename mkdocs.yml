@@ -1,30 +1,78 @@
+# Project information
 site_name: SQL Cockpit Documentation
 site_description: Documentation for SQL Cockpit - PowerShell-based SQL tooling suite
 site_url: https://your-domain.github.io/sql-cockpit/
+site_author: SQL Cockpit Team
 
+# Repository
 repo_name: sql-cockpit
 repo_url: https://github.com/your-org/sql-cockpit
+edit_uri: edit/main/docs/
 
+# Copyright
+copyright: Copyright &copy; 2024 SQL Cockpit Team
+
+# Theme
 theme:
   name: material
+  # Custom logo and favicon
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+  # Language
+  language: en
+  # Color palette
   palette:
-    - scheme: default
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: indigo
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
+  # Features
   features:
+    # Navigation
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
     - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.path
+    - navigation.prune
+    - navigation.tracking
+    # Header
+    - header.autohide
+    # Search
     - search.highlight
     - search.share
+    - search.suggest
+    # Content
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
     - content.code.copy
+    - content.code.select
     - content.tooltips
+    # Other
+    - announce.dismiss
+    - content.footnote.tooltips
+    - tabs
 
 nav:
   - Home: index.md
@@ -90,7 +138,33 @@ nav:
   - Contributing: CONTRIBUTING.md
 
 plugins:
-  - search
+  # Search plugin with enhanced configuration
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  # Tags for content organization
+  - tags:
+      tags_file: tags.md
+  # Blog plugin
+  - blog:
+      blog_dir: blog
+      blog_toc: true
+  # Social cards for link previews (requires Pillow)
+  - social:
+      cards: true
+      cards_layout_options:
+        background_color: "#1976d2"
+        color: "#ffffff"
+        font_family: Roboto
+  # Analytics (Google Analytics 4 example - replace with your ID)
+  # - analytics:
+  #     provider: google
+  #     property: G-XXXXXXXXXX
+  # Privacy-friendly analytics alternative (Matomo)
+  # - analytics:
+  #     provider: matomo
+  #     property: instance-id.matomo.cloud/1
+  # Lightbox for images
   - glightbox:
       touchNavigation: true
       loop: false
@@ -105,8 +179,53 @@ plugins:
       caption_position: bottom
       background: white
       shadow: true
+  # Versioning support (requires mike to be installed separately)
+  # Run: pip install mike
+  # Then use: mike deploy --push 1.0 latest
+  # - version:
+  #     provider: mike
+
+# Customization
+extra:
+  # Social links in footer
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/your-org/sql-cockpit
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/your-org/sql-cockpit
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/your-org
+    - icon: fontawesome/solid/envelope
+      link: mailto:info@sqlcockpit.example.com
+  # Generator meta tag for privacy
+  generator: false
+  # Consent management for privacy compliance
+  consent:
+    title: Cookie consent
+    description: >- 
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+    actions:
+      - accept
+      - manage
+  # Alternative repository configuration
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    # Add more languages here when translations are available
+    # - name: Deutsch
+    #   link: /de/
+    #   lang: de
+  # Status indicator for site-wide announcements
+  status:
+    new: Recently added
+    deprecated: Deprecated
 
 markdown_extensions:
+  # Core extensions
   - admonition
   - attr_list
   - def_list
@@ -114,7 +233,9 @@ markdown_extensions:
   - meta
   - toc:
       permalink: true
-      toc_depth: 3
+      permalink_leading: true
+      toc_depth: 4
+  # PyMdownX extensions
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.betterem:
@@ -128,6 +249,8 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+      linenums: true
+      auto_title: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:
@@ -140,6 +263,7 @@ markdown_extensions:
   - pymdownx.snippets:
       auto_append:
         - includes/mkdocs.md
+      check_paths: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -150,13 +274,41 @@ markdown_extensions:
       combine_header_slug: true
   - pymdownx.tasklist:
       custom_checkbox: true
+      clickable_checkbox: true
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.tilde
+
+# Custom fonts (optional - uncomment to use Google Fonts)
+# extra:
+#   font:
+#     text: Roboto
+#     code: Roboto Mono
 
 extra_javascript:
   - javascripts/mermaid-init.js
+  # Offline support for service worker
+  # - https://unpkg.com/workbox-build@7.0.0/build/workbox-sw.js
 
 extra_css:
   - stylesheets/extra.css
 
+# Build optimization
+build:
+  # Enable minification
+  minify_html: true
+  # Static files to copy without processing
+  static_templates:
+    - 404.html
+
+# Watch directories
 watch:
-  - docs
   - mkdocs.yml
+  - includes
+
+# For offline usage, configure PWA
+# extra:
+#   manifest: manifest.json
+#   pwa:
+#     installable: true
+#     sw_file: sw.js
