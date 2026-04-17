@@ -1,1 +1,0 @@
-Nothing should be ignored based on the provided file changes. The modification of 'includes/mkdocs.md' involves a documentation/source file, which should not be added to .gitignore.
