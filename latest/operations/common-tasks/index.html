@@ -2169,14 +2169,10 @@
 <div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span>
 <span class="normal"><a href="#__codelineno-15-2">2</a></span>
 <span class="normal"><a href="#__codelineno-15-3">3</a></span>
-<span class="normal"><a href="#__codelineno-15-4">4</a></span>
-<span class="normal"><a href="#__codelineno-15-5">5</a></span>
-<span class="normal"><a href="#__codelineno-15-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncMcpServer</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6"></a>  <span class="n">-TrustServerCertificate</span>
+<span class="normal"><a href="#__codelineno-15-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="n">scripts</span><span class="p">\</span><span class="n">runtime</span><span class="p">\</span><span class="nb">Start-SqlTablesSyncMcpServer</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a>  <span class="n">-ApiBaseUrl</span> <span class="s2">"http://127.0.0.1:8080"</span> <span class="p">`</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a>  <span class="n">-ApiUsername</span> <span class="s2">"operator"</span> <span class="p">`</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a>  <span class="n">-ApiPassword</span> <span class="s2">"replace-me"</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>Use this from an MCP-compatible client when you want AI tooling to inspect config rows and generate migrations.</p>
 <p>The MCP server also exposes <code>get_table_batch_size_recommendation</code> for table-level <code>BatchSize</code> analysis.</p>

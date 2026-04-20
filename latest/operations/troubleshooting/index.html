@@ -1974,9 +1974,9 @@
 <h2 id="symptom-mcp-client-connects-but-tool-calls-fail"><a class="headerlink" href="#symptom-mcp-client-connects-but-tool-calls-fail" title="Permanent link">¶</a>Symptom: MCP client connects but tool calls fail</h2>
 <p>Checks:</p>
 <ul>
-<li>the client is launching <code>Start-SqlTablesSyncMcpServer.ps1</code> with the expected config DB parameters</li>
+<li>the client is launching <code>scripts/runtime/Start-SqlTablesSyncMcpServer.ps1</code> with the expected REST API URL and auth settings</li>
 <li>the client supports MCP stdio framing and <code>tools/list</code> plus <code>tools/call</code></li>
-<li>the requested <code>syncId</code> or <code>syncName</code> still exists in <code>Sync.TableConfig</code></li>
+<li>the SQL Cockpit API is reachable and authenticated for the MCP process</li>
 <li>the source and destination SQL credentials stored in the config row are still valid</li>
 </ul>
 <h2 id="symptom-object-search-shows-quick-links-only-or-returns-no-database-results"><a class="headerlink" href="#symptom-object-search-shows-quick-links-only-or-returns-no-database-results" title="Permanent link">¶</a>Symptom: object search shows quick links only or returns no database results</h2>

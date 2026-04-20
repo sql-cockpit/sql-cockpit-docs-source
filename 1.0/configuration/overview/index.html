@@ -1741,10 +1741,10 @@
 </ul>
 <p>These affect the control database connection and process-level behaviour.</p>
 <h3 id="5-api-and-mcp-server-parameters"><a class="headerlink" href="#5-api-and-mcp-server-parameters" title="Permanent link">¶</a>5. API and MCP server parameters</h3>
-<p><code>Start-SqlTablesSyncRestApi.ps1</code> and <code>Start-SqlTablesSyncMcpServer.ps1</code> add process-level settings for local automation access.</p>
+<p><code>Start-SqlTablesSyncRestApi.ps1</code> and <code>scripts/runtime/Start-SqlTablesSyncMcpServer.ps1</code> add process-level settings for local automation access.</p>
 <p>Confirmed settings:</p>
 <ul>
-<li>the same config-database connection parameters used by the engine</li>
+<li>MCP wrapper settings such as <code>ApiBaseUrl</code>, <code>ApiUsername</code>, <code>ApiSessionToken</code>, and <code>ApiTimeoutMs</code></li>
 <li><code>ListenPrefix</code> for the REST API</li>
 <li><code>MaxRequestBodyBytes</code> for the REST API</li>
 <li><code>NodeExecutable</code> for launching the Node host</li>

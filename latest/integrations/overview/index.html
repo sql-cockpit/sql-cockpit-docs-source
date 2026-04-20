@@ -1559,7 +1559,7 @@
 <p>This repo now also exposes three local operator and automation interfaces:</p>
 <ul>
 <li><code>Start-SqlTablesSyncRestApi.ps1</code></li>
-<li><code>Start-SqlTablesSyncMcpServer.ps1</code></li>
+<li><code>scripts/runtime/Start-SqlTablesSyncMcpServer.ps1</code> (wrapper for the <code>sql-cockpit-mcp-server</code> submodule)</li>
 <li><code>Start-SqlTablesSyncDocsServer.ps1</code></li>
 <li>the built-in <code>SQL Cockpit</code> Next.js web app served by the Node host launched from <code>Start-SqlTablesSyncRestApi.ps1</code> at <code>/</code> and <code>/app</code></li>
 </ul>
@@ -1601,7 +1601,7 @@
 </ul>
 <h2 id="confirmed-vs-inferred"><a class="headerlink" href="#confirmed-vs-inferred" title="Permanent link">¶</a>Confirmed vs inferred</h2>
 <ul>
-<li>Confirmed: the REST API, built-in web app, and MCP server are local entry points in this repo and all rely directly or indirectly on <code>SqlTablesSync.Tools.psm1</code>.</li>
+<li>Confirmed: the REST API and built-in web app remain local entry points in this repo; the MCP server now runs from the <code>sql-cockpit-mcp-server</code> submodule and uses the REST API as its backend interface.</li>
 <li>Confirmed: the dashboard is now hosted by Node.js, while PowerShell remains the business-logic execution layer behind the HTTP routes.</li>
 <li>Confirmed: no new database configuration flags or control tables were added.</li>
 <li>Inferred: if these interfaces are exposed remotely, they become a sensitive operational boundary because they can reveal connection details already stored in <code>Sync.TableConfig</code> and now also create new config rows.</li>

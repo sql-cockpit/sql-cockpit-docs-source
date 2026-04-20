@@ -2,406 +2,406 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/CONTRIBUTING/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/VERSIONING/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/getting-started/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/glossary/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/appendix/known-issues/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/architecture/components/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/architecture/data-flow/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/architecture/object-search/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/architecture/overview/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/blog/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/overview/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/reference/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/autocreatedestinationtable/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/batchsize/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/columnscsv/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/commandtimeoutseconds/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/createprimarykeyonautocreate/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationauthmode/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationdatabase/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationpassword/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationschema/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationserver/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationtable/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/destinationusername/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/excludecolumnscsv/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/fullscanallow/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/insertonly/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/isenabled/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/keycolumnscsv/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/maxbatchesperrun/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/postsyncsql/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/presyncsql/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/retrycount/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/retrydelayseconds/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourceauthmode/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourcedatabase/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourcepassword/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourceschema/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourceserver/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourcetable/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourceusername/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/sourcewhereclause/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/syncid/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/syncmode/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/syncname/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/validatedestinationschema/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/watermarkcolumn/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/flags/watermarktype/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/database/config-tables/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/database/schema-notes/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/api-repository-split/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/cross-platform-service-strategy/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/data-model-and-runtime-contracts/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/docs-screenshots/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/documentation-maintenance/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/local-auth-and-user-storage/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/local-development/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/repository-cleanup-and-split/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/rest-and-dashboard-internals/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/developer/system-map/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/development/codebase-map/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/development/entry-points/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/development/jobs-and-schedulers/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/mcp-server/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/object-search/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/overview/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/realtime-notifications/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/rest-api/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/analyze-run-logs/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/analyze-table-batch-sizing/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/batch-size-caveats/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/common-tasks/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/component-compatibility-matrix/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/connection-manager/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/create-sync-jobs-with-cli/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/estate-overview/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/instance-manager/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/object-search/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/platform-components/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/runbooks/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/service-manager/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-agent-manager/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-editor/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/troubleshooting/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/visualize-tableconfig/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/windows-desktop-app-release/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/windows-service-control-electron/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/windows-service-control-release/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/windows-service-host/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/connection-and-instance-profiles/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/dashboard-guide/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/desktop-service-manager/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/first-run/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/local-auth-and-preferences/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/operational-safety/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/runtime-modes/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/sync-configuration-workflow/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
 </urlset>
