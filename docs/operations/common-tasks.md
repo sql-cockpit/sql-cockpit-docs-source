@@ -280,12 +280,10 @@ Operational notes:
 ## Start the MCP server
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncMcpServer.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
-  -ConfigSchema "Sync" `
-  -ConfigIntegratedSecurity `
-  -TrustServerCertificate
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\runtime\Start-SqlTablesSyncMcpServer.ps1 `
+  -ApiBaseUrl "http://127.0.0.1:8080" `
+  -ApiUsername "operator" `
+  -ApiPassword "replace-me"
 ```
 
 Use this from an MCP-compatible client when you want AI tooling to inspect config rows and generate migrations.
@@ -499,3 +497,4 @@ Always capture the previous values first and understand the effect of `FullScanA
 
 *Use Server Explorer when you want to browse a live server and narrow the scope by one or more databases.*
 <!-- AUTO_SCREENSHOT:server-explorer:END -->
+

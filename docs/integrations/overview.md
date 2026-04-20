@@ -1,4 +1,4 @@
-# Integrations Overview
+﻿# Integrations Overview
 
 ## Confirmed external dependency
 
@@ -15,7 +15,7 @@ The runtime integrates with:
 This repo now also exposes three local operator and automation interfaces:
 
 - `Start-SqlTablesSyncRestApi.ps1`
-- `Start-SqlTablesSyncMcpServer.ps1`
+- `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1` (wrapper for the `sql-cockpit-mcp-server` submodule)
 - `Start-SqlTablesSyncDocsServer.ps1`
 - the built-in `SQL Cockpit` Next.js web app served by the Node host launched from `Start-SqlTablesSyncRestApi.ps1` at `/` and `/app`
 
@@ -58,7 +58,8 @@ These do not replace the sync runner. They provide a controlled way for automati
 
 ## Confirmed vs inferred
 
-- Confirmed: the REST API, built-in web app, and MCP server are local entry points in this repo and all rely directly or indirectly on `SqlTablesSync.Tools.psm1`.
+- Confirmed: the REST API and built-in web app remain local entry points in this repo; the MCP server now runs from the `sql-cockpit-mcp-server` submodule and uses the REST API as its backend interface.
 - Confirmed: the dashboard is now hosted by Node.js, while PowerShell remains the business-logic execution layer behind the HTTP routes.
 - Confirmed: no new database configuration flags or control tables were added.
 - Inferred: if these interfaces are exposed remotely, they become a sensitive operational boundary because they can reveal connection details already stored in `Sync.TableConfig` and now also create new config rows.
+

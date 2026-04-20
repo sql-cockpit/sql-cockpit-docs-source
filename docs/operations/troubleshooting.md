@@ -1,4 +1,4 @@
-# Troubleshooting
+﻿# Troubleshooting
 
 ## Symptom: dashboard redirects to `/setup`
 
@@ -363,9 +363,9 @@ Confirmed compatibility note:
 
 Checks:
 
-- the client is launching `Start-SqlTablesSyncMcpServer.ps1` with the expected config DB parameters
+- the client is launching `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1` with the expected REST API URL and auth settings
 - the client supports MCP stdio framing and `tools/list` plus `tools/call`
-- the requested `syncId` or `syncName` still exists in `Sync.TableConfig`
+- the SQL Cockpit API is reachable and authenticated for the MCP process
 - the source and destination SQL credentials stored in the config row are still valid
 
 ## Symptom: object search shows quick links only or returns no database results
@@ -394,3 +394,4 @@ Safe procedure:
    `https://dotnet.microsoft.com/en-us/download/dotnet`
 8. Install the `.NET 8 SDK`, reopen PowerShell, and rerun `dotnet --info` before publishing the bundled sidecar again.
 9. If results are still stale after heavy schema churn, run a full rebuild.
+

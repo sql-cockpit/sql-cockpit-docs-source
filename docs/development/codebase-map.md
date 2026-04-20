@@ -1,4 +1,4 @@
-# Codebase Map
+﻿# Codebase Map
 
 ## Top-level files
 
@@ -35,7 +35,7 @@
 - `webapp/components/dashboard-data.js`: dashboard form definitions, payload mapping, and formatting helpers.
 - `webapp/components/form-controls.js`: reusable field, toggle, and result-box primitives.
 - `webapp/components/dashboard-shell.js`, `webapp/components/panel.js`, `webapp/components/stat-card.js`, `webapp/components/sync-table.js`: shared SQL Cockpit shell, theme toggle, authenticated user header actions, `Ctrl+K` search trigger, KPI cards, and mobile/desktop fleet-display components.
-- `Start-SqlTablesSyncMcpServer.ps1`: MCP stdio server for AI tooling.
+- `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1`: MCP launcher wrapper that starts the `sql-cockpit-mcp-server` submodule.
 - `SqlTablesSync.Tools.psm1`: shared SQL metadata and migration-planning module.
 - `Spawn-AptosJobs.ps1`: Windows Terminal launcher for Aptos jobs.
 - `Spawn-AptosJobsMemorySafe.ps1`: memory-aware launcher with concurrency control.
@@ -96,3 +96,4 @@ Migration-planning rules now live in `SqlTablesSync.Tools.psm1`, especially:
 - inserts into `Sync.RunLog`
 - inserts into `Sync.RunActionLog`
 - temp table creation in source and destination sessions
+

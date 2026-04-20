@@ -1,4 +1,4 @@
-# Entry Points
+﻿# Entry Points
 
 ## Primary runtime entry point
 
@@ -27,7 +27,7 @@ Important parameters:
 - `Adhoc_RunJobs.ps1`
 - `Spawn-SyncJobs.ps1`
 - `Start-SqlTablesSyncRestApi.ps1`
-- `Start-SqlTablesSyncMcpServer.ps1`
+- `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1` (compatibility wrapper; launches `sql-cockpit-mcp-server`)
 - `Start-SqlTablesSyncDocsServer.ps1`
 - `Start-SqlTablesSyncWorkspace.ps1`
 - `Start-SqlCockpitDesktop.ps1`
@@ -89,3 +89,4 @@ Not found in this repo:
 - SQL Agent job definition
 
 That likely means scheduling and broader orchestration still live outside this repository.
+

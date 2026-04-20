@@ -1,4 +1,4 @@
-# Configuration Overview
+﻿# Configuration Overview
 
 ## Confirmed configuration sources
 
@@ -62,11 +62,11 @@ These affect the control database connection and process-level behaviour.
 
 ### 5. API and MCP server parameters
 
-`Start-SqlTablesSyncRestApi.ps1` and `Start-SqlTablesSyncMcpServer.ps1` add process-level settings for local automation access.
+`Start-SqlTablesSyncRestApi.ps1` and `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1` add process-level settings for local automation access.
 
 Confirmed settings:
 
-- the same config-database connection parameters used by the engine
+- MCP wrapper settings such as `ApiBaseUrl`, `ApiUsername`, `ApiSessionToken`, and `ApiTimeoutMs`
 - `ListenPrefix` for the REST API
 - `MaxRequestBodyBytes` for the REST API
 - `NodeExecutable` for launching the Node host
@@ -164,3 +164,4 @@ The dashboard still reads older browser-local profile data once during migration
 - Do not edit `Sync.TableState` while a sync is running.
 - For any high-risk change, validate with a single manual run before re-enabling scheduled execution.
 - For `BatchSize` changes, profile the source table first and start with the conservative end of the suggested range.
+

@@ -1,54 +1,70 @@
-# MCP Server
+﻿# MCP Server
 
-`Start-SqlTablesSyncMcpServer.ps1` exposes this repository as a Model Context Protocol server over stdio so AI tools can query sync rows and generate SQL migrations directly.
+`Start-SqlTablesSyncMcpServer.ps1` now acts as a compatibility launcher that starts the dedicated `sql-cockpit-mcp-server` submodule. The submodule hosts the MCP stdio server and calls SQL Cockpit REST API routes under the hood.
 
 ## Purpose
 
-- Give MCP-compatible clients a stable tool surface for this repo.
-- Let agents create or review destination-table migrations from live SQL metadata.
-- Let agents profile one SQL table and retrieve advisory `BatchSize` guidance from the same shared logic as the CLI wrapper.
-- Keep MCP logic thin by delegating all schema inspection and diffing to `SqlTablesSync.Tools.psm1`.
+- Keep a stable MCP tool surface for AI clients.
+- Route MCP calls through the same REST layer used by the SQL Cockpit UI.
+- Avoid duplicated SQL logic in the MCP layer.
 
 ## Settings
 
-- Storage location: process parameters only. No new database config-table fields are added.
-- Transport: stdio JSON-RPC with MCP framing.
+- Storage location:
+  - process parameters and environment variables only
+  - no new `Sync.TableConfig` or `Sync.TableState` fields
+- Transport:
+  - MCP stdio (JSON-RPC framing)
+  - REST HTTP calls from MCP server to SQL Cockpit API
+- Defaults:
+  - MCP launch wrapper path: `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1`
+  - REST base URL: `http://127.0.0.1:8080`
+  - request timeout: `30000` ms
+- Valid values:
+  - `ApiBaseUrl`: valid SQL Cockpit API base URL
+  - `ApiUsername` and `ApiPassword`: valid SQL Cockpit local auth credentials
+  - `ApiSessionToken`: existing API session token if you do not want login-by-credential
+  - `ApiTimeoutMs`: positive integer
+  - `NodeExecutable`: executable on `PATH` or absolute path to Node.js
+  - `InsecureTls`: switch for development-only TLS certificate bypass
 - Code paths affected:
-  - `Start-SqlTablesSyncMcpServer.ps1`
-  - `SqlTablesSync.Tools.psm1`
+  - `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1`
+  - `sql-cockpit-mcp-server/src/server.js`
+  - `sql-cockpit-mcp-server/src/api-client.js`
+  - `sql-cockpit-mcp-server/src/tool-handlers.js`
+  - `sql-cockpit-api/server.js` (consumed interface)
 - Operational risk:
-  - callers can read live config rows
-  - callers may receive credentials stored in `Sync.TableConfig`
-  - schema reads hit live SQL Server instances
-  - the batch-size tool reveals live table shape and storage details from the supplied SQL endpoint
+  - MCP callers can read live sync configuration and table metadata through REST
+  - MCP migration tools can surface sensitive schema information
+  - invalid credentials or expired sessions return auth failures
+  - using `InsecureTls` outside local/trusted environments increases interception risk
 - Safe change procedure:
-  - point the server at a non-production config database first when validating a new client
-  - test `list_sync_configs`
-  - test `get_table_batch_size_recommendation` on a non-production or low-risk table
-  - test `generate_sync_migration` on a low-risk table
-  - only then allow broader AI automation to use it
-- Confidence: confirmed for tool names and behavior below
+  - run API and MCP on loopback first
+  - verify MCP `tools/list`
+  - run read-only tool checks (`list_sync_configs`, `get_table_schema`) on low-risk targets
+  - then run migration/batch-advice tools on non-production targets
+  - only expand automation scope after expected behavior is confirmed
+- Confidence:
+  - confirmed for wrapper behavior, REST-backed architecture, tool names, and launch examples below
 
 ## Exposed tools
 
 | Tool | Purpose |
 | --- | --- |
-| `list_sync_configs` | List sync rows with latest status summary. |
-| `get_sync_config` | Get one row plus checkpoint metadata by `syncId` or `syncName`. |
-| `get_table_schema` | Read live schema metadata for any supplied SQL table. |
-| `get_table_batch_size_recommendation` | Profile one SQL table and return advisory `BatchSize` guidance. |
-| `generate_table_migration` | Compare two SQL tables and generate a destination migration script. |
-| `generate_sync_migration` | Use `Sync.TableConfig` source and destination settings to generate a migration plan. |
+| `list_sync_configs` | List sync rows with latest state summary through REST. |
+| `get_sync_config` | Get one row by `syncId` or `syncName`. |
+| `get_table_schema` | Read table metadata for one SQL table through REST metadata routes. |
+| `get_table_batch_size_recommendation` | Return advisory `BatchSize` guidance for one table. |
+| `generate_table_migration` | Compare two supplied SQL tables and return migration SQL. |
+| `generate_sync_migration` | Generate migration SQL from an existing sync config row. |
 
 ## Example launch
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncMcpServer.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
-  -ConfigSchema "Sync" `
-  -ConfigIntegratedSecurity `
-  -TrustServerCertificate
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\runtime\Start-SqlTablesSyncMcpServer.ps1 `
+  -ApiBaseUrl "http://127.0.0.1:8080" `
+  -ApiUsername "operator" `
+  -ApiPassword "replace-me"
 ```
 
 Example MCP client configuration:
@@ -56,86 +72,44 @@ Example MCP client configuration:
 ```json
 {
   "mcpServers": {
-    "sql-tables-sync": {
+    "sql-cockpit": {
       "command": "powershell.exe",
       "args": [
         "-NoProfile",
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "C:\\Scripts\\SQL Tables Sync\\Start-SqlTablesSyncMcpServer.ps1",
-        "-ConfigServer",
-        "NASCAR",
-        "-ConfigDatabase",
-        "EPC_Imports_PCK",
-        "-ConfigSchema",
-        "Sync",
-        "-ConfigIntegratedSecurity",
-        "-TrustServerCertificate"
+        "E:\\Scripts\\SQL Tables Sync\\scripts\\runtime\\Start-SqlTablesSyncMcpServer.ps1",
+        "-ApiBaseUrl",
+        "http://127.0.0.1:8080",
+        "-ApiUsername",
+        "operator",
+        "-ApiPassword",
+        "replace-me"
       ]
     }
   }
 }
 ```
 
-## Migration workflow
+## Request flow
 
 ```mermaid
 flowchart TD
-    A[MCP client] --> B[generate_sync_migration]
-    B --> C[Read Sync.TableConfig row]
-    C --> D[Read source table schema]
-    C --> E[Read destination table schema]
-    D --> F[Diff columns and primary key]
-    E --> F
-    F --> G[Return SQL migration script + warnings]
+    A[MCP client] --> B[sql-cockpit-mcp-server stdio]
+    B --> C[SQL Cockpit REST API]
+    C --> D[Invoke-SqlTablesSyncRestOperation.ps1]
+    D --> E[SqlTablesSync.Tools.psm1]
+    E --> F[(Sync.TableConfig / SQL metadata)]
+    F --> B
+    B --> A
 ```
 
-## Batch-size tool
+## MCP testing best practices
 
-Tool name: `get_table_batch_size_recommendation`
-
-Input arguments:
-
-```json
-{
-  "connection": {
-    "server": "DAYTONA",
-    "database": "Reporting_PEA",
-    "integratedSecurity": true,
-    "trustServerCertificate": true
-  },
-  "schema": "dbo",
-  "table": "tbl_ReportingBaseData_001"
-}
-```
-
-Returned fields:
-
-- table endpoint metadata
-- row count and column count
-- primary key details
-- non-clustered index count
-- average row width and which data source produced it
-- base and total storage footprint
-- LOB detection
-- balanced, conservative, and aggressive `BatchSize` guidance
-- confidence and notes
-
-Operational notes:
-
-- The MCP tool does not change `Sync.TableConfig`.
-- It does not start a sync run.
-- It profiles a live SQL table and returns an advisory range only.
-- The recommendation can still be wrong for a busy destination or an unstable source, so validate with a controlled run.
-
-## Batch-size workflow
-
-```mermaid
-flowchart TD
-    A[MCP client] --> B[get_table_batch_size_recommendation]
-    B --> C[Read SQL catalog and DMV metadata]
-    C --> D[Estimate row width and detect large-value columns]
-    D --> E[Calculate conservative, balanced, and aggressive BatchSize values]
-    E --> F[Return profile, confidence, and notes]
-```
+1. Start with contract tests against mocked REST responses so MCP tool schemas and error mapping are deterministic.
+2. Run local integration tests against a non-production API instance.
+3. Add a session test that covers login success, login failure, and expired session behavior.
+4. Keep at least one read-only smoke test in CI: `initialize`, `tools/list`, `list_sync_configs`.
+5. Validate migration and batch-size tools on low-risk tables before operational rollout.
+6. Keep representative error fixtures (`400`, `401`, `500`) and assert MCP error surfaces are actionable.
