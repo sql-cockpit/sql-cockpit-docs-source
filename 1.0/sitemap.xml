@@ -45,6 +45,18 @@
          <lastmod>2026-04-21</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/case-studies/</loc>
+         <lastmod>2026-04-21</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/case-studies/enterprise-rbac-observability-rollout/</loc>
+         <lastmod>2026-04-21</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/case-studies/object-search-full-sync-at-scale/</loc>
+         <lastmod>2026-04-21</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/configuration/overview/</loc>
          <lastmod>2026-04-21</lastmod>
     </url>
@@ -534,6 +546,10 @@
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/desktop-service-manager/</loc>
+         <lastmod>2026-04-21</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/user/enterprise-mode-settings/</loc>
          <lastmod>2026-04-21</lastmod>
     </url>
     <url>
