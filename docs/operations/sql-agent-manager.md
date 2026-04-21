@@ -65,8 +65,8 @@ The selected login needs enough read access to SQL Server Agent metadata in `msd
 
     ```powershell
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncWorkspace.ps1 `
-      -ConfigServer "NASCAR" `
-      -ConfigDatabase "EPC_Imports_PCK" `
+      -ConfigServer "YOUR_SQL_SERVER" `
+      -ConfigDatabase "YOUR_CONFIG_DATABASE" `
       -ConfigSchema "Sync" `
       -ConfigIntegratedSecurity `
       -TrustServerCertificate
@@ -185,9 +185,9 @@ Example request body:
 
 ```json
 {
-  "serverName": "NASCAR",
+  "serverName": "YOUR_SQL_SERVER",
   "connection": {
-    "server": "NASCAR",
+    "server": "YOUR_SQL_SERVER",
     "database": "msdb",
     "integratedSecurity": true,
     "trustServerCertificate": true
@@ -215,11 +215,11 @@ Example response fields:
 
 ```json
 {
-  "serverName": "NASCAR",
+  "serverName": "YOUR_SQL_SERVER",
   "jobId": "00000000-0000-0000-0000-000000000000",
   "jobName": "Nightly warehouse load",
   "connection": {
-    "server": "NASCAR",
+    "server": "YOUR_SQL_SERVER",
     "database": "msdb",
     "integratedSecurity": true,
     "trustServerCertificate": true
@@ -260,9 +260,9 @@ If it appears again:
 
     ```powershell
     $payloadJson = @{
-      serverName = "NASCAR"
+      serverName = "YOUR_SQL_SERVER"
       connection = @{
-        server = "NASCAR"
+        server = "YOUR_SQL_SERVER"
         database = "msdb"
         integratedSecurity = $true
         trustServerCertificate = $true
@@ -273,8 +273,8 @@ If it appears again:
 
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Invoke-SqlTablesSyncRestOperation.ps1 `
       -Operation getSqlAgentInventory `
-      -ConfigServer "NASCAR" `
-      -ConfigDatabase "EPC_Imports_PCK" `
+      -ConfigServer "YOUR_SQL_SERVER" `
+      -ConfigDatabase "YOUR_CONFIG_DATABASE" `
       -ConfigSchema "Sync" `
       -ConfigIntegratedSecurity `
       -TrustServerCertificate `
@@ -343,7 +343,7 @@ Agent Manager does not poll continuously. Click `Refresh Jobs` to reread `msdb.d
 - confidence:
   - confirmed: Agent Manager does not add, change, or remove `Sync.TableConfig` columns or flags
   - confirmed: inventory reads from `msdb`; `Run Job Now` starts jobs through `msdb.dbo.sp_start_job`
-  - confirmed: direct testing against `NASCAR` returned 246 jobs and 334 steps
+  - confirmed: direct testing against `YOUR_SQL_SERVER` returned 246 jobs and 334 steps
   - inferred: runtime history completeness depends on target SQL Server Agent history retention
 
 ## Screenshot

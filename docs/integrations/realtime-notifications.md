@@ -133,7 +133,7 @@ Send a notification from PowerShell:
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Send-SqlCockpitNotification.ps1 `
   -Title "Nightly validation is running" `
-  -Message "Post-cutover validation started on NASCAR and is streaming progress into SQL Cockpit." `
+  -Message "Post-cutover validation started on YOUR_SQL_SERVER and is streaming progress into SQL Cockpit." `
   -Severity "info" `
   -Category "job" `
   -ActionLabel "Open Fleet View" `

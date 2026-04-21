@@ -40,8 +40,8 @@ You can pre-fill the config-database connection if you already know it:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\New-SyncTableConfig.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate

@@ -92,8 +92,8 @@ To start the docs site, the REST API, and the browser web app entry point togeth
 
 ```powershell
 powershell -File .\Start-SqlTablesSyncWorkspace.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate

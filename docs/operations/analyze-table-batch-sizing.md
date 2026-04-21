@@ -38,8 +38,8 @@ Example: find sync rows by source server and table name
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Find-TableSyncConfig.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -52,8 +52,8 @@ Example: include a source-table `BatchSize` recommendation for each matched row
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Find-TableSyncConfig.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `

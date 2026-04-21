@@ -112,9 +112,9 @@ Example request body:
 {
   "instances": [
     {
-      "profileId": "nascar",
-      "profileName": "NASCAR",
-      "serverName": "NASCAR",
+      "profileId": "your_sql_server",
+      "profileName": "YOUR_SQL_SERVER",
+      "serverName": "YOUR_SQL_SERVER",
       "integratedSecurity": true,
       "trustServerCertificate": true
     }

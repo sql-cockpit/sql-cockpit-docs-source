@@ -1,4 +1,4 @@
-﻿# REST API
+# REST API
 
 `Start-SqlTablesSyncRestApi.ps1` now launches a Node-hosted HTTP interface for reading sync rows, creating new rows in `Sync.TableConfig`, bulk-importing rows from CSV, and generating SQL migration scripts from live SQL Server metadata.
 
@@ -136,8 +136,8 @@ Credential-resolution behavior for authenticated API requests:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRestApi.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -164,9 +164,9 @@ Trace one route against direct PowerShell:
 
 ```powershell
 $payload = @{
-    serverName = "nascar"
+    serverName = "your_sql_server"
     connection = @{
-        server = "nascar"
+        server = "your_sql_server"
         integratedSecurity = $true
         trustServerCertificate = $true
     }
@@ -175,8 +175,8 @@ $payload = @{
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Test-RestApiEndpoint.ps1 `
   -Operation "getServerExplorer" `
   -ApiBaseUrl "http://127.0.0.1:8080/" `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -232,9 +232,9 @@ Request body:
 {
   "instances": [
     {
-      "profileId": "nascar",
-      "profileName": "NASCAR",
-      "serverName": "NASCAR",
+      "profileId": "your_sql_server",
+      "profileName": "YOUR_SQL_SERVER",
+      "serverName": "YOUR_SQL_SERVER",
       "integratedSecurity": true,
       "trustServerCertificate": true
     }
@@ -261,9 +261,9 @@ Request body:
 
 ```json
 {
-  "serverName": "NASCAR",
+  "serverName": "YOUR_SQL_SERVER",
   "connection": {
-    "server": "NASCAR",
+    "server": "YOUR_SQL_SERVER",
     "database": "msdb",
     "integratedSecurity": true,
     "trustServerCertificate": true
@@ -292,11 +292,11 @@ Request body:
 
 ```json
 {
-  "serverName": "NASCAR",
+  "serverName": "YOUR_SQL_SERVER",
   "jobId": "00000000-0000-0000-0000-000000000000",
   "jobName": "Nightly warehouse load",
   "connection": {
-    "server": "NASCAR",
+    "server": "YOUR_SQL_SERVER",
     "database": "msdb",
     "integratedSecurity": true,
     "trustServerCertificate": true
@@ -369,7 +369,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/configs" `
           SourceSchema = "dbo"
           SourceTable = "hierarchy_group"
           SourceAuthMode = "Integrated"
-          DestinationServer = "DAYTONA"
+          DestinationServer = "DESTINATION_SQL_SERVER"
           DestinationDatabase = "Reporting_PEA"
           DestinationSchema = "dbo"
           DestinationTable = "hierarchy_group"
@@ -393,7 +393,7 @@ Bulk preview from CSV:
 ```powershell
 $csvText = @"
 SyncName,IsEnabled,SyncMode,SourceServer,SourceDatabase,SourceSchema,SourceTable,SourceAuthMode,DestinationServer,DestinationDatabase,DestinationSchema,DestinationTable,DestinationAuthMode,CommandTimeoutSeconds,BatchSize,RetryCount,RetryDelaySeconds,KeyColumnsCsv,FullScanAllow,InsertOnly,AutoCreateDestinationTable,CreatePrimaryKeyOnAutoCreate,ValidateDestinationSchema
-Aptos_style_bulk_1,false,Incremental,APTOSSQL01,Remote_Reporting_PEA,dbo,hierarchy_group,Integrated,DAYTONA,Reporting_PEA,dbo,hierarchy_group,Integrated,1800,5000,3,10,HierarchyGroupId,true,false,false,false,true
+Aptos_style_bulk_1,false,Incremental,APTOSSQL01,Remote_Reporting_PEA,dbo,hierarchy_group,Integrated,DESTINATION_SQL_SERVER,Reporting_PEA,dbo,hierarchy_group,Integrated,1800,5000,3,10,HierarchyGroupId,true,false,false,false,true
 "@
 
 Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/configs/import-csv" `
@@ -441,7 +441,7 @@ Interface notes:
   - confirmed: the Node route now validates the incoming JSON payload before calling PowerShell and returns HTTP `400` with an `errors` object for missing `serverName` or incomplete SQL-auth credentials
   - confirmed: the response now includes `AvailableDatabases` alongside the filtered `Databases` collection so the dashboard can keep the selector populated after a filtered browse
   - confirmed: schema entries now include grouped object lists for tables, views, procedures, and functions so the graph view can expand each schema without extra round trips
-  - confirmed: the current environment hit an SSPI-integrated-auth error when validating against `NASCAR`, so operator validation should use the same auth path you normally use for live SQL access
+  - confirmed: the current environment hit an SSPI-integrated-auth error when validating against `YOUR_SQL_SERVER`, so operator validation should use the same auth path you normally use for live SQL access
 
 Example:
 
@@ -450,7 +450,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/servers/explorer"
   -ContentType "application/json" `
   -Body (@{
       connection = @{
-          server = "NASCAR"
+          server = "YOUR_SQL_SERVER"
           integratedSecurity = $true
           trustServerCertificate = $true
       }
@@ -568,7 +568,7 @@ Request body:
 ```json
 {
   "connection": {
-    "server": "DAYTONA",
+    "server": "DESTINATION_SQL_SERVER",
     "database": "Reporting_PEA",
     "integratedSecurity": true,
     "trustServerCertificate": true
@@ -598,7 +598,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/tables/batch-size
   -ContentType "application/json" `
   -Body (@{
       connection = @{
-          server = "DAYTONA"
+          server = "DESTINATION_SQL_SERVER"
           database = "Reporting_PEA"
           integratedSecurity = $true
           trustServerCertificate = $true

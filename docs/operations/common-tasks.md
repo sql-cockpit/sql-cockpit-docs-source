@@ -1,11 +1,11 @@
-﻿# Common Tasks
+# Common Tasks
 
 ## Run one sync manually
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Sync-ConfiguredSqlTable.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -SyncName "Aptos_style" `
   -ConfigIntegratedSecurity `
@@ -44,8 +44,8 @@ Operational notes:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncWorkspace.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -81,8 +81,8 @@ npm install
 Pop-Location
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRestApi.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -127,15 +127,15 @@ From the web app folder:
 
 ```powershell
 cd .\webapp
-npm run dev -- --configServer "NASCAR" --configDatabase "EPC_Imports_PCK" --configSchema "Sync" --configIntegratedSecurity --trustServerCertificate
+npm run dev -- --configServer "YOUR_SQL_SERVER" --configDatabase "YOUR_CONFIG_DATABASE" --configSchema "Sync" --configIntegratedSecurity --trustServerCertificate
 ```
 
 Or through the repository launcher:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRestApi.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -146,8 +146,8 @@ Workspace launcher equivalent:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncWorkspace.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -176,7 +176,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/tables/batch-size
   -ContentType "application/json" `
   -Body (@{
       connection = @{
-          server = "DAYTONA"
+          server = "DESTINATION_SQL_SERVER"
           database = "Reporting_PEA"
           integratedSecurity = $true
           trustServerCertificate = $true
@@ -190,7 +190,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/tables/batch-size
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Get-ServerObjects.ps1 `
-  -ServerName "nascar" `
+  -ServerName "your_sql_server" `
   -IntegratedSecurity `
   -TrustServerCertificate `
   -AsJson
@@ -203,7 +203,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/servers/explorer"
   -ContentType "application/json" `
   -Body (@{
       connection = @{
-          server = "nascar"
+          server = "your_sql_server"
           integratedSecurity = $true
           trustServerCertificate = $true
       }
@@ -234,9 +234,9 @@ Use this when you need to decide whether a failure is in the Node host, the HTTP
 
 ```powershell
 $payload = @{
-    serverName = "nascar"
+    serverName = "your_sql_server"
     connection = @{
-        server = "nascar"
+        server = "your_sql_server"
         integratedSecurity = $true
         trustServerCertificate = $true
     }
@@ -245,8 +245,8 @@ $payload = @{
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Test-RestApiEndpoint.ps1 `
   -Operation "getServerExplorer" `
   -ApiBaseUrl "http://127.0.0.1:8080/" `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -294,8 +294,8 @@ The MCP server also exposes `get_table_batch_size_recommendation` for table-leve
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Export-TableConfigDiagram.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate
@@ -307,8 +307,8 @@ This reads `Sync.TableConfig`, writes a DOT file, and renders a Graphviz diagram
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Find-TableSyncConfig.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `

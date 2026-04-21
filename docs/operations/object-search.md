@@ -133,7 +133,7 @@ Restart the workspace, then run `Sync Schema To Search` or a full sync again.
 
 ## Case study: full sync for one database
 
-This case study uses a real Object Search Sync modal log from a full sync of `firebird/RMSTEST`.
+This case study uses a real Object Search Sync modal log from a full sync of `firebird/SOURCE_DATABASE`.
 
 The run produced this high-level outcome:
 
@@ -151,21 +151,21 @@ Example log:
 
 ```text
 [2026-04-09T09:52:54.9262197Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Started object-search sync in Full mode.
-[2026-04-09T09:52:55.4517171Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Syncing [firebird/RMSTEST] in Full mode.
-[2026-04-09T09:52:55.6426179Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading base objects from [firebird/RMSTEST].
-[2026-04-09T09:52:56.3879908Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 8783 base objects from [firebird/RMSTEST].
-[2026-04-09T09:52:56.3981532Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading columns from [firebird/RMSTEST].
-[2026-04-09T09:52:58.7150229Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 86592 columns from [firebird/RMSTEST].
-[2026-04-09T09:52:58.7277332Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading parameters from [firebird/RMSTEST].
-[2026-04-09T09:52:59.3423113Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 5185 parameters from [firebird/RMSTEST].
-[2026-04-09T09:52:59.3601190Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading referenced objects from [firebird/RMSTEST].
-[2026-04-09T09:52:59.8313186Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 19831 dependency rows from [firebird/RMSTEST].
-[2026-04-09T09:52:59.8775983Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading indexes from [firebird/RMSTEST].
-[2026-04-09T09:52:59.9747634Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 322 indexes from [firebird/RMSTEST].
-[2026-04-09T09:52:59.9823912Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading constraints from [firebird/RMSTEST].
-[2026-04-09T09:53:00.3102853Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 7328 constraints from [firebird/RMSTEST].
-[2026-04-09T09:53:00.3265604Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Building documents for [firebird/RMSTEST].
-[2026-04-09T09:54:09.4853292Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Built 103025 searchable documents for [firebird/RMSTEST].
+[2026-04-09T09:52:55.4517171Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Syncing [firebird/SOURCE_DATABASE] in Full mode.
+[2026-04-09T09:52:55.6426179Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading base objects from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:56.3879908Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 8783 base objects from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:56.3981532Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading columns from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:58.7150229Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 86592 columns from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:58.7277332Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading parameters from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.3423113Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 5185 parameters from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.3601190Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading referenced objects from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.8313186Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 19831 dependency rows from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.8775983Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading indexes from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.9747634Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 322 indexes from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:52:59.9823912Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading constraints from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:53:00.3102853Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 7328 constraints from [firebird/SOURCE_DATABASE].
+[2026-04-09T09:53:00.3265604Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Building documents for [firebird/SOURCE_DATABASE].
+[2026-04-09T09:54:09.4853292Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Built 103025 searchable documents for [firebird/SOURCE_DATABASE].
 ```
 
 How to read each step:
@@ -215,7 +215,7 @@ Robustness note:
 During a sync you may see a log line like:
 
 ```text
-Reading current manifest ids for [firebird/RMSTEST].
+Reading current manifest ids for [firebird/SOURCE_DATABASE].
 ```
 
 This is normal. At that point the sync is reading the current SQL Server catalog shape and building the list of search document ids that should exist for that database.

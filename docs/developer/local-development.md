@@ -20,8 +20,8 @@ The webapp now also depends on the packaged local auth store created at runtime.
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncWorkspace.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate
@@ -36,8 +36,8 @@ Use `-DevMode` when you need dashboard hot reload through the custom Node host.
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRestApi.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate `
@@ -54,7 +54,7 @@ The API runtime is now mirrored into `sql-cockpit-api/` so it can be initialized
 Push-Location .\sql-cockpit-api
 npm ci
 npm run build
-npm run start -- --configServer "NASCAR" --configDatabase "EPC_Imports_PCK" --configSchema "Sync" --configIntegratedSecurity --trustServerCertificate --listenPrefix "http://127.0.0.1:8000/" --notificationsListenPrefix "http://127.0.0.1:8090/" --runtimeProfile "prod" --manageComponents "false" --serviceHostControlUrl "http://127.0.0.1:8610/"
+npm run start -- --configServer "YOUR_SQL_SERVER" --configDatabase "YOUR_CONFIG_DATABASE" --configSchema "Sync" --configIntegratedSecurity --trustServerCertificate --listenPrefix "http://127.0.0.1:8000/" --notificationsListenPrefix "http://127.0.0.1:8090/" --runtimeProfile "prod" --manageComponents "false" --serviceHostControlUrl "http://127.0.0.1:8610/"
 Pop-Location
 ```
 
@@ -70,8 +70,8 @@ Use the desktop launcher when you want SQL Cockpit in a standalone window instea
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlCockpitDesktop.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate
@@ -254,7 +254,7 @@ Manual ABI validation:
 Push-Location .\webapp
 
 # Web API under system Node (expects node_modules ABI)
-node server.js --configServer NASCAR --configDatabase EPC_Imports_PCK --configSchema Sync --configIntegratedSecurity --trustServerCertificate --listenPrefix http://127.0.0.1:8000/ --notificationsListenPrefix http://127.0.0.1:8090/ --docsListenPrefix http://127.0.0.1:8001/ --runtimeProfile prod --manageComponents false --serviceHostControlUrl http://127.0.0.1:8610/
+node server.js --configServer YOUR_SQL_SERVER --configDatabase YOUR_CONFIG_DATABASE --configSchema Sync --configIntegratedSecurity --trustServerCertificate --listenPrefix http://127.0.0.1:8000/ --notificationsListenPrefix http://127.0.0.1:8090/ --docsListenPrefix http://127.0.0.1:8001/ --runtimeProfile prod --manageComponents false --serviceHostControlUrl http://127.0.0.1:8610/
 
 # Electron embedded API path (expects node_modules_electron ABI)
 npm run electron:dev

@@ -39,8 +39,8 @@ From the repo root:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Export-TableConfigDiagram.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -TrustServerCertificate
@@ -72,8 +72,8 @@ Example:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Export-TableConfigDiagram.ps1 `
-  -ConfigServer "NASCAR" `
-  -ConfigDatabase "EPC_Imports_PCK" `
+  -ConfigServer "YOUR_SQL_SERVER" `
+  -ConfigDatabase "YOUR_CONFIG_DATABASE" `
   -ConfigSchema "Sync" `
   -ConfigIntegratedSecurity `
   -EnabledOnly `
