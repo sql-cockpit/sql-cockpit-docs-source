@@ -1,12 +1,28 @@
 # Database Object Search Operations
 
+## Local-only cache model
+
+```mermaid
+flowchart LR
+    A[Tracked Code and Templates] --> B[Local settings.local.json]
+    B --> C[Full Sync Bootstrap]
+    C --> D[Local Lucene Index and Manifests]
+    D --> E[Incremental Refresh]
+```
+
+- deploy code plus sidecar runtime only; do not publish Lucene index files, spool checkpoints, manifests, or sync logs
+- keep source definitions and credentials in `sql-cockpit-object-search/sql-object-search.settings.local.json` only
+- settings resolution defaults to local override first, then safe tracked defaults (`settings.json` / `settings.template.json`)
+
 ## Daily flow
 
-1. Start SQL Cockpit through `Start-SqlTablesSyncWorkspace.ps1` or start the Lucene.NET sidecar manually with `Start-SqlObjectSearchService.ps1` and then start `Start-SqlTablesSyncRestApi.ps1`.
-3. Run `POST /api/object-search/index/refresh` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Incremental`.
-4. Open SQL Cockpit and press `Ctrl+K`.
-5. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET.
-6. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
+1. Copy `sql-cockpit-object-search/sql-object-search.settings.local.json.example` to `sql-cockpit-object-search/sql-object-search.settings.local.json` and add your source list locally.
+2. Start SQL Cockpit through `Start-SqlTablesSyncWorkspace.ps1` or start the Lucene.NET sidecar manually with `Start-SqlObjectSearchService.ps1` and then start `Start-SqlTablesSyncRestApi.ps1`.
+3. First run on a new machine: run `POST /api/object-search/index/rebuild` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Full`.
+4. Ongoing runs: run `POST /api/object-search/index/refresh` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Incremental`.
+5. Open SQL Cockpit and press `Ctrl+K`.
+6. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET.
+7. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
 
 If `dotnet` is installed outside `PATH`, pass the explicit executable path:
 
@@ -85,7 +101,7 @@ Clear the object-search state:
 ```powershell
 $ErrorActionPreference = 'Stop'
 
-$root = Resolve-Path 'C:\Scripts\SQL Tables Sync\object-search\data\object-search'
+$root = Resolve-Path 'C:\Scripts\SQL Tables Sync\sql-cockpit-object-search\data\object-search'
 
 foreach ($name in @('index', 'spool', 'manifests')) {
     $path = Join-Path $root $name
@@ -105,6 +121,15 @@ Write-Host 'Object-search index, spool, and manifests cleared.'
 ```
 
 Restart the workspace, then run `Sync Schema To Search` or a full sync again.
+
+## Guardrails for commits
+
+- local pre-commit guard:
+  `git config core.hooksPath .githooks`
+- manual guard check:
+  `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\runtime\Test-ObjectSearchLocalOnlyArtifacts.ps1`
+- CI guard check:
+  `.github/workflows/ci-cd.yml` job `Guard Object-Search Local Cache Artifacts`
 
 ## Case study: full sync for one database
 
@@ -181,7 +206,7 @@ Robustness note:
 - after documents are built, the sync writes `documents.json` and `checkpoint.json` under `sync.spoolDirectory`; rerunning the same source/mode can reload that spool and continue from the saved `uploadedThrough` or `deletedThrough` offsets
 - resumed `documents.json` files are expanded back into individual documents before upload batching; a resume log should show the original document count, not `Loaded 1 spooled documents`, for a large database
 - completed source syncs remove their spool directory after the manifest file is written
-- if a spool is no longer wanted, stop the sync and delete the matching source directory under `object-search/data/object-search/spool`; the next run will rebuild from SQL Server
+- if a spool is no longer wanted, stop the sync and delete the matching source directory under `sql-cockpit-object-search/data/object-search/spool`; the next run will rebuild from SQL Server
 - upload batches are adaptively split on `400 Bad Request`; if the failing unit is a single document, the sync log records the document id, object type, qualified name, and parent before the run fails
 - a failed stale-delete or manifest-write step can still fail the run, but this happens after the fresh documents have been uploaded
 

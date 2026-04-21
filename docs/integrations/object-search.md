@@ -2,9 +2,22 @@
 
 SQL Cockpit now exposes a local object-search API through the existing Node host.
 
-`Start-SqlTablesSyncWorkspace.ps1` now starts the Lucene.NET sidecar automatically alongside the docs host, notifications service, and Node API. The sidecar listen URL still comes from `object-search/sql-object-search.settings.json`, and the safe default remains loopback-only at `http://127.0.0.1:8094/`.
+`Start-SqlTablesSyncWorkspace.ps1` now starts the Lucene.NET sidecar automatically alongside the docs host, notifications service, and Node API. The sidecar listen URL comes from local object-search settings, and the safe default remains loopback-only at `http://127.0.0.1:8094/`.
 
 `Start-SqlObjectSearchService.ps1` now prefers a bundled self-contained executable from `service.executablePath` in the settings file, and only falls back to `dotnet run` when no bundled executable is present.
+
+## Deployment model: code-only plus local cache
+
+- tracked template: `sql-cockpit-object-search/sql-object-search.settings.template.json`
+- tracked default: `sql-cockpit-object-search/sql-object-search.settings.json` (safe defaults only)
+- local override (ignored): `sql-cockpit-object-search/sql-object-search.settings.local.json`
+- cache and sync artifacts (ignored): `sql-cockpit-object-search/data/object-search/*` and `sql-cockpit-object-search/Logs/ObjectSearch/*`
+
+Runtime resolution order for settings when no explicit path is supplied:
+
+1. `sql-object-search.settings.local.json`
+2. `sql-object-search.settings.json`
+3. `sql-object-search.settings.template.json`
 
 ## Endpoints
 
@@ -75,16 +88,16 @@ SQL Cockpit now exposes a local object-search API through the existing Node host
 ## Object-search settings
 
 - storage location:
-  `object-search/sql-object-search.settings.json`
+  tracked safe settings at `sql-cockpit-object-search/sql-object-search.settings.template.json` and `sql-cockpit-object-search/sql-object-search.settings.json`; local operator override at `sql-cockpit-object-search/sql-object-search.settings.local.json` (ignored)
 - valid values:
   `service.listenUrl` must be an absolute `http://` loopback URL, `service.executablePath` may be blank or point to a bundled `SqlObjectSearch.Service.exe`, `service.indexRoot` and `sync.*Path` values must resolve to writable local paths, `sync.batchSize` must be a positive integer, `sync.spoolDirectory` must be a writable local directory, and each source must define at least `server`, `database`, and an auth mode
 - defaults:
-  `service.listenUrl = http://127.0.0.1:8094/`, `service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe`, `sync.batchSize = 200`, `sync.spoolDirectory = ./data/object-search/spool`, `service.maxResults = 40`, `service.snippetLength = 240`
+  `service.listenUrl = http://127.0.0.1:8094/`, `service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe`, `sync.batchSize = 200`, `sync.manifestDirectory = ./data/object-search/manifests`, `sync.spoolDirectory = ./data/object-search/spool`, `sync.statusPath = ./data/object-search/sync-status.json`, `sync.logPath = ./Logs/ObjectSearch/sync.log`, `service.maxResults = 40`, `service.snippetLength = 240`
 - code paths affected:
-  `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Start-SqlTablesSyncWorkspace.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `object-search/SqlObjectSearch.Service/Program.cs`, `webapp/server.js`, `webapp/lib/object-search-service.js`, `webapp/components/dashboard-client.js`, and `webapp/components/object-search-palette.js`
+  `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Start-SqlTablesSyncWorkspace.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs`, `sql-cockpit-api/server.js`, `sql-cockpit-api/lib/object-search-service.js`, `sql-cockpit-api/components/dashboard-client.js`, and `sql-cockpit-api/components/object-search-palette.js`
 - operational risk:
   medium, because indexed definitions can include sensitive SQL text and the local index mirrors object names, definitions, columns, and dependencies on disk; durable spool files temporarily store the same built document payloads until a source completes successfully; startup will also fail if the bundled executable path is stale and no dotnet fallback is available
 - safe change procedure:
-  keep the service on loopback, publish the sidecar with `.\Publish-SqlObjectSearchService.ps1`, start the workspace and confirm the object-search health check passes, update one source at a time, run `POST /api/object-search/index/refresh`, validate `GET /api/object-search/status`, and only then add more databases or widen the indexed scope
+  keep the service on loopback, copy `sql-object-search.settings.local.json.example` to `sql-object-search.settings.local.json`, publish the sidecar with `.\Publish-SqlObjectSearchService.ps1`, start the workspace and confirm the object-search health check passes, run one full sync for first bootstrap, run incremental refresh for daily updates, validate `GET /api/object-search/status`, and only then add more databases or widen the indexed scope
 - confidence:
   confirmed for the local file locations, endpoint contract, and loopback-only service design; uncertain for exact source-definition coverage on object types where SQL Server catalog views do not expose full text
