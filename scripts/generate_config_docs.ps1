@@ -1,10 +1,12 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$docsRoot = Join-Path $repoRoot "docs"
-$flagsRoot = Join-Path $docsRoot "configuration\\flags"
-$scriptPath = Join-Path $repoRoot "Sync-ConfiguredSqlTable.ps1"
+$docsRepoRoot = Split-Path -Parent $PSScriptRoot
+$workspaceRoot = Split-Path -Parent $docsRepoRoot
+$docsRoot = Join-Path $docsRepoRoot "docs"
+$generatedConfigRoot = Join-Path $docsRoot "generated\\configuration"
+$flagsRoot = Join-Path $generatedConfigRoot "flags"
+$scriptPath = Join-Path $workspaceRoot ".private\\scripts\\legacy-sync\\Sync-ConfiguredSqlTable.ps1"
 
 $confirmedItems = @(
     "SyncId","SyncName","IsEnabled","SyncMode",
@@ -176,7 +178,13 @@ function Get-CodeRefs {
     return ($refs | Select-Object -Unique) -join ", "
 }
 
+New-Item -ItemType Directory -Force -Path $generatedConfigRoot | Out-Null
 New-Item -ItemType Directory -Force -Path $flagsRoot | Out-Null
+
+if (-not (Test-Path -LiteralPath $scriptPath -PathType Leaf)) {
+    throw "Could not locate Sync-ConfiguredSqlTable.ps1 at [$scriptPath]."
+}
+
 $lines = Get-Content -Path $scriptPath
 
 $rows = foreach ($item in $confirmedItems) {
@@ -204,7 +212,7 @@ $rows = foreach ($item in $confirmedItems) {
 $referenceLines = New-Object System.Collections.Generic.List[string]
 $referenceLines.Add("# Configuration Reference")
 $referenceLines.Add("")
-$referenceLines.Add('This page is generated from `Sync-ConfiguredSqlTable.ps1` usage patterns by `docs/scripts/generate_config_docs.ps1`.')
+$referenceLines.Add('This page is generated from `Sync-ConfiguredSqlTable.ps1` usage patterns by `sql-cockpit-docs/scripts/generate_config_docs.ps1`.')
 $referenceLines.Add("")
 $referenceLines.Add("| Name | Type | Default | Risk | Confidence | Code refs |")
 $referenceLines.Add("| --- | --- | --- | --- | --- | --- |")
@@ -219,7 +227,7 @@ $referenceLines.Add('- `Sync.TableConfig` is read once at process start.')
 $referenceLines.Add('- `Sync.TableState` is updated during the run and acts as the checkpoint source for the next run.')
 $referenceLines.Add('- The highest-risk settings are `SyncMode`, key and watermark settings, connection targets, `SourceWhereClause`, and pre/post SQL hooks.')
 $referenceLines.Add("")
-Set-Content -Path (Join-Path $docsRoot "configuration\\reference.md") -Value $referenceLines -Encoding UTF8
+Set-Content -Path (Join-Path $generatedConfigRoot "reference.md") -Value $referenceLines -Encoding UTF8
 
 $indexLines = New-Object System.Collections.Generic.List[string]
 $indexLines.Add("# Flag Pages")

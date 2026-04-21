@@ -116,44 +116,44 @@ nav:
     - Windows Desktop App Release: operations/windows-desktop-app-release.md
   - Configuration:
     - Overview: configuration/overview.md
-    - Reference: generated/configuration/reference.md
-    - Flag Index: generated/configuration/flags/index.md
-    - AutoCreateDestinationTable: generated/configuration/flags/autocreatedestinationtable.md
-    - BatchSize: generated/configuration/flags/batchsize.md
-    - ColumnsCsv: generated/configuration/flags/columnscsv.md
-    - CommandTimeoutSeconds: generated/configuration/flags/commandtimeoutseconds.md
-    - CreatePrimaryKeyOnAutoCreate: generated/configuration/flags/createprimarykeyonautocreate.md
-    - DestinationAuthMode: generated/configuration/flags/destinationauthmode.md
-    - DestinationDatabase: generated/configuration/flags/destinationdatabase.md
-    - DestinationPassword: generated/configuration/flags/destinationpassword.md
-    - DestinationSchema: generated/configuration/flags/destinationschema.md
-    - DestinationServer: generated/configuration/flags/destinationserver.md
-    - DestinationTable: generated/configuration/flags/destinationtable.md
-    - DestinationUsername: generated/configuration/flags/destinationusername.md
-    - ExcludeColumnsCsv: generated/configuration/flags/excludecolumnscsv.md
-    - FullScanAllow: generated/configuration/flags/fullscanallow.md
-    - InsertOnly: generated/configuration/flags/insertonly.md
-    - IsEnabled: generated/configuration/flags/isenabled.md
-    - KeyColumnsCsv: generated/configuration/flags/keycolumnscsv.md
-    - MaxBatchesPerRun: generated/configuration/flags/maxbatchesperrun.md
-    - PostSyncSql: generated/configuration/flags/postsyncsql.md
-    - PreSyncSql: generated/configuration/flags/presyncsql.md
-    - RetryCount: generated/configuration/flags/retrycount.md
-    - RetryDelaySeconds: generated/configuration/flags/retrydelayseconds.md
-    - SourceAuthMode: generated/configuration/flags/sourceauthmode.md
-    - SourceDatabase: generated/configuration/flags/sourcedatabase.md
-    - SourcePassword: generated/configuration/flags/sourcepassword.md
-    - SourceSchema: generated/configuration/flags/sourceschema.md
-    - SourceServer: generated/configuration/flags/sourceserver.md
-    - SourceTable: generated/configuration/flags/sourcetable.md
-    - SourceUsername: generated/configuration/flags/sourceusername.md
-    - SourceWhereClause: generated/configuration/flags/sourcewhereclause.md
-    - SyncId: generated/configuration/flags/syncid.md
-    - SyncMode: generated/configuration/flags/syncmode.md
-    - SyncName: generated/configuration/flags/syncname.md
-    - ValidateDestinationSchema: generated/configuration/flags/validatedestinationschema.md
-    - WatermarkColumn: generated/configuration/flags/watermarkcolumn.md
-    - WatermarkType: generated/configuration/flags/watermarktype.md
+    - Reference: configuration/reference.md
+    - Flag Index: configuration/flags/index.md
+    - AutoCreateDestinationTable: configuration/flags/autocreatedestinationtable.md
+    - BatchSize: configuration/flags/batchsize.md
+    - ColumnsCsv: configuration/flags/columnscsv.md
+    - CommandTimeoutSeconds: configuration/flags/commandtimeoutseconds.md
+    - CreatePrimaryKeyOnAutoCreate: configuration/flags/createprimarykeyonautocreate.md
+    - DestinationAuthMode: configuration/flags/destinationauthmode.md
+    - DestinationDatabase: configuration/flags/destinationdatabase.md
+    - DestinationPassword: configuration/flags/destinationpassword.md
+    - DestinationSchema: configuration/flags/destinationschema.md
+    - DestinationServer: configuration/flags/destinationserver.md
+    - DestinationTable: configuration/flags/destinationtable.md
+    - DestinationUsername: configuration/flags/destinationusername.md
+    - ExcludeColumnsCsv: configuration/flags/excludecolumnscsv.md
+    - FullScanAllow: configuration/flags/fullscanallow.md
+    - InsertOnly: configuration/flags/insertonly.md
+    - IsEnabled: configuration/flags/isenabled.md
+    - KeyColumnsCsv: configuration/flags/keycolumnscsv.md
+    - MaxBatchesPerRun: configuration/flags/maxbatchesperrun.md
+    - PostSyncSql: configuration/flags/postsyncsql.md
+    - PreSyncSql: configuration/flags/presyncsql.md
+    - RetryCount: configuration/flags/retrycount.md
+    - RetryDelaySeconds: configuration/flags/retrydelayseconds.md
+    - SourceAuthMode: configuration/flags/sourceauthmode.md
+    - SourceDatabase: configuration/flags/sourcedatabase.md
+    - SourcePassword: configuration/flags/sourcepassword.md
+    - SourceSchema: configuration/flags/sourceschema.md
+    - SourceServer: configuration/flags/sourceserver.md
+    - SourceTable: configuration/flags/sourcetable.md
+    - SourceUsername: configuration/flags/sourceusername.md
+    - SourceWhereClause: configuration/flags/sourcewhereclause.md
+    - SyncId: configuration/flags/syncid.md
+    - SyncMode: configuration/flags/syncmode.md
+    - SyncName: configuration/flags/syncname.md
+    - ValidateDestinationSchema: configuration/flags/validatedestinationschema.md
+    - WatermarkColumn: configuration/flags/watermarkcolumn.md
+    - WatermarkType: configuration/flags/watermarktype.md
   - Database:
     - Config Tables: database/config-tables.md
     - Schema Notes: database/schema-notes.md
@@ -196,19 +196,8 @@ plugins:
       lang: en
       separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
   # Tags for content organization
-  - tags:
-      tags_file: tags.md
   # Blog plugin
-  - blog:
-      blog_dir: blog
-      blog_toc: true
   # Social cards for link previews (requires Pillow)
-  - social:
-      cards: true
-      cards_layout_options:
-        background_color: "#1976d2"
-        color: "#ffffff"
-        font_family: Roboto
   # Analytics (Google Analytics 4 example - replace with your ID)
   # - analytics:
   #     provider: google
@@ -218,29 +207,7 @@ plugins:
   #     provider: matomo
   #     property: instance-id.matomo.cloud/1
   # Lightbox for images
-  - glightbox:
-      touchNavigation: true
-      loop: false
-      effect: zoom
-      slide_effect: slide
-      width: auto
-      height: auto
-      zoomable: true
-      draggable: true
-      skip_classes: []
-      auto_caption: true
-      caption_position: bottom
-      background: white
-      shadow: true
   # Versioning support with mike
-  - mike:
-      alias_type: copy
-      redirect_template: null
-      canonical_version: latest
-      version_selector: true
-      css_dir: css
-      javascript_dir: js
-
 # Customization
 extra:
   # Version selector for mike (must be under extra)
@@ -353,14 +320,6 @@ extra_css:
   - stylesheets/extra.css
 
 # Build optimization
-build:
-  # Enable minification
-  minify_html: true
-  # Static files to copy without processing
-  static_templates:
-    - 404.html
-
-# Watch directories
 watch:
   - mkdocs.yml
   - includes
@@ -371,4 +330,3 @@ watch:
 #   pwa:
 #     installable: true
 #     sw_file: sw.js
-
