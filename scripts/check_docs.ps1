@@ -30,10 +30,27 @@ function Get-PythonCommand {
     throw "Could not find a usable Python interpreter for MkDocs."
 }
 
+function Ensure-GlightboxPlugin {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$PythonCommand
+    )
+
+    & $PythonCommand -m pip show mkdocs-glightbox *> $null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[DOCS-CHECK] mkdocs-glightbox is already installed."
+        return
+    }
+
+    Write-Host "[DOCS-CHECK] mkdocs-glightbox is missing. Installing..."
+    & $PythonCommand -m pip install "mkdocs-glightbox>=0.5.2"
+}
+
 $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $pythonCommand = Get-PythonCommand
 Push-Location $repoRoot
 try {
+    Ensure-GlightboxPlugin -PythonCommand $pythonCommand
     powershell -NoProfile -ExecutionPolicy Bypass -File .\docs\scripts\generate_config_docs.ps1
     & $pythonCommand -m mkdocs build --strict
 }

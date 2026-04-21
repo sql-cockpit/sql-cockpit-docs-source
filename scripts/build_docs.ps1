@@ -36,6 +36,22 @@ function Get-PythonCommand {
     throw "Could not find a usable Python interpreter for MkDocs."
 }
 
+function Ensure-GlightboxPlugin {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$PythonCommand
+    )
+
+    & $PythonCommand -m pip show mkdocs-glightbox *> $null
+    if ($LASTEXITCODE -eq 0) {
+        Write-BuildLog "mkdocs-glightbox is already installed."
+        return
+    }
+
+    Write-BuildLog "mkdocs-glightbox is missing. Installing..."
+    & $PythonCommand -m pip install "mkdocs-glightbox>=0.5.2"
+}
+
 function Write-BuildLog {
     param(
         [Parameter(Mandatory = $true)]
@@ -59,11 +75,18 @@ function Invoke-DocsBuild {
 
     Push-Location $RepoRoot
     try {
+        Ensure-GlightboxPlugin -PythonCommand $PythonCommand
         Write-BuildLog "Refreshing generated configuration docs."
-        powershell -NoProfile -ExecutionPolicy Bypass -File .\docs\scripts\generate_config_docs.ps1
+        powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\generate_config_docs.ps1
+
+        $configPath = ".\mkdocs.yml"
+        if (Test-Path -LiteralPath ".\.mkdocs.compat.local.yml" -PathType Leaf) {
+            $configPath = ".\.mkdocs.compat.local.yml"
+            Write-BuildLog "Using compatibility MkDocs config (.mkdocs.compat.local.yml)."
+        }
 
         Write-BuildLog "Building MkDocs site."
-        & $PythonCommand -m mkdocs build --strict
+        & $PythonCommand -m mkdocs build -f $configPath
     }
     finally {
         Pop-Location
@@ -98,7 +121,7 @@ function Get-WatchedFileState {
     ) -join "`n"
 }
 
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$repoRoot = Split-Path -Parent $PSScriptRoot
 $pythonCommand = Get-PythonCommand
 
 if ($PollSeconds -lt 1) {

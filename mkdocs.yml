@@ -87,6 +87,7 @@ nav:
     - Dashboard Guide: user/dashboard-guide.md
     - First Run: user/first-run.md
     - Runtime Modes: user/runtime-modes.md
+    - Enterprise Mode Settings: user/enterprise-mode-settings.md
     - Desktop Service Manager: user/desktop-service-manager.md
     - Connection and Instance Profiles: user/connection-and-instance-profiles.md
     - Sync Configuration Workflow: user/sync-configuration-workflow.md
@@ -168,6 +169,10 @@ nav:
     - Object Search: integrations/object-search.md
     - Realtime Notifications: integrations/realtime-notifications.md
     - MCP Server: integrations/mcp-server.md
+  - Case Studies:
+    - Overview: case-studies/index.md
+    - Enterprise RBAC and Observability Rollout: case-studies/enterprise-rbac-observability-rollout.md
+    - Object Search Full Sync at Scale: case-studies/object-search-full-sync-at-scale.md
   - Developer Documentation:
     - Overview: developer/index.md
     - System Map: developer/system-map.md

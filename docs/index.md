@@ -37,6 +37,7 @@ The docs are organized into role-based sections:
 - [User Guide](user/index.md): day-to-day operator workflows in SQL Cockpit.
 - [Operations](operations/common-tasks.md): runbooks, troubleshooting, service operations, and release procedures.
 - [Configuration](configuration/reference.md): runtime flags and `Sync.TableConfig` semantics.
+- [Case Studies](case-studies/index.md): applied rollout examples with verification gates, risk notes, and practical change procedures.
 - [Developer Documentation](developer/index.md): local development, repo split, system contracts, and contribution guidance.
 - [Architecture](architecture/overview.md), [Integrations](integrations/overview.md), and [Database](database/config-tables.md): deep technical references.
 - [Versioning Guide](VERSIONING.md): how to manage multiple versions of this documentation.
@@ -46,6 +47,7 @@ The docs are organized into role-based sections:
 - Start with [Getting Started](getting-started.md) for local orientation.
 - Go to [User Guide](user/index.md) for dashboard and operator workflows.
 - Go to [Operations](operations/common-tasks.md) for service control, runbooks, and incident handling.
+- Use [Case Studies](case-studies/index.md) for tested rollout patterns and step-by-step validation sequences.
 - Go to [Developer Documentation](developer/index.md) when changing code, routes, config behaviour, or docs generation.
 - Use [Configuration Reference](configuration/reference.md) before editing `Sync.TableConfig`.
 - Use [Runbooks](operations/runbooks.md) and [Troubleshooting](operations/troubleshooting.md) for live support work.
