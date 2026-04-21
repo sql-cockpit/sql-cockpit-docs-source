@@ -4046,8 +4046,8 @@
 <span class="normal"><a href="#__codelineno-0-5">5</a></span>
 <span class="normal"><a href="#__codelineno-0-6">6</a></span>
 <span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Sync-ConfiguredSqlTable</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>  <span class="n">-SyncName</span> <span class="s2">"Aptos_style"</span> <span class="p">`</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
@@ -4084,8 +4084,8 @@
 <span class="normal"><a href="#__codelineno-4-6">6</a></span>
 <span class="normal"><a href="#__codelineno-4-7">7</a></span>
 <span class="normal"><a href="#__codelineno-4-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncWorkspace</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
@@ -4128,8 +4128,8 @@
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nb">Pop-Location</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncRestApi</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
@@ -4164,7 +4164,7 @@
 <p>From the web app folder:</p>
 <div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
 <span class="normal"><a href="#__codelineno-8-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nb">cd </span><span class="p">.\</span><span class="n">webapp</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span> <span class="p">--</span> <span class="p">-</span><span class="n">-configServer</span> <span class="s2">"NASCAR"</span> <span class="p">-</span><span class="n">-configDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">-</span><span class="n">-configSchema</span> <span class="s2">"Sync"</span> <span class="p">-</span><span class="n">-configIntegratedSecurity</span> <span class="p">-</span><span class="n">-trustServerCertificate</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span> <span class="p">--</span> <span class="p">-</span><span class="n">-configServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">-</span><span class="n">-configDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">-</span><span class="n">-configSchema</span> <span class="s2">"Sync"</span> <span class="p">-</span><span class="n">-configIntegratedSecurity</span> <span class="p">-</span><span class="n">-trustServerCertificate</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>Or through the repository launcher:</p>
 <div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
@@ -4174,8 +4174,8 @@
 <span class="normal"><a href="#__codelineno-9-5">5</a></span>
 <span class="normal"><a href="#__codelineno-9-6">6</a></span>
 <span class="normal"><a href="#__codelineno-9-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncRestApi</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
@@ -4189,8 +4189,8 @@
 <span class="normal"><a href="#__codelineno-10-5">5</a></span>
 <span class="normal"><a href="#__codelineno-10-6">6</a></span>
 <span class="normal"><a href="#__codelineno-10-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Start-SqlTablesSyncWorkspace</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
@@ -4227,7 +4227,7 @@
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a>  <span class="n">-ContentType</span> <span class="s2">"application/json"</span> <span class="p">`</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3"></a>  <span class="n">-Body</span> <span class="p">(@{</span>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4"></a>      <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"DAYTONA"</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"DESTINATION_SQL_SERVER"</span>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6"></a>          <span class="n">database</span> <span class="p">=</span> <span class="s2">"Reporting_PEA"</span>
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7"></a>          <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8"></a>          <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
@@ -4242,7 +4242,7 @@
 <span class="normal"><a href="#__codelineno-12-3">3</a></span>
 <span class="normal"><a href="#__codelineno-12-4">4</a></span>
 <span class="normal"><a href="#__codelineno-12-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Get-ServerObjects</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a>  <span class="n">-ServerName</span> <span class="s2">"nascar"</span> <span class="p">`</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a>  <span class="n">-ServerName</span> <span class="s2">"your_sql_server"</span> <span class="p">`</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a>  <span class="n">-IntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5"></a>  <span class="n">-AsJson</span>
@@ -4260,7 +4260,7 @@
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a>  <span class="n">-ContentType</span> <span class="s2">"application/json"</span> <span class="p">`</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a>  <span class="n">-Body</span> <span class="p">(@{</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a>      <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a>          <span class="n">server</span> <span class="p">=</span> <span class="s2">"your_sql_server"</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6"></a>          <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
 </span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7"></a>          <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
 </span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8"></a>      <span class="p">}</span>
@@ -4306,9 +4306,9 @@
 <span class="normal"><a href="#__codelineno-14-18">18</a></span>
 <span class="normal"><a href="#__codelineno-14-19">19</a></span>
 <span class="normal"><a href="#__codelineno-14-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nv">$payload</span> <span class="p">=</span> <span class="p">@{</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="n">serverName</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="n">serverName</span> <span class="p">=</span> <span class="s2">"your_sql_server"</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="n">connection</span> <span class="p">=</span> <span class="p">@{</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4"></a>        <span class="n">server</span> <span class="p">=</span> <span class="s2">"nascar"</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4"></a>        <span class="n">server</span> <span class="p">=</span> <span class="s2">"your_sql_server"</span>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5"></a>        <span class="n">integratedSecurity</span> <span class="p">=</span> <span class="nv">$true</span>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6"></a>        <span class="n">trustServerCertificate</span> <span class="p">=</span> <span class="nv">$true</span>
 </span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="p">}</span>
@@ -4317,8 +4317,8 @@
 </span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Test-RestApiEndpoint</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
 </span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11"></a>  <span class="n">-Operation</span> <span class="s2">"getServerExplorer"</span> <span class="p">`</span>
 </span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12"></a>  <span class="n">-ApiBaseUrl</span> <span class="s2">"http://127.0.0.1:8080/"</span> <span class="p">`</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
@@ -4366,8 +4366,8 @@
 <span class="normal"><a href="#__codelineno-16-4">4</a></span>
 <span class="normal"><a href="#__codelineno-16-5">5</a></span>
 <span class="normal"><a href="#__codelineno-16-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Export-TableConfigDiagram</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6"></a>  <span class="n">-TrustServerCertificate</span>
@@ -4383,8 +4383,8 @@
 <span class="normal"><a href="#__codelineno-17-7">7</a></span>
 <span class="normal"><a href="#__codelineno-17-8">8</a></span>
 <span class="normal"><a href="#__codelineno-17-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Find-TableSyncConfig</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"NASCAR"</span> <span class="p">`</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"EPC_Imports_PCK"</span> <span class="p">`</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
 </span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>

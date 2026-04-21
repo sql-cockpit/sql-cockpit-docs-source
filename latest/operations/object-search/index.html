@@ -3977,7 +3977,7 @@
   <code>.github/workflows/ci-cd.yml</code> job <code>Guard Object-Search Local Cache Artifacts</code></li>
 </ul>
 <h2 id="case-study-full-sync-for-one-database"><a class="headerlink" href="#case-study-full-sync-for-one-database" title="Permanent link">¶</a>Case study: full sync for one database</h2>
-<p>This case study uses a real Object Search Sync modal log from a full sync of <code>firebird/RMSTEST</code>.</p>
+<p>This case study uses a real Object Search Sync modal log from a full sync of <code>firebird/SOURCE_DATABASE</code>.</p>
 <p>The run produced this high-level outcome:</p>
 <table>
 <thead>
@@ -4042,21 +4042,21 @@
 <span class="normal"><a href="#__codelineno-5-14">14</a></span>
 <span class="normal"><a href="#__codelineno-5-15">15</a></span>
 <span class="normal"><a href="#__codelineno-5-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>[2026-04-09T09:52:54.9262197Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Started object-search sync in Full mode.
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a>[2026-04-09T09:52:55.4517171Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Syncing [firebird/RMSTEST] in Full mode.
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a>[2026-04-09T09:52:55.6426179Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading base objects from [firebird/RMSTEST].
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>[2026-04-09T09:52:56.3879908Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 8783 base objects from [firebird/RMSTEST].
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a>[2026-04-09T09:52:56.3981532Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading columns from [firebird/RMSTEST].
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>[2026-04-09T09:52:58.7150229Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 86592 columns from [firebird/RMSTEST].
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>[2026-04-09T09:52:58.7277332Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading parameters from [firebird/RMSTEST].
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>[2026-04-09T09:52:59.3423113Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 5185 parameters from [firebird/RMSTEST].
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>[2026-04-09T09:52:59.3601190Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading referenced objects from [firebird/RMSTEST].
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>[2026-04-09T09:52:59.8313186Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 19831 dependency rows from [firebird/RMSTEST].
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>[2026-04-09T09:52:59.8775983Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading indexes from [firebird/RMSTEST].
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12"></a>[2026-04-09T09:52:59.9747634Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 322 indexes from [firebird/RMSTEST].
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13"></a>[2026-04-09T09:52:59.9823912Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading constraints from [firebird/RMSTEST].
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14"></a>[2026-04-09T09:53:00.3102853Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 7328 constraints from [firebird/RMSTEST].
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15"></a>[2026-04-09T09:53:00.3265604Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Building documents for [firebird/RMSTEST].
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16"></a>[2026-04-09T09:54:09.4853292Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Built 103025 searchable documents for [firebird/RMSTEST].
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a>[2026-04-09T09:52:55.4517171Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Syncing [firebird/SOURCE_DATABASE] in Full mode.
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a>[2026-04-09T09:52:55.6426179Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading base objects from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>[2026-04-09T09:52:56.3879908Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 8783 base objects from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a>[2026-04-09T09:52:56.3981532Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading columns from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>[2026-04-09T09:52:58.7150229Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 86592 columns from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>[2026-04-09T09:52:58.7277332Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading parameters from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>[2026-04-09T09:52:59.3423113Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 5185 parameters from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>[2026-04-09T09:52:59.3601190Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading referenced objects from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>[2026-04-09T09:52:59.8313186Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 19831 dependency rows from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>[2026-04-09T09:52:59.8775983Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading indexes from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12"></a>[2026-04-09T09:52:59.9747634Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 322 indexes from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13"></a>[2026-04-09T09:52:59.9823912Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Reading constraints from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14"></a>[2026-04-09T09:53:00.3102853Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Read 7328 constraints from [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15"></a>[2026-04-09T09:53:00.3265604Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Building documents for [firebird/SOURCE_DATABASE].
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16"></a>[2026-04-09T09:54:09.4853292Z] [1ed4d126-d352-42af-b212-d5d31253ffed] Built 103025 searchable documents for [firebird/SOURCE_DATABASE].
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>How to read each step:</p>
 <table>
@@ -4200,7 +4200,7 @@
 </ul>
 <h2 id="manifest-phase"><a class="headerlink" href="#manifest-phase" title="Permanent link">¶</a>Manifest phase</h2>
 <p>During a sync you may see a log line like:</p>
-<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>Reading current manifest ids for [firebird/RMSTEST].
+<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>Reading current manifest ids for [firebird/SOURCE_DATABASE].
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>This is normal. At that point the sync is reading the current SQL Server catalog shape and building the list of search document ids that should exist for that database.</p>
 <p>Optimization note:</p>
