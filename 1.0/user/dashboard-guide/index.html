@@ -487,10 +487,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#browser-local-storage" class="md-nav__link">
+  <a href="#workspace-profile-storage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browser-Local Storage
+        Workspace Profile Storage
       
     </span>
   </a>
@@ -524,6 +524,17 @@
     <span class="md-ellipsis">
       
         Estate Overview Shortcuts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workspace-scoped-command-palette-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace-Scoped Command Palette Cache
       
     </span>
   </a>
@@ -3920,10 +3931,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#browser-local-storage" class="md-nav__link">
+  <a href="#workspace-profile-storage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browser-Local Storage
+        Workspace Profile Storage
       
     </span>
   </a>
@@ -3957,6 +3968,17 @@
     <span class="md-ellipsis">
       
         Estate Overview Shortcuts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workspace-scoped-command-palette-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace-Scoped Command Palette Cache
       
     </span>
   </a>
@@ -4075,12 +4097,12 @@
 <tr>
 <td>Instance Manager</td>
 <td>Server-level profiles for Server Explorer, SQL Agent Manager, Estate Overview, and object search.</td>
-<td>Browser local storage.</td>
+<td>Workspace profile store (personal or team).</td>
 </tr>
 <tr>
 <td>Connection Manager</td>
 <td>Database-level profiles for source and destination workflows.</td>
-<td>Browser local storage.</td>
+<td>Workspace profile store (personal or team).</td>
 </tr>
 <tr>
 <td>Service Manager</td>
@@ -4132,43 +4154,42 @@
 <h2 id="data-flow"><a class="headerlink" href="#data-flow" title="Permanent link">¶</a>Data Flow</h2>
 <pre class="mermaid"><code>flowchart LR
     Browser[SQL Cockpit dashboard] --&gt; Api[Node REST API]
+    Browser --&gt; WorkspaceSelector[Active workspace selection]
+    WorkspaceSelector --&gt; Api
     Api --&gt; Runner[Invoke-SqlTablesSyncRestOperation.ps1]
     Runner --&gt; Tools[SqlTablesSync.Tools.psm1]
     Tools --&gt; Config[(Sync config database)]
     Tools --&gt; Sql[(Target SQL Server)]
-    Browser --&gt; LocalStorage[(Browser local storage)]</code></pre>
-<h2 id="browser-local-storage"><a class="headerlink" href="#browser-local-storage" title="Permanent link">¶</a>Browser-Local Storage</h2>
+    Api --&gt; AuthStore[(SQLite auth/workspace store)]
+    Api --&gt; SearchSync[Object search sync]
+    SearchSync --&gt; SearchIndex[(Workspace-scoped object-search index)]</code></pre>
+<h2 id="workspace-profile-storage"><a class="headerlink" href="#workspace-profile-storage" title="Permanent link">¶</a>Workspace Profile Storage</h2>
 <table>
 <thead>
 <tr>
-<th>Item</th>
-<th>Storage key</th>
+<th>Scope</th>
+<th>Stored by</th>
 <th>Used by</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Instance profiles</td>
-<td><code>sql-cockpit-instance-profiles</code></td>
-<td>Instance Manager, Estate Overview, Server Explorer, SQL Agent Manager, object search sync.</td>
+<td>Personal workspace</td>
+<td><code>user_preferences</code> profile keys for the signed-in user</td>
+<td>Private profiles in Connection Manager and Instance Manager.</td>
 </tr>
 <tr>
-<td>Database connection profiles</td>
-<td><code>sql-cockpit-database-connection-profiles</code></td>
-<td>Connection Manager and database-scoped workflows.</td>
-</tr>
-<tr>
-<td>Legacy instance import source</td>
-<td><code>sql-cockpit-connection-profiles</code></td>
-<td>Imported only when the instance vault has not been created yet.</td>
+<td>Team workspace</td>
+<td><code>settings.workspace.team.&lt;teamId&gt;</code> entries (membership-gated)</td>
+<td>Shared team profiles in Connection Manager and Instance Manager.</td>
 </tr>
 </tbody>
 </table>
-<p>Browser local storage is scoped by origin. A profile saved under one host or port may not appear under another.</p>
+<p>Use the workspace selector to switch profile scope at runtime.</p>
 <h2 id="sensitive-information"><a class="headerlink" href="#sensitive-information" title="Permanent link">¶</a>Sensitive Information</h2>
 <p>Treat the dashboard as an operator tool, not a public web app:</p>
 <ul>
-<li>saved SQL-auth passwords can be stored in browser local storage</li>
+<li>saved SQL-auth passwords may be present in workspace profiles</li>
 <li>config rows can contain SQL-auth credentials</li>
 <li>metadata views can reveal database, schema, object, column, Agent job, and table-size details</li>
 <li>local error logs can include URLs, stack traces, API response text, and event IDs</li>
@@ -4192,6 +4213,27 @@
 </ul>
 <p>This lets you launch object search context from the level you are currently reviewing instead of drilling down first.</p>
 <p>Command palette detail actions for indexed objects now also include <code>Open in SQL Editor</code>, which opens the selected object definition in a lintable SQL editing surface.</p>
+<h2 id="workspace-scoped-command-palette-cache"><a class="headerlink" href="#workspace-scoped-command-palette-cache" title="Permanent link">¶</a>Workspace-Scoped Command Palette Cache</h2>
+<p>Command palette search uses the object-search cache and is now workspace-scoped.</p>
+<ul>
+<li>Personal workspace:</li>
+<li>You search only metadata indexed for your personal workspace.</li>
+<li>Team workspace:</li>
+<li>You search metadata indexed for that team workspace and shared by team members.</li>
+</ul>
+<p>If one team member syncs a database into object search while in the team workspace, other members can search that metadata without re-syncing it under their own accounts.</p>
+<p>Sync concurrency behavior:</p>
+<ul>
+<li>Only one sync can run at a time for the same workspace and source instance/database.</li>
+<li>If someone else already started that sync, a new request is blocked until the active sync finishes.</li>
+<li>Use the Object Search status panel/API to see active sync locks and recently synchronized instances.</li>
+</ul>
+<p>This is useful for:</p>
+<ol>
+<li>Faster team onboarding with shared searchable metadata.</li>
+<li>Shift handovers where everyone searches the same indexed estate view.</li>
+<li>Avoiding direct password sharing when reusable profiles and cache are already available in the team workspace.</li>
+</ol>
 <h2 id="focus-mode"><a class="headerlink" href="#focus-mode" title="Permanent link">¶</a>Focus Mode</h2>
 <p>Use the sidebar control near the <code>SQL Cockpit</code> brand to enter <code>Focus mode</code> when the surrounding shell feels too busy for the task at hand.</p>
 <p>Current behavior:</p>
@@ -4210,31 +4252,31 @@
 </ul>
 <h2 id="dashboard-screenshot"><a class="headerlink" href="#dashboard-screenshot" title="Permanent link">¶</a>Dashboard Screenshot</h2>
 <!-- AUTO_SCREENSHOT:dashboard-home:START -->
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/dashboard-home.png" data-title="SQL Cockpit dashboard home page" data-desc-position="bottom"><img alt="SQL Cockpit dashboard home page" src="../assets/screenshots/dashboard-home.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/dashboard-home.png" data-title="SQL Cockpit dashboard home page" data-desc-position="bottom"><img alt="SQL Cockpit dashboard home page" src="../../assets/screenshots/dashboard-home.png"></a></p>
 <p><em>The SQL Cockpit home dashboard with the main navigation and operator landing view.</em></p>
 <!-- AUTO_SCREENSHOT:dashboard-home:END -->
 
 <h2 id="server-explorer-screenshot"><a class="headerlink" href="#server-explorer-screenshot" title="Permanent link">¶</a>Server Explorer Screenshot</h2>
 <!-- AUTO_SCREENSHOT:server-explorer:START -->
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/server-explorer.png" data-title="Server Explorer page in SQL Cockpit" data-desc-position="bottom"><img alt="Server Explorer page in SQL Cockpit" src="../assets/screenshots/server-explorer.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/server-explorer.png" data-title="Server Explorer page in SQL Cockpit" data-desc-position="bottom"><img alt="Server Explorer page in SQL Cockpit" src="../../assets/screenshots/server-explorer.png"></a></p>
 <p><em>Server Explorer loads live SQL Server metadata so operators can browse databases, schemas, and objects from saved instance profiles.</em></p>
 <!-- AUTO_SCREENSHOT:server-explorer:END -->
 
 <h2 id="fleet-screenshot"><a class="headerlink" href="#fleet-screenshot" title="Permanent link">¶</a>Fleet Screenshot</h2>
 <!-- AUTO_SCREENSHOT:fleet:START -->
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/fleet.png" data-title="Fleet page in SQL Cockpit" data-desc-position="bottom"><img alt="Fleet page in SQL Cockpit" src="../assets/screenshots/fleet.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/fleet.png" data-title="Fleet page in SQL Cockpit" data-desc-position="bottom"><img alt="Fleet page in SQL Cockpit" src="../../assets/screenshots/fleet.png"></a></p>
 <p><em>Fleet gives operators a sync-row-oriented view for filtering and reviewing the current sync configuration estate.</em></p>
 <!-- AUTO_SCREENSHOT:fleet:END -->
 
 <h2 id="inspector-screenshot"><a class="headerlink" href="#inspector-screenshot" title="Permanent link">¶</a>Inspector Screenshot</h2>
 <!-- AUTO_SCREENSHOT:inspector:START -->
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/inspector.png" data-title="Inspector page in SQL Cockpit" data-desc-position="bottom"><img alt="Inspector page in SQL Cockpit" src="../assets/screenshots/inspector.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/inspector.png" data-title="Inspector page in SQL Cockpit" data-desc-position="bottom"><img alt="Inspector page in SQL Cockpit" src="../../assets/screenshots/inspector.png"></a></p>
 <p><em>Inspector focuses on one sync row and its detailed configuration, state, and related workflow context.</em></p>
 <!-- AUTO_SCREENSHOT:inspector:END -->
 
 <h2 id="batch-copilot-screenshot"><a class="headerlink" href="#batch-copilot-screenshot" title="Permanent link">¶</a>Batch Copilot Screenshot</h2>
 <!-- AUTO_SCREENSHOT:batch-copilot:START -->
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../assets/screenshots/batch-copilot.png" data-title="Batch Copilot page in SQL Cockpit" data-desc-position="bottom"><img alt="Batch Copilot page in SQL Cockpit" src="../assets/screenshots/batch-copilot.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/batch-copilot.png" data-title="Batch Copilot page in SQL Cockpit" data-desc-position="bottom"><img alt="Batch Copilot page in SQL Cockpit" src="../../assets/screenshots/batch-copilot.png"></a></p>
 <p><em>Batch Copilot helps profile table shape and reason about safer BatchSize starting points.</em></p>
 <!-- AUTO_SCREENSHOT:batch-copilot:END -->
 

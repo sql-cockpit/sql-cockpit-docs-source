@@ -638,6 +638,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#workspace-switching-and-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace Switching And Sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workspace-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workspace Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-team-onboarding-without-password-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Team onboarding without password handoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-shift-handover-for-estate-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Shift handover for estate monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-incident-response-collaboration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Incident response collaboration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-personal-sandbox-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Personal sandbox isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#safe-profile-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3854,6 +3926,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#workspace-switching-and-sharing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace Switching And Sharing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workspace-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workspace Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workspace Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-team-onboarding-without-password-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Team onboarding without password handoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-shift-handover-for-estate-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Shift handover for estate monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-incident-response-collaboration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Incident response collaboration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-personal-sandbox-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Personal sandbox isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#safe-profile-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3935,7 +4079,11 @@
 </tbody>
 </table>
 <h2 id="instance-profiles"><a class="headerlink" href="#instance-profiles" title="Permanent link">¶</a>Instance Profiles</h2>
-<p>Instance profiles are saved by <code>Instance Manager</code> in browser local storage key <code>sql-cockpit-instance-profiles</code>.</p>
+<p>Instance profiles are saved in the active workspace profile store:</p>
+<ul>
+<li>Personal workspace: private to your account.</li>
+<li>Team workspace: shared with members of that team.</li>
+</ul>
 <p>They include:</p>
 <ul>
 <li>profile name</li>
@@ -3947,25 +4095,61 @@
 </ul>
 <p>Use instance profiles for workflows that do not start with a single database.</p>
 <h2 id="database-connection-profiles"><a class="headerlink" href="#database-connection-profiles" title="Permanent link">¶</a>Database Connection Profiles</h2>
-<p>Database connection profiles are saved by <code>Connection Manager</code> in browser local storage key <code>sql-cockpit-database-connection-profiles</code>.</p>
+<p>Database connection profiles are saved in the active workspace profile store:</p>
+<ul>
+<li>Personal workspace: private to your account.</li>
+<li>Team workspace: shared with members of that team.</li>
+</ul>
 <p>They include the instance fields plus a database name. They do not automatically create or update rows in <code>Sync.TableConfig</code>.</p>
 <p>Use database connection profiles when planning or validating source and destination database work.</p>
+<h2 id="workspace-switching-and-sharing"><a class="headerlink" href="#workspace-switching-and-sharing" title="Permanent link">¶</a>Workspace Switching And Sharing</h2>
+<p>Use the workspace switcher in the dashboard header to choose where profiles are loaded from and saved to.</p>
+<ul>
+<li>In personal workspace, saved profiles stay private.</li>
+<li>In team workspace, profile changes are visible to team members.</li>
+<li><code>Share To Team</code> in Connection Manager and Instance Manager copies selected personal profiles into a team workspace.</li>
+</ul>
+<p>Primary benefit: teams can share reusable profiles without sending passwords through chat, email, or tickets.</p>
+<h2 id="workspace-use-cases"><a class="headerlink" href="#workspace-use-cases" title="Permanent link">¶</a>Workspace Use Cases</h2>
+<h3 id="1-team-onboarding-without-password-handoff"><a class="headerlink" href="#1-team-onboarding-without-password-handoff" title="Permanent link">¶</a>1. Team onboarding without password handoff</h3>
+<ul>
+<li>Existing operator shares baseline profiles to the team workspace.</li>
+<li>New teammate switches to that team workspace and starts using the same targets.</li>
+<li>Result: no manual password copy/paste between people.</li>
+</ul>
+<h3 id="2-shift-handover-for-estate-monitoring"><a class="headerlink" href="#2-shift-handover-for-estate-monitoring" title="Permanent link">¶</a>2. Shift handover for estate monitoring</h3>
+<ul>
+<li>Day and night operators use the same team workspace.</li>
+<li>Instance profiles remain consistent for estate and agent workflows.</li>
+<li>Result: faster handover and less risk of target mismatch.</li>
+</ul>
+<h3 id="3-incident-response-collaboration"><a class="headerlink" href="#3-incident-response-collaboration" title="Permanent link">¶</a>3. Incident response collaboration</h3>
+<ul>
+<li>Add responder to team and have them switch to the team workspace.</li>
+<li>Shared profiles are immediately available for investigation.</li>
+<li>Result: access is controlled by membership, not ad-hoc credential sharing.</li>
+</ul>
+<h3 id="4-personal-sandbox-isolation"><a class="headerlink" href="#4-personal-sandbox-isolation" title="Permanent link">¶</a>4. Personal sandbox isolation</h3>
+<ul>
+<li>Keep experimental or one-off profiles in personal workspace only.</li>
+<li>Share to team only after validation.</li>
+<li>Result: team workspace stays clean and operationally focused.</li>
+</ul>
 <h2 id="safe-profile-handling"><a class="headerlink" href="#safe-profile-handling" title="Permanent link">¶</a>Safe Profile Handling</h2>
 <ol>
 <li>Prefer integrated security where the workstation account is the approved operator identity.</li>
 <li>Avoid saving SQL-auth passwords on shared workstations.</li>
-<li>Test profiles before using them in Server Explorer, Agent Manager, or sync planning.</li>
+<li>Share SQL-auth profiles to teams only when required by target policy.</li>
+<li>Test shared profiles before using them in Server Explorer, Agent Manager, or sync planning.</li>
 <li>Delete stale profiles after server aliases, roles, or credentials change.</li>
-<li>Remember that browser local storage does not roam to another browser, machine, or dashboard origin.</li>
 </ol>
 <h2 id="troubleshooting"><a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a>Troubleshooting</h2>
 <p>If a saved profile is missing, check:</p>
 <ul>
-<li>same browser</li>
-<li>same Windows user profile</li>
-<li>same dashboard host and port</li>
-<li>browser site data has not been cleared</li>
-<li>private browsing mode is not in use</li>
+<li>active workspace selection (personal vs team)</li>
+<li>team membership for the selected team workspace</li>
+<li>profile was saved to the same workspace you are viewing</li>
+<li>profile may be in personal workspace and not yet shared to team workspace</li>
 </ul>
 <p>If a connection test fails, check:</p>
 <ul>
