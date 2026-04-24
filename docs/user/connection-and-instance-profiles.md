@@ -14,7 +14,10 @@ SQL Cockpit has two profile types because server-level workflows and database-le
 
 ## Instance Profiles
 
-Instance profiles are saved by `Instance Manager` in browser local storage key `sql-cockpit-instance-profiles`.
+Instance profiles are saved in the active workspace profile store:
+
+- Personal workspace: private to your account.
+- Team workspace: shared with members of that team.
 
 They include:
 
@@ -29,29 +32,67 @@ Use instance profiles for workflows that do not start with a single database.
 
 ## Database Connection Profiles
 
-Database connection profiles are saved by `Connection Manager` in browser local storage key `sql-cockpit-database-connection-profiles`.
+Database connection profiles are saved in the active workspace profile store:
+
+- Personal workspace: private to your account.
+- Team workspace: shared with members of that team.
 
 They include the instance fields plus a database name. They do not automatically create or update rows in `Sync.TableConfig`.
 
 Use database connection profiles when planning or validating source and destination database work.
 
+## Workspace Switching And Sharing
+
+Use the workspace switcher in the dashboard header to choose where profiles are loaded from and saved to.
+
+- In personal workspace, saved profiles stay private.
+- In team workspace, profile changes are visible to team members.
+- `Share To Team` in Connection Manager and Instance Manager copies selected personal profiles into a team workspace.
+
+Primary benefit: teams can share reusable profiles without sending passwords through chat, email, or tickets.
+
+## Workspace Use Cases
+
+### 1. Team onboarding without password handoff
+
+- Existing operator shares baseline profiles to the team workspace.
+- New teammate switches to that team workspace and starts using the same targets.
+- Result: no manual password copy/paste between people.
+
+### 2. Shift handover for estate monitoring
+
+- Day and night operators use the same team workspace.
+- Instance profiles remain consistent for estate and agent workflows.
+- Result: faster handover and less risk of target mismatch.
+
+### 3. Incident response collaboration
+
+- Add responder to team and have them switch to the team workspace.
+- Shared profiles are immediately available for investigation.
+- Result: access is controlled by membership, not ad-hoc credential sharing.
+
+### 4. Personal sandbox isolation
+
+- Keep experimental or one-off profiles in personal workspace only.
+- Share to team only after validation.
+- Result: team workspace stays clean and operationally focused.
+
 ## Safe Profile Handling
 
 1. Prefer integrated security where the workstation account is the approved operator identity.
 2. Avoid saving SQL-auth passwords on shared workstations.
-3. Test profiles before using them in Server Explorer, Agent Manager, or sync planning.
-4. Delete stale profiles after server aliases, roles, or credentials change.
-5. Remember that browser local storage does not roam to another browser, machine, or dashboard origin.
+3. Share SQL-auth profiles to teams only when required by target policy.
+4. Test shared profiles before using them in Server Explorer, Agent Manager, or sync planning.
+5. Delete stale profiles after server aliases, roles, or credentials change.
 
 ## Troubleshooting
 
 If a saved profile is missing, check:
 
-- same browser
-- same Windows user profile
-- same dashboard host and port
-- browser site data has not been cleared
-- private browsing mode is not in use
+- active workspace selection (personal vs team)
+- team membership for the selected team workspace
+- profile was saved to the same workspace you are viewing
+- profile may be in personal workspace and not yet shared to team workspace
 
 If a connection test fails, check:
 

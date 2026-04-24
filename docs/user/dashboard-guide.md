@@ -10,8 +10,8 @@ You can also run the same dashboard as a standalone desktop window through Elect
 | --- | --- | --- |
 | Estate Overview | Health, capacity, database state, and SQL Agent summary across saved instances. | Live SQL Server metadata only. |
 | Launchpad | Quick navigation into common SQL Cockpit workflows. | Browser state only. |
-| Instance Manager | Server-level profiles for Server Explorer, SQL Agent Manager, Estate Overview, and object search. | Browser local storage. |
-| Connection Manager | Database-level profiles for source and destination workflows. | Browser local storage. |
+| Instance Manager | Server-level profiles for Server Explorer, SQL Agent Manager, Estate Overview, and object search. | Workspace profile store (personal or team). |
+| Connection Manager | Database-level profiles for source and destination workflows. | Workspace profile store (personal or team). |
 | Service Manager | Start, stop, and monitor desktop background services from one panel. | Runtime supervisor state and service-host control API (when configured). |
 | Server Explorer | Browse live databases, schemas, tables, views, procedures, and functions. | Live SQL catalog metadata. |
 | SQL Editor | Draft SQL with syntax highlighting, run lint checks, or load object definitions from command palette. | Local browser state plus object-search read APIs. |
@@ -27,28 +27,31 @@ You can also run the same dashboard as a standalone desktop window through Elect
 ```mermaid
 flowchart LR
     Browser[SQL Cockpit dashboard] --> Api[Node REST API]
+    Browser --> WorkspaceSelector[Active workspace selection]
+    WorkspaceSelector --> Api
     Api --> Runner[Invoke-SqlTablesSyncRestOperation.ps1]
     Runner --> Tools[SqlTablesSync.Tools.psm1]
     Tools --> Config[(Sync config database)]
     Tools --> Sql[(Target SQL Server)]
-    Browser --> LocalStorage[(Browser local storage)]
+    Api --> AuthStore[(SQLite auth/workspace store)]
+    Api --> SearchSync[Object search sync]
+    SearchSync --> SearchIndex[(Workspace-scoped object-search index)]
 ```
 
-## Browser-Local Storage
+## Workspace Profile Storage
 
-| Item | Storage key | Used by |
+| Scope | Stored by | Used by |
 | --- | --- | --- |
-| Instance profiles | `sql-cockpit-instance-profiles` | Instance Manager, Estate Overview, Server Explorer, SQL Agent Manager, object search sync. |
-| Database connection profiles | `sql-cockpit-database-connection-profiles` | Connection Manager and database-scoped workflows. |
-| Legacy instance import source | `sql-cockpit-connection-profiles` | Imported only when the instance vault has not been created yet. |
+| Personal workspace | `user_preferences` profile keys for the signed-in user | Private profiles in Connection Manager and Instance Manager. |
+| Team workspace | `settings.workspace.team.<teamId>` entries (membership-gated) | Shared team profiles in Connection Manager and Instance Manager. |
 
-Browser local storage is scoped by origin. A profile saved under one host or port may not appear under another.
+Use the workspace selector to switch profile scope at runtime.
 
 ## Sensitive Information
 
 Treat the dashboard as an operator tool, not a public web app:
 
-- saved SQL-auth passwords can be stored in browser local storage
+- saved SQL-auth passwords may be present in workspace profiles
 - config rows can contain SQL-auth credentials
 - metadata views can reveal database, schema, object, column, Agent job, and table-size details
 - local error logs can include URLs, stack traces, API response text, and event IDs
@@ -76,6 +79,29 @@ Estate Overview action menus now include `Open in command palette` at all three 
 This lets you launch object search context from the level you are currently reviewing instead of drilling down first.
 
 Command palette detail actions for indexed objects now also include `Open in SQL Editor`, which opens the selected object definition in a lintable SQL editing surface.
+
+## Workspace-Scoped Command Palette Cache
+
+Command palette search uses the object-search cache and is now workspace-scoped.
+
+- Personal workspace:
+  - You search only metadata indexed for your personal workspace.
+- Team workspace:
+  - You search metadata indexed for that team workspace and shared by team members.
+
+If one team member syncs a database into object search while in the team workspace, other members can search that metadata without re-syncing it under their own accounts.
+
+Sync concurrency behavior:
+
+- Only one sync can run at a time for the same workspace and source instance/database.
+- If someone else already started that sync, a new request is blocked until the active sync finishes.
+- Use the Object Search status panel/API to see active sync locks and recently synchronized instances.
+
+This is useful for:
+
+1. Faster team onboarding with shared searchable metadata.
+2. Shift handovers where everyone searches the same indexed estate view.
+3. Avoiding direct password sharing when reusable profiles and cache are already available in the team workspace.
 
 ## Focus Mode
 

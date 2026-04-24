@@ -16,7 +16,7 @@ async function loadChromium() {
 
 function parseArgs(argv) {
   const options = {
-    baseUrl: "http://127.0.0.1:8080",
+    baseUrl: "http://localhost:8080/",
     manifest: path.resolve("docs", "screenshots", "pages.json"),
     outputDir: path.resolve("docs", "assets", "screenshots"),
     loginPath: "/login",
