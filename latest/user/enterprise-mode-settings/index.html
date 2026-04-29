@@ -582,6 +582,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#quick-start-local-ldap-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start: local + LDAP auth
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auth-mode-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3887,6 +3898,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#quick-start-local-ldap-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start: local + LDAP auth
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auth-mode-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4002,6 +4024,22 @@
 <li><code>GET /metrics</code> returns Prometheus content (when metrics are enabled).</li>
 <li>Audit events appear in logs when authentication actions occur.</li>
 </ol>
+<h2 id="quick-start-local-ldap-auth"><a class="headerlink" href="#quick-start-local-ldap-auth" title="Permanent link">¶</a>Quick start: local + LDAP auth</h2>
+<p>Use a comma-separated <code>SQL_COCKPIT_AUTH_MODE</code> value when more than one provider should be available from the login page.</p>
+<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>SQL_COCKPIT_EDITION=enterprise
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>SQL_COCKPIT_AUTH_MODE=local,ldap
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>SQL_COCKPIT_LDAP_URL=ldaps://ad.example.com
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>SQL_COCKPIT_LDAP_USER_PRINCIPAL_SUFFIX=example.com
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Then restart the API process and validate:</p>
+<ol>
+<li><code>GET /api/auth/status</code> returns <code>"authModes": ["local", "ldap"]</code>.</li>
+<li>The login page shows both local and LDAP sign-in choices.</li>
+<li>A known local admin and a known LDAP user can each sign in.</li>
+</ol>
 <h2 id="auth-mode-flow"><a class="headerlink" href="#auth-mode-flow" title="Permanent link">¶</a>Auth-mode flow</h2>
 <pre class="mermaid"><code>flowchart TD
     A[SQL_COCKPIT_EDITION] --&gt; B{enterprise or rbac alias?}
@@ -4010,7 +4048,8 @@
     D --&gt; E[SQL_COCKPIT_AUTH_MODE]
     E --&gt;|local| F[local setup, local users, preferences and password change enabled]
     E --&gt;|oidc| G[OIDC code flow and bearer validation]
-    E --&gt;|ldap| H[LDAP bind on login]</code></pre>
+    E --&gt;|ldap| H[LDAP bind on login]
+    E --&gt;|local,ldap| I[local and LDAP login choices enabled]</code></pre>
 <h2 id="settings-reference"><a class="headerlink" href="#settings-reference" title="Permanent link">¶</a>Settings reference</h2>
 <table>
 <thead>
@@ -4039,11 +4078,11 @@
 <tr>
 <td><code>SQL_COCKPIT_AUTH_MODE</code></td>
 <td><code>SQL_COCKPIT_AUTH_MODE</code> env var (optional CLI <code>--authMode</code>)</td>
-<td><code>local</code>, <code>oidc</code>, <code>ldap</code> (other values fall back to <code>local</code>)</td>
+<td>Comma-separated list containing <code>local</code>, <code>ldap</code>, and/or <code>oidc</code>; single values such as <code>local</code> still work; unknown/empty values fall back to <code>local</code></td>
 <td><code>local</code></td>
-<td><code>server.js</code> auth routes (<code>/api/auth/*</code>), setup/password/preferences gating, <code>enterprise-mode.js</code> auth mode normalization and request authentication</td>
-<td>Lockout risk if mode is changed without completing required OIDC/LDAP settings.</td>
-<td>Stage in non-prod first, set required OIDC/LDAP variables, restart API, then validate login/logout and <code>/api/auth/status</code>.</td>
+<td><code>server.js</code> auth routes (<code>/api/auth/*</code>), setup/password/preferences gating, <code>enterprise-mode.js</code> auth mode normalization and request authentication, <code>rbac-auth-store.js</code> provider defaults</td>
+<td>Lockout risk if external modes are enabled without completing required OIDC/LDAP settings; disabling <code>local</code> removes break-glass local login.</td>
+<td>Stage in non-prod first, set required OIDC/LDAP variables, restart API, then validate <code>/api/auth/status</code> reports the expected <code>authModes</code> and test each enabled sign-in path.</td>
 <td>Confirmed</td>
 </tr>
 <tr>
@@ -4191,7 +4230,7 @@
 <h2 id="safe-rollout-checklist"><a class="headerlink" href="#safe-rollout-checklist" title="Permanent link">¶</a>Safe rollout checklist</h2>
 <ol>
 <li>Set <code>SQL_COCKPIT_EDITION=enterprise</code>.</li>
-<li>Choose exactly one auth mode (<code>local</code>, <code>oidc</code>, or <code>ldap</code>) and set only the related dependency variables.</li>
+<li>Choose one or more auth modes with <code>SQL_COCKPIT_AUTH_MODE</code>; for example <code>local,ldap</code>.</li>
 <li>Keep <code>SQL_COCKPIT_LDAP_SKIP_CERT_VALIDATION=false</code> unless in a documented temporary exception.</li>
 <li>Set observability (<code>METRICS_ENABLED</code>, <code>AUDIT_LOG_SINK</code>, <code>OTEL_*</code>) before production cutover.</li>
 <li>Restart API.</li>
@@ -4204,9 +4243,11 @@
 <h2 id="troubleshooting-quick-notes"><a class="headerlink" href="#troubleshooting-quick-notes" title="Permanent link">¶</a>Troubleshooting quick notes</h2>
 <ul>
 <li><code>405</code> on <code>/api/auth/oidc/start</code> or <code>/api/auth/oidc/callback</code>:</li>
-<li><code>SQL_COCKPIT_AUTH_MODE</code> is not <code>oidc</code>.</li>
+<li><code>SQL_COCKPIT_AUTH_MODE</code> does not include <code>oidc</code>, or Azure AD is disabled in persisted provider settings.</li>
 <li>LDAP login returns bind failures:</li>
+<li>invalid credentials show a friendly browser message asking the user to check username, password, and domain.</li>
 <li>validate <code>SQL_COCKPIT_LDAP_URL</code> protocol/host/port and username suffix/domain mapping.</li>
+<li>check trusted audit output for the underlying <code>authn-ldap-bind</code> provider error when support needs more detail.</li>
 <li>No OTLP audit data:</li>
 <li>ensure all three are set correctly: <code>SQL_COCKPIT_AUDIT_LOG_SINK=otlp</code>, <code>SQL_COCKPIT_OTEL_ENABLED=true</code>, <code>SQL_COCKPIT_OTEL_ENDPOINT=&lt;collector&gt;</code>.</li>
 <li><code>/metrics</code> returns <code>metrics disabled</code>:</li>

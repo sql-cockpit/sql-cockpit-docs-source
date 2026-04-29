@@ -4093,6 +4093,7 @@
 <li>Default bind address: <code>http://127.0.0.1:8080/</code></li>
 <li>Local web-app error logs: <code>.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl</code>, <code>.\Logs\WebApp\server-errors-YYYY-MM-DD.jsonl</code>, and <code>.\Logs\WebApp\process-errors-YYYY-MM-DD.jsonl</code></li>
 <li>Local REST trace files written by the probe script: <code>.\Logs\RestApiTrace\rest-api-trace-yyyyMMdd-HHmmss.json</code></li>
+<li>Built-in Swagger UI: <code>GET /api-docs</code> (or <code>GET /swagger</code>, which redirects to <code>/api-docs</code>)</li>
 <li>Realtime notifications runtime-discovery route: <code>GET /api/runtime</code></li>
 <li>Code paths affected:</li>
 <li><code>Start-SqlTablesSyncRestApi.ps1</code></li>
@@ -4116,6 +4117,7 @@
 <li><code>object-search/SqlObjectSearch.Service/Program.cs</code></li>
 <li><code>webapp/lib/object-search-service.js</code></li>
 <li><code>webapp/components/object-search-palette.js</code></li>
+<li><code>sql-cockpit-api/server.js</code></li>
 <li>Operational risk:</li>
 <li>the API can read sync config rows, including stored SQL-auth credentials already present in <code>Sync.TableConfig</code></li>
 <li>the create and CSV-import endpoints can insert new operational rows into <code>Sync.TableConfig</code></li>
@@ -4127,6 +4129,7 @@
 <li>the object-search endpoints return indexed object names, definitions, columns, parameters, and dependency metadata from a local on-disk Lucene index</li>
 <li><code>POST /api/object-search/index/refresh</code> and <code>POST /api/object-search/index/rebuild</code> can now run either against configured sources or against an explicit Connection Manager saved profile supplied in the request body</li>
 <li>browser and server exception logs can now capture request URLs, page URLs, user agents, stack traces, and any response body text surfaced through the UI, so operators should treat <code>.\Logs\WebApp\*.jsonl</code> as sensitive local troubleshooting data</li>
+<li>the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes</li>
 <li>keep the listener bound to loopback unless you have an explicit security design</li>
 <li>Safe change procedure:</li>
 <li>start on <code>127.0.0.1</code></li>
@@ -4141,6 +4144,7 @@
 <li>test one <code>POST /api/servers/explorer</code> request against a low-risk database and confirm the returned catalog shape matches the current UI expectations</li>
 <li>test one <code>POST /api/databases/metadata</code> request against a low-risk database and confirm that the returned table and column metadata matches the current catalog</li>
 <li>validate <code>GET /api/object-search/health</code>, run <code>POST /api/object-search/index/refresh</code>, then confirm <code>GET /api/object-search/search?q=&lt;known object&gt;</code> returns the expected object near the top</li>
+<li>open <code>/api-docs</code> while signed in, confirm the page loads <code>/openapi.json</code>, and test read-only routes before trying any mutating endpoint</li>
 <li>trigger one controlled browser-side failure, confirm a new line appears in <code>.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl</code>, and sanitize any credentials or business data before sharing the log externally</li>
 <li>only widen the listener prefix after a security review</li>
 <li>Confidence: confirmed for script parameters, web app path, endpoints below, and the local JSONL error-log file locations; inferred that wider exposure would be high risk because credentials may be returned to callers and rows can now be inserted</li>
@@ -4253,8 +4257,18 @@
 </tr>
 <tr>
 <td><code>GET</code></td>
+<td><code>/api-docs</code></td>
+<td>Built-in Swagger UI for authenticated same-origin endpoint overview and controlled API testing.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/swagger</code></td>
+<td>Redirects to <code>/api-docs</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
 <td><code>/openapi.json</code></td>
-<td>Minimal OpenAPI document for local tooling.</td>
+<td>OpenAPI document consumed by Swagger UI and local tooling.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -4475,14 +4489,14 @@
 <p>Confirmed operator capabilities in the current dashboard:</p>
 <ul>
 <li>create one sync row with preview and commit actions</li>
-<li>create and manage reusable database connections through <code>Connection Manager</code> or the duplicate <code>Instance Manager</code></li>
-<li>discover visible SQL Server instances from either connection-management page before filling the server field manually</li>
+<li>create and manage reusable server-level profiles through <code>Instance Manager</code> and database-level profiles through <code>Connection Manager</code></li>
+<li>discover visible SQL Server instances from <code>Instance Manager</code> before creating database-level connections</li>
 <li>inspect SQL Server Agent jobs, steps, schedules, and runtime history through <code>Agent Manager</code></li>
 <li>import CSV batches with template download and preview</li>
 <li>search and filter the current sync fleet by name, mode, enabled state, and last status</li>
 <li>inspect one full sync row by <code>SyncId</code></li>
 <li>browse the live <code>Server Explorer</code> page by server and database and inspect database, schema, and featured-object cards from SQL Server catalog data</li>
-<li>manage reusable browser-stored connection profiles and optionally run a server-level connection check through the browser-based <code>Connection Manager</code> or duplicate <code>Instance Manager</code> workflow</li>
+<li>manage reusable browser-stored instance and database connection profiles, with server-level discovery and checks handled by <code>Instance Manager</code></li>
 <li>open two modal windows for applying a new browse target to the explorer without persisting a server registry</li>
 <li>generate migration SQL from an existing sync row through <code>POST /api/migrations/from-config</code></li>
 <li>request advisory table batch sizing through <code>POST /api/tables/batch-size-recommendation</code></li>
@@ -4536,9 +4550,9 @@
 <ul>
 <li>storage location: no SQL Cockpit database storage; the dashboard reads saved instance profiles from browser local storage key <code>sql-cockpit-instance-profiles</code>, sends them to the API, and stores the returned estate summary in browser memory only</li>
 <li>valid values: <code>instances</code> must contain 1 to 30 instance profiles; each profile must include a non-empty server and valid authentication fields</li>
-<li>default: unreachable instances are returned as critical rows instead of failing the whole response</li>
+<li>default: unreachable instances are returned as critical rows instead of failing the whole response; Estate Overview calls this route once per saved profile, renders pending rows immediately, and updates each row as its response returns</li>
 <li>code paths affected: <code>SqlTablesSync.Tools.psm1</code>, <code>Invoke-SqlTablesSyncRestOperation.ps1</code>, <code>webapp/server.js</code>, <code>webapp/components/dashboard-client.js</code>, and <code>webapp/app/page.js</code></li>
-<li>operational risk: read-only for SQL safety, medium for metadata exposure because instance capacity, database state, table names, approximate row counts, edition, version, local SQL Server address, port, authentication scheme, encryption state, and Agent counts can reveal operational detail</li>
+<li>operational risk: read-only for SQL safety, medium for metadata exposure because instance capacity, database state, table names, approximate row counts, edition, version, local SQL Server address, port, authentication scheme, encryption state, and Agent counts can reveal operational detail; medium for refresh load because the dashboard can run up to six per-instance requests concurrently</li>
 <li>safe change procedure: validate instance profiles in Instance Manager, test one low-risk instance first, confirm the returned server identity, then widen to more profiles</li>
 </ul>
 <p>The <code>Instances[].Server</code> object includes engine identity and current-session network details such as <code>MachineName</code>, <code>ComputerNamePhysicalNetBios</code>, <code>ServiceName</code>, <code>AtAtServerName</code>, <code>ServerNameWithService</code>, <code>NetTransport</code>, <code>ConnectionLocalNetAddress</code>, <code>ConnectionLocalTcpPort</code>, <code>DmvLocalNetAddress</code>, <code>DmvLocalTcpPort</code>, <code>ClientNetAddress</code>, <code>ProtocolType</code>, <code>AuthScheme</code>, and <code>EncryptOption</code>. Each <code>Instances[].Databases.Items[]</code> row can include <code>TableCount</code> and <code>Tables[]</code> with lightweight user-table metadata. When <code>Tables[]</code> is empty, the Estate Overview UI can load table rows on demand by calling <code>POST /api/databases/metadata</code> for the selected saved instance profile and database.</p>

@@ -1151,6 +1151,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sql-server-agent-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Server Agent jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#guardrails-for-commits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3920,6 +3931,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sql-server-agent-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Server Agent jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#guardrails-for-commits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4024,6 +4046,7 @@
 <li>First run on a new machine: run <code>POST /api/object-search/index/rebuild</code> or <code>.\Sync-SqlObjectSearchIndex.ps1 -Mode Full</code>.</li>
 <li>Ongoing runs: run <code>POST /api/object-search/index/refresh</code> or <code>.\Sync-SqlObjectSearchIndex.ps1 -Mode Incremental</code>.</li>
 <li>Open SQL Cockpit and press <code>Ctrl+K</code>.</li>
+<li>Confirm the command-palette object-type filters show distinct icons for tables, views, procedures, functions, triggers, columns, indexes, constraints, synonyms, and SQL Server Agent jobs.</li>
 <li>With an empty search, confirm <code>Recent Objects</code> contains recently modified indexed objects from Lucene.NET.</li>
 <li>Select an indexed object and use the detail dropdown action <code>Open in SQL Editor</code> to verify definition hand-off into the editor workflow.</li>
 </ol>
@@ -4133,6 +4156,38 @@
 </span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="nb">Write-Host</span> <span class="s1">'Object-search index, spool, and manifests cleared.'</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>Restart the workspace, then run <code>Sync Schema To Search</code> or a full sync again.</p>
+<h2 id="sql-server-agent-jobs"><a class="headerlink" href="#sql-server-agent-jobs" title="Permanent link">¶</a>SQL Server Agent jobs</h2>
+<p>Instance-wide sync through <code>POST /api/object-search/index/sync-connection</code> adds a stable <code>msdb</code> source for SQL Server Agent jobs. This keeps job documents server-scoped instead of duplicating them under each user database.</p>
+<p>The sync reads:</p>
+<ul>
+<li><code>msdb.dbo.sysjobs</code></li>
+<li><code>msdb.dbo.sysjobsteps</code></li>
+<li><code>msdb.dbo.sysjobschedules</code></li>
+<li><code>msdb.dbo.sysschedules</code></li>
+<li><code>msdb.dbo.syscategories</code></li>
+</ul>
+<p>Each job becomes one Lucene document with:</p>
+<ul>
+<li><code>objectType = Agent Job</code></li>
+<li><code>databaseName = msdb</code></li>
+<li><code>schemaName = SQL Agent</code></li>
+<li>qualified name <code>[SQL Agent].[job name]</code></li>
+<li>job description, schedules, step names, subsystems, step database names, and step command text in searchable fields</li>
+<li><code>modifiedDate</code> from <code>msdb.dbo.sysjobs.date_modified</code></li>
+</ul>
+<p>Safe test:</p>
+<ol>
+<li>Run <code>Sync Server To Search</code> for a non-production instance profile.</li>
+<li>Open the command palette and select the <code>Agent Jobs</code> filter.</li>
+<li>Search for a known SQL Agent job.</li>
+<li>Compare the result with SQL Agent Manager for the same instance.</li>
+<li>Optionally call <code>/api/object-search/search?q=&lt;job-name&gt;&amp;objectType=Agent+Job</code> and confirm only active-workspace results are returned.</li>
+</ol>
+<p>Operational risk:</p>
+<ul>
+<li>users with command-palette search access can see indexed SQL Agent job names, descriptions, schedules, step names, and step command text</li>
+<li>if msdb job metadata cannot be read, the sync logs a warning and continues with database object indexing</li>
+</ul>
 <h2 id="guardrails-for-commits"><a class="headerlink" href="#guardrails-for-commits" title="Permanent link">¶</a>Guardrails for commits</h2>
 <ul>
 <li>local pre-commit guard:

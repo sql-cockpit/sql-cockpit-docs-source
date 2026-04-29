@@ -4144,18 +4144,19 @@
 <li>SQL Server release label such as <code>SQL Server 2019</code>, plus edition, engine version, CPU count, and memory reported by the engine</li>
 <li>machine, physical owner, service name, and reported <code>@@SERVERNAME</code> identity</li>
 <li>current connection transport, local SQL Server address, local TCP port, authentication scheme, and encryption state</li>
+<li>expanded database rows with <code>ONLINE</code> database state shown in green and <code>OFFLINE</code> database state shown in red</li>
 <li>an <code>Actions</code> menu for exporting the current Estate Overview table rows as <code>CSV</code>, <code>JSON</code>, or <code>HTML</code></li>
 <li>a per-instance <code>Retry volume detail</code> action in the <code>Volume free</code> column when volume metadata is unavailable or returns <code>0 B free of 0 B</code></li>
 </ul>
 <p>The page is intentionally instance-first. Define instances in Instance Manager before adding database connections in Connection Manager.</p>
-<p>Each instance row has an ellipsis action menu beside the instance name. Use it to open Agent Manager with that instance already selected, expand or hide an inline database list, open Server Explorer for the server, or copy the instance and server names. Expanded database rows also have an ellipsis menu. Use it to expand or hide the lightweight table list for that database or copy the database name. If the estate refresh did not already include table rows, the table action loads that one database through the existing database metadata endpoint. The nested table list can be sorted by clicking the schema, table, row-count, created, or modified headers. Each table row has its own ellipsis menu with:
+<p>Each instance row has an ellipsis action menu beside the instance name. Use it to refresh that single instance row, open Agent Manager with that instance already selected, expand or hide an inline database list, open Server Explorer for the server, or copy the instance and server names. <code>Refresh instance details</code> calls the same read-only Estate Overview endpoint for only that saved profile, marks the row as refreshing, then replaces that row and recalculates the summary cards when the response returns. Expanded database rows also have an ellipsis menu. Use it to expand or hide the lightweight table list for that database or copy the database name. Open row menus close when you click elsewhere on the page. If the estate refresh did not already include table rows, the table action loads that one database through the existing database metadata endpoint. The nested table list can be sorted by clicking the schema, table, row-count, created, or modified headers. Each table row has its own ellipsis menu with:
 - <code>Open in command palette</code>, which opens the command palette and pre-fills search with the selected <code>schema.table</code>.
 - <code>Migrate to another database</code>, which opens <code>Sync Launchpad</code>, pre-fills the selected source server, database, schema, and table, then shows a confirmation modal that checks for a matching server profile from Instance Manager.</p>
 <h2 id="how-it-works"><a class="headerlink" href="#how-it-works" title="Permanent link">¶</a>How It Works</h2>
 <pre class="mermaid"><code>flowchart LR
     Operator[Operator browser] --&gt; EstateOverview[Estate Overview]
     EstateOverview --&gt; InstanceVault[(sql-cockpit-instance-profiles)]
-    EstateOverview --&gt; Api[POST /api/sql-estate/overview]
+    EstateOverview --&gt; Api[POST /api/sql-estate/overview per instance]
     EstateOverview --&gt; MetadataApi[POST /api/databases/metadata]
     Api --&gt; Runner[Invoke-SqlTablesSyncRestOperation.ps1]
     MetadataApi --&gt; Runner
@@ -4167,8 +4168,9 @@
     Master --&gt; EstateOverview
     Msdb --&gt; EstateOverview
     UserDatabase --&gt; EstateOverview</code></pre>
-<p>The browser reads saved instance profiles from local storage key <code>sql-cockpit-instance-profiles</code>. The dashboard sends those profiles to <code>POST /api/sql-estate/overview</code>. The Node API invokes PowerShell, and PowerShell connects to each target instance.</p>
+<p>The browser reads saved instance profiles from local storage key <code>sql-cockpit-instance-profiles</code>. The dashboard creates one table row per saved profile immediately, then calls <code>POST /api/sql-estate/overview</code> separately for each instance profile. As each response returns, the matching row is replaced with live SQL Server metadata and the summary cards are recalculated. This keeps fast instances visible while slower or unreachable instances are still being queried.</p>
 <p>Each instance is evaluated independently. If one instance fails to connect, the response still returns the other instances and marks the failed instance as <code>Critical</code>.</p>
+<p>The browser limits the per-instance refresh fan-out to six concurrent requests. This is not a database-stored flag; it is a dashboard constant intended to improve responsiveness without opening a separate PowerShell and SQL connection for every saved profile at once.</p>
 <h2 id="focused-review"><a class="headerlink" href="#focused-review" title="Permanent link">¶</a>Focused Review</h2>
 <p>If the surrounding shell feels noisy during estate review, use the sidebar control near the <code>SQL Cockpit</code> brand to enter <code>Focus mode</code>.</p>
 <p>In the current UI this:</p>
@@ -4347,6 +4349,9 @@
 <li>defaults:</li>
 <li>Estate Overview auto-refreshes when the home page opens and at least one instance profile exists</li>
 <li>no data is shown until an instance profile exists</li>
+<li>the refresh creates pending table rows immediately and updates each row as that instance returns</li>
+<li>the browser refreshes up to six instances concurrently until all saved profiles have completed</li>
+<li>the row-level <code>Refresh instance details</code> action refreshes one saved profile and updates only that table row</li>
 <li>failed instances are returned as critical rows instead of failing the whole request</li>
 <li>full per-table inventory is loaded on demand, not during the main estate refresh</li>
 <li>code paths affected:</li>
@@ -4358,6 +4363,7 @@
 <li>operational risk:</li>
 <li>medium for metadata exposure because instance names, database names, table names, approximate row counts, edition, capacity, Agent job counts, local SQL Server addresses, ports, authentication scheme, and encryption state are visible</li>
 <li>medium for credential handling when saved instance profiles contain SQL-auth credentials in browser local storage</li>
+<li>medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard</li>
 <li>low for write safety because the route is read-only</li>
 <li>safe change procedure:</li>
 <li>Save and test one low-risk instance in Instance Manager.</li>

@@ -716,6 +716,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#account-workspaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Account workspaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#safe-handling-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3898,6 +3909,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#account-workspaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Account workspaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#safe-handling-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3956,7 +3978,7 @@
 <li>storage location:
   <code>data/sql-cockpit/sql-cockpit-local.sqlite</code></li>
 <li>what it stores:
-  local users, password hashes, session records, theme choice, notification state, saved connection profiles, and saved instance profiles</li>
+  local users, password hashes, session records, theme choice, notification state, account/team workspace records, saved connection profiles, and saved instance profiles</li>
 <li>what it does not replace:
   <code>Sync.TableConfig</code>, <code>Sync.TableState</code>, <code>Sync.RunLog</code>, and <code>Sync.RunActionLog</code> still live in the SQL Server config database</li>
 </ul>
@@ -3985,8 +4007,23 @@
 <li>notification read and archive state</li>
 <li>saved database connection profiles</li>
 <li>saved SQL Server instance profiles</li>
+<li>account-owned workspaces created from the Account page</li>
 </ul>
 <p>That means these values no longer depend on one browser profile alone. They now follow the signed-in SQL Cockpit user on that machine.</p>
+<h2 id="account-workspaces"><a class="headerlink" href="#account-workspaces" title="Permanent link">¶</a>Account workspaces</h2>
+<p>Signed-in users can create additional private workspaces from the dashboard header or the Account page.
+Each account workspace has its own saved connection and instance profile lists.
+The default <code>My Workspace</code> remains available for existing personal profiles.
+Users can create more than one account workspace, including multiple workspaces with the same display name when the slug field is left blank. SQL Cockpit derives a distinct slug for each workspace, such as <code>support</code>, <code>support-2</code>, and <code>support-3</code>.
+Changing workspace also changes the command palette search environment. Object-search syncs, manifests, locks, recent objects, search results, and object definition lookups are scoped by the active workspace, so databases must be synchronized separately in each workspace where you want them searchable.</p>
+<p>Storage and access:</p>
+<ul>
+<li>workspace records are stored in the local SQLite <code>workspaces</code> table with <code>owner_user_id</code> set to the signed-in user</li>
+<li>account workspace slugs are unique per signed-in user; explicit slug values must not duplicate another workspace owned by the same user</li>
+<li>profile lists for additional account workspaces are stored in <code>user_preferences</code> under <code>workspace.personal.&lt;workspaceId&gt;</code></li>
+<li>team-created workspaces use the same <code>workspaces</code> table with <code>team_id</code> set, and profile lists remain in <code>settings.workspace.team.&lt;teamId&gt;</code></li>
+<li>access checks are enforced by the API before reading or saving workspace profiles</li>
+</ul>
 <h2 id="safe-handling-notes"><a class="headerlink" href="#safe-handling-notes" title="Permanent link">¶</a>Safe handling notes</h2>
 <ul>
 <li>treat saved SQL-auth connection passwords as sensitive because they are stored in the local app database for the signed-in user</li>

@@ -2797,6 +2797,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#indexed-document-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexed document families
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#confidence" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3865,6 +3876,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#indexed-document-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexed document families
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#confidence" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3899,7 +3921,7 @@
 <p>The database object search feature adds a local search sidecar to SQL Cockpit so operators can search SQL Server metadata and definitions without introducing external infrastructure.</p>
 <h2 id="recommended-architecture"><a class="headerlink" href="#recommended-architecture" title="Permanent link">¶</a>Recommended architecture</h2>
 <ol>
-<li><code>Sync-SqlObjectSearchIndex.ps1</code> reads one or more configured SQL Server databases, normalizes object metadata into a canonical document model, and pushes batches into the local Lucene.NET service.</li>
+<li><code>Sync-SqlObjectSearchIndex.ps1</code> reads one or more configured SQL Server databases plus a stable <code>msdb</code> SQL Agent job source during instance-wide sync, normalizes metadata into a canonical document model, and pushes batches into the local Lucene.NET service.</li>
 <li><code>object-search/SqlObjectSearch.Service</code> hosts Lucene.NET on loopback and owns index persistence, document upsert and delete, ranking, and detail retrieval.</li>
 <li><code>webapp/server.js</code> remains the front-end-facing API gateway. It proxies search and detail reads to the Lucene.NET sidecar and runs PowerShell for refresh and rebuild operations.</li>
 <li><code>webapp/components/object-search-palette.js</code> provides the command-palette UI and object detail preview.</li>
@@ -3917,6 +3939,7 @@
     NODE --&gt; LUCENE[Lucene.NET Service]
     NODE --&gt; PS[Sync-SqlObjectSearchIndex.ps1]
     PS --&gt; SQL[(SQL Server Catalog Views)]
+    PS --&gt; MSDB[(msdb SQL Agent Catalog)]
     PS --&gt; LUCENE
     LUCENE --&gt; IDX[(Local Index On Disk)]</code></pre>
 <h2 id="storage-and-runtime-notes"><a class="headerlink" href="#storage-and-runtime-notes" title="Permanent link">¶</a>Storage and runtime notes</h2>
@@ -3932,10 +3955,16 @@
 <li>sync log:
   <code>Logs/ObjectSearch/sync.log</code></li>
 </ul>
+<h2 id="indexed-document-families"><a class="headerlink" href="#indexed-document-families" title="Permanent link">¶</a>Indexed document families</h2>
+<ul>
+<li>database objects from <code>sys.objects</code>, <code>sys.schemas</code>, <code>sys.sql_modules</code>, and related catalog views</li>
+<li>child metadata for columns, parameters, references, indexes, and constraints</li>
+<li>SQL Server Agent jobs from <code>msdb.dbo.sysjobs</code> and related job step/schedule tables, stored as <code>Agent Job</code> documents under <code>databaseName = msdb</code></li>
+</ul>
 <h2 id="confidence"><a class="headerlink" href="#confidence" title="Permanent link">¶</a>Confidence</h2>
 <ul>
 <li>confirmed:
-  Node is the browser-facing layer, PowerShell owns extraction, and the Lucene.NET service persists the local index on disk.</li>
+  Node is the browser-facing layer, PowerShell owns extraction, SQL Agent jobs are read from msdb during instance-wide sync, and the Lucene.NET service persists the local index on disk.</li>
 <li>inferred:
   parent-object <code>modify_date</code> is a practical incremental boundary for child objects such as columns, indexes, and constraints, but some edge-case DDL sequences may still justify an occasional full rebuild.</li>
 </ul>

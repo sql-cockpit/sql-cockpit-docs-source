@@ -1022,6 +1022,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bulk-create-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Create Connections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-a-connection" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1037,17 +1048,6 @@
     <span class="md-ellipsis">
       
         Manage Saved Profiles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#discover-sql-servers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discover SQL Servers
       
     </span>
   </a>
@@ -1115,17 +1115,6 @@
     <span class="md-ellipsis">
       
         SQL Agent Manager Has No Instances
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#discovery-finds-nothing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discovery Finds Nothing
       
     </span>
   </a>
@@ -4003,6 +3992,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bulk-create-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Create Connections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-a-connection" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4018,17 +4018,6 @@
     <span class="md-ellipsis">
       
         Manage Saved Profiles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#discover-sql-servers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discover SQL Servers
       
     </span>
   </a>
@@ -4102,17 +4091,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#discovery-finds-nothing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discovery Finds Nothing
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -4157,10 +4135,11 @@
 <p>Connection Manager can:</p>
 <ul>
 <li>save named SQL Server database connection profiles</li>
+<li>bulk create one database connection profile per visible database on a selected instance profile</li>
 <li>test a connection against a live SQL Server instance</li>
 <li>show visible database, table, view, and procedure counts</li>
-<li>discover SQL Server instances visible to the API host</li>
 <li>edit or delete saved profiles</li>
+<li>manage saved database connection profiles from a compact table</li>
 <li>keep database-level connection profiles separate from instance-level profiles</li>
 </ul>
 <h2 id="how-it-works"><a class="headerlink" href="#how-it-works" title="Permanent link">¶</a>How It Works</h2>
@@ -4171,11 +4150,12 @@
     ExplorerApi --&gt; RestRunner[Invoke-SqlTablesSyncRestOperation.ps1]
     RestRunner --&gt; Explorer[Get-StsServerObjectExplorer]
     Explorer --&gt; SqlServer[(Target SQL Server)]
+    ConnectionManager --&gt; BulkCreate[Create Profiles For All Databases]
+    BulkCreate --&gt; Profile
     ConnectionManager --&gt; SearchApi[POST /api/object-search/index/sync-connection]
     SearchApi --&gt; SearchSync[Sync-SqlObjectSearchIndex.ps1]
     SearchSync --&gt; SearchIndex[(Local object-search index)]</code></pre>
 <p>The browser reads and writes saved profiles from local storage key <code>sql-cockpit-database-connection-profiles</code>. When you test a connection, the dashboard sends the selected profile to the local API route <code>POST /api/servers/explorer</code>. The Node API invokes PowerShell, and PowerShell queries SQL Server catalog metadata.</p>
-<p>Discovery uses <code>POST /api/servers/discover</code>. Results depend on SQL Browser visibility, network policy, firewall rules, and the account running the SQL Cockpit API.</p>
 <p>Server-wide object-search indexing belongs to Instance Manager because it operates against an instance profile rather than one database connection.</p>
 <h2 id="prerequisites"><a class="headerlink" href="#prerequisites" title="Permanent link">¶</a>Prerequisites</h2>
 <p>Before using Connection Manager:</p>
@@ -4214,14 +4194,23 @@
 <h2 id="save-a-connection"><a class="headerlink" href="#save-a-connection" title="Permanent link">¶</a>Save A Connection</h2>
 <ol>
 <li>Enter a connection name.</li>
-<li>Choose the authentication mode.</li>
-<li>Enter the SQL Server name or instance name.</li>
-<li>Enter the database name.</li>
-<li>For SQL authentication, enter the user name and password.</li>
-<li>Set <code>Trust server certificate</code> only when that matches your environment policy.</li>
+<li>Select the owning instance profile.</li>
+<li>Wait for the database list to load, or click <code>Refresh Databases</code>.</li>
+<li>Select the database name.</li>
 <li>Click <code>Save Connection</code>.</li>
 </ol>
 <p>Saved profiles stay in the Connection Manager vault. They do not appear in Instance Manager or SQL Agent Manager.</p>
+<h2 id="bulk-create-connections"><a class="headerlink" href="#bulk-create-connections" title="Permanent link">¶</a>Bulk Create Connections</h2>
+<p>Use <code>Create Profiles For All Databases</code> when you want to seed Connection Manager profiles for every database visible to the selected Instance Manager profile.</p>
+<p>The bulk action:</p>
+<ul>
+<li>uses the selected instance profile for server, authentication, and certificate settings</li>
+<li>uses the current visible database list, loading it first when needed</li>
+<li>creates one Connection Manager profile per visible database</li>
+<li>skips any existing profile with the same inherited server and database name</li>
+<li>stores the created profiles in the active workspace profile store</li>
+</ul>
+<p>Profile names are generated as <code>&lt;instance profile name&gt; / &lt;database name&gt;</code>. Review the generated list after creation and delete profiles for databases that should not be reused by operators.</p>
 <h2 id="test-a-connection"><a class="headerlink" href="#test-a-connection" title="Permanent link">¶</a>Test A Connection</h2>
 <p>Click <code>Test Connection</code> to call <code>POST /api/servers/explorer</code>.</p>
 <p>A successful test shows:</p>
@@ -4234,7 +4223,7 @@
 </ul>
 <p>Use this check before relying on the profile in source or destination database workflows.</p>
 <h2 id="manage-saved-profiles"><a class="headerlink" href="#manage-saved-profiles" title="Permanent link">¶</a>Manage Saved Profiles</h2>
-<p>Saved profiles appear in the profile list.</p>
+<p>Saved database connection profiles appear in a compact table so larger workspaces use less vertical space. The table shows the profile name, inherited server, selected database, authentication mode, and profile actions.</p>
 <p>Use:</p>
 <table>
 <thead>
@@ -4255,16 +4244,7 @@
 </tbody>
 </table>
 <p>Deleting a profile removes it from the Connection Manager vault in the current browser. Instance Manager profiles are unaffected.</p>
-<h2 id="discover-sql-servers"><a class="headerlink" href="#discover-sql-servers" title="Permanent link">¶</a>Discover SQL Servers</h2>
-<p>Click <code>Discover SQL Servers</code> to ask the API host to scan for visible SQL Server instances.</p>
-<p>Discovery is a convenience feature, not an inventory source of truth. It can miss servers when:</p>
-<ul>
-<li>SQL Browser is disabled</li>
-<li>UDP discovery is blocked</li>
-<li>firewalls block discovery traffic</li>
-<li>named instances are hidden</li>
-<li>the SQL Cockpit API host is on a restricted network segment</li>
-</ul>
+<p>Instance Manager keeps the larger profile card layout because those records include server-wide search sync controls and live sync status.</p>
 <h2 id="fields"><a class="headerlink" href="#fields" title="Permanent link">¶</a>Fields</h2>
 <table>
 <thead>
@@ -4281,13 +4261,8 @@
 <td>Blank</td>
 </tr>
 <tr>
-<td>Authentication</td>
-<td><code>Integrated</code> or <code>SQL</code></td>
-<td><code>Integrated</code></td>
-</tr>
-<tr>
-<td>Server</td>
-<td>SQL Server host, alias, or <code>host\instance</code></td>
+<td>Instance profile</td>
+<td>Any saved Instance Manager profile visible in the current workspace</td>
 <td>Blank</td>
 </tr>
 <tr>
@@ -4295,44 +4270,23 @@
 <td>SQL Server database name</td>
 <td>Blank</td>
 </tr>
-<tr>
-<td>User name</td>
-<td>SQL login name when authentication is <code>SQL</code></td>
-<td>Blank</td>
-</tr>
-<tr>
-<td>Password</td>
-<td>SQL login password when authentication is <code>SQL</code></td>
-<td>Blank</td>
-</tr>
-<tr>
-<td>Integrated security</td>
-<td>Boolean stored on the profile</td>
-<td><code>true</code> when using integrated auth</td>
-</tr>
-<tr>
-<td>Trust server certificate</td>
-<td>Boolean stored on the profile</td>
-<td><code>true</code> in the current dashboard defaults</td>
-</tr>
 </tbody>
 </table>
+<p>Connection Manager no longer shows a separate server, authentication, integrated-security, or trust-certificate field. Those values are inherited from the selected Instance Manager profile.</p>
 <h2 id="operational-interface"><a class="headerlink" href="#operational-interface" title="Permanent link">¶</a>Operational Interface</h2>
 <ul>
 <li>storage location:</li>
 <li>saved profiles: browser local storage key <code>sql-cockpit-database-connection-profiles</code></li>
 <li>instance profiles: not stored here; Instance Manager uses <code>sql-cockpit-instance-profiles</code></li>
-<li>discovery results: browser memory only</li>
 <li>live metadata test results: browser memory only</li>
 <li>valid values:</li>
-<li>auth mode: <code>Integrated</code> or <code>SQL</code></li>
-<li>trust server certificate: <code>true</code> or <code>false</code></li>
-<li>server: any SQL Server name accepted by the local SQL client provider</li>
+<li>instance profile: any saved Instance Manager profile visible in the current workspace</li>
+<li>inherited server: any SQL Server name accepted by the local SQL client provider on the selected instance profile</li>
 <li>database: any database name accepted by the target SQL Server</li>
 <li>defaults:</li>
-<li>integrated security is preferred by the UI</li>
-<li>trust server certificate defaults to enabled in the current UI</li>
-<li>saved profile list defaults to empty in a new browser profile</li>
+<li>no instance profile is selected in a blank draft</li>
+<li>authentication and TLS settings inherit from the selected instance profile</li>
+<li>saved profile table defaults to empty in a new browser profile</li>
 <li>code paths affected:</li>
 <li><code>webapp/components/dashboard-client.js</code></li>
 <li><code>webapp/app/connection-manager/page.js</code></li>
@@ -4340,13 +4294,17 @@
 <li><code>Invoke-SqlTablesSyncRestOperation.ps1</code></li>
 <li><code>SqlTablesSync.Tools.psm1</code></li>
 <li>operational risk:</li>
-<li>SQL authentication passwords are stored in browser local storage when saved</li>
+<li>SQL authentication passwords may be stored in the selected Instance Manager profile when that instance uses SQL auth</li>
 <li>metadata checks can reveal database and object names to anyone with browser access</li>
-<li>discovery can trigger network monitoring alerts in restricted environments</li>
+<li>bulk creation can quickly make many database names visible in the active workspace profile list</li>
+<li>table layout is a presentation-only change; it does not change who can read, edit, share, or delete profiles</li>
 <li>safe change procedure:</li>
-<li>Test the profile before using it in downstream workflows.</li>
+<li>Save and test the owning instance in Instance Manager first.</li>
+<li>Use <code>Refresh Databases</code> and confirm the database list is expected.</li>
+<li>Test one low-risk profile before using it in downstream workflows.</li>
 <li>Prefer a least-privilege login with metadata visibility appropriate for the task.</li>
-<li>Avoid saving SQL-auth passwords on shared workstations.</li>
+<li>Avoid saving SQL-auth instance passwords on shared workstations.</li>
+<li>After bulk creation, delete profiles for databases that should not be reused.</li>
 <li>Delete stale profiles after a migration, role change, or credential rotation.</li>
 <li>Restart SQL Cockpit after API or PowerShell route changes.</li>
 </ul>
@@ -4354,7 +4312,7 @@
 <h3 id="test-connection-fails"><a class="headerlink" href="#test-connection-fails" title="Permanent link">¶</a>Test Connection Fails</h3>
 <p>Check:</p>
 <ol>
-<li>The server name is correct.</li>
+<li>The selected instance profile points at the correct server.</li>
 <li>The API host can reach the SQL Server network endpoint.</li>
 <li>Integrated security is running under the expected Windows account.</li>
 <li>SQL-auth credentials are current.</li>
@@ -4366,8 +4324,6 @@
 <p>Check whether browser data was cleared, a private browsing window is being used, or the page was opened under a different host name or port.</p>
 <h3 id="sql-agent-manager-has-no-instances"><a class="headerlink" href="#sql-agent-manager-has-no-instances" title="Permanent link">¶</a>SQL Agent Manager Has No Instances</h3>
 <p>Open Instance Manager and save an instance profile. SQL Agent Manager reads <code>sql-cockpit-instance-profiles</code>, not the Connection Manager vault.</p>
-<h3 id="discovery-finds-nothing"><a class="headerlink" href="#discovery-finds-nothing" title="Permanent link">¶</a>Discovery Finds Nothing</h3>
-<p>Try a manual server name. Discovery depends on network broadcast and SQL Browser visibility; a failed discovery scan does not prove the SQL Server is unreachable.</p>
 <h2 id="screenshot"><a class="headerlink" href="#screenshot" title="Permanent link">¶</a>Screenshot</h2>
 <!-- AUTO_SCREENSHOT:connection-manager:START -->
 <p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/connection-manager.png" data-title="Connection Manager page in SQL Cockpit" data-desc-position="bottom"><img alt="Connection Manager page in SQL Cockpit" src="../../assets/screenshots/connection-manager.png"></a></p>
