@@ -22,6 +22,7 @@
 - Default bind address: `http://127.0.0.1:8080/`
 - Local web-app error logs: `.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl`, `.\Logs\WebApp\server-errors-YYYY-MM-DD.jsonl`, and `.\Logs\WebApp\process-errors-YYYY-MM-DD.jsonl`
 - Local REST trace files written by the probe script: `.\Logs\RestApiTrace\rest-api-trace-yyyyMMdd-HHmmss.json`
+- Built-in Swagger UI: `GET /api-docs` (or `GET /swagger`, which redirects to `/api-docs`)
 - Realtime notifications runtime-discovery route: `GET /api/runtime`
 - Code paths affected:
   - `Start-SqlTablesSyncRestApi.ps1`
@@ -45,6 +46,7 @@
   - `object-search/SqlObjectSearch.Service/Program.cs`
   - `webapp/lib/object-search-service.js`
   - `webapp/components/object-search-palette.js`
+  - `sql-cockpit-api/server.js`
 - Operational risk:
   - the API can read sync config rows, including stored SQL-auth credentials already present in `Sync.TableConfig`
   - the create and CSV-import endpoints can insert new operational rows into `Sync.TableConfig`
@@ -56,6 +58,7 @@
 - the object-search endpoints return indexed object names, definitions, columns, parameters, and dependency metadata from a local on-disk Lucene index
   - `POST /api/object-search/index/refresh` and `POST /api/object-search/index/rebuild` can now run either against configured sources or against an explicit Connection Manager saved profile supplied in the request body
   - browser and server exception logs can now capture request URLs, page URLs, user agents, stack traces, and any response body text surfaced through the UI, so operators should treat `.\Logs\WebApp\*.jsonl` as sensitive local troubleshooting data
+  - the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes
   - keep the listener bound to loopback unless you have an explicit security design
 - Safe change procedure:
   - start on `127.0.0.1`
@@ -70,6 +73,7 @@
   - test one `POST /api/servers/explorer` request against a low-risk database and confirm the returned catalog shape matches the current UI expectations
   - test one `POST /api/databases/metadata` request against a low-risk database and confirm that the returned table and column metadata matches the current catalog
   - validate `GET /api/object-search/health`, run `POST /api/object-search/index/refresh`, then confirm `GET /api/object-search/search?q=<known object>` returns the expected object near the top
+  - open `/api-docs` while signed in, confirm the page loads `/openapi.json`, and test read-only routes before trying any mutating endpoint
   - trigger one controlled browser-side failure, confirm a new line appears in `.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl`, and sanitize any credentials or business data before sharing the log externally
   - only widen the listener prefix after a security review
 - Confidence: confirmed for script parameters, web app path, endpoints below, and the local JSONL error-log file locations; inferred that wider exposure would be high risk because credentials may be returned to callers and rows can now be inserted
@@ -102,7 +106,9 @@ Credential-resolution behavior for authenticated API requests:
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/health` | Basic liveness plus config DB target summary. |
-| `GET` | `/openapi.json` | Minimal OpenAPI document for local tooling. |
+| `GET` | `/api-docs` | Built-in Swagger UI for authenticated same-origin endpoint overview and controlled API testing. |
+| `GET` | `/swagger` | Redirects to `/api-docs`. |
+| `GET` | `/openapi.json` | OpenAPI document consumed by Swagger UI and local tooling. |
 | `GET` | `/api/runtime` | Return runtime discovery details for the browser shell, including standalone notifications URLs when configured. |
 | `GET` | `/` | Serves the built-in web UI. |
 | `GET` | `/app` | Alias for the built-in web UI. |
@@ -190,14 +196,14 @@ The built-in dashboard is now presented in a layout that closely mirrors the def
 Confirmed operator capabilities in the current dashboard:
 
 - create one sync row with preview and commit actions
-- create and manage reusable database connections through `Connection Manager` or the duplicate `Instance Manager`
-- discover visible SQL Server instances from either connection-management page before filling the server field manually
+- create and manage reusable server-level profiles through `Instance Manager` and database-level profiles through `Connection Manager`
+- discover visible SQL Server instances from `Instance Manager` before creating database-level connections
 - inspect SQL Server Agent jobs, steps, schedules, and runtime history through `Agent Manager`
 - import CSV batches with template download and preview
 - search and filter the current sync fleet by name, mode, enabled state, and last status
 - inspect one full sync row by `SyncId`
 - browse the live `Server Explorer` page by server and database and inspect database, schema, and featured-object cards from SQL Server catalog data
-- manage reusable browser-stored connection profiles and optionally run a server-level connection check through the browser-based `Connection Manager` or duplicate `Instance Manager` workflow
+- manage reusable browser-stored instance and database connection profiles, with server-level discovery and checks handled by `Instance Manager`
 - open two modal windows for applying a new browse target to the explorer without persisting a server registry
 - generate migration SQL from an existing sync row through `POST /api/migrations/from-config`
 - request advisory table batch sizing through `POST /api/tables/batch-size-recommendation`
@@ -246,9 +252,9 @@ Interface notes:
 
 - storage location: no SQL Cockpit database storage; the dashboard reads saved instance profiles from browser local storage key `sql-cockpit-instance-profiles`, sends them to the API, and stores the returned estate summary in browser memory only
 - valid values: `instances` must contain 1 to 30 instance profiles; each profile must include a non-empty server and valid authentication fields
-- default: unreachable instances are returned as critical rows instead of failing the whole response
+- default: unreachable instances are returned as critical rows instead of failing the whole response; Estate Overview calls this route once per saved profile, renders pending rows immediately, and updates each row as its response returns
 - code paths affected: `SqlTablesSync.Tools.psm1`, `Invoke-SqlTablesSyncRestOperation.ps1`, `webapp/server.js`, `webapp/components/dashboard-client.js`, and `webapp/app/page.js`
-- operational risk: read-only for SQL safety, medium for metadata exposure because instance capacity, database state, table names, approximate row counts, edition, version, local SQL Server address, port, authentication scheme, encryption state, and Agent counts can reveal operational detail
+- operational risk: read-only for SQL safety, medium for metadata exposure because instance capacity, database state, table names, approximate row counts, edition, version, local SQL Server address, port, authentication scheme, encryption state, and Agent counts can reveal operational detail; medium for refresh load because the dashboard can run up to six per-instance requests concurrently
 - safe change procedure: validate instance profiles in Instance Manager, test one low-risk instance first, confirm the returned server identity, then widen to more profiles
 
 The `Instances[].Server` object includes engine identity and current-session network details such as `MachineName`, `ComputerNamePhysicalNetBios`, `ServiceName`, `AtAtServerName`, `ServerNameWithService`, `NetTransport`, `ConnectionLocalNetAddress`, `ConnectionLocalTcpPort`, `DmvLocalNetAddress`, `DmvLocalTcpPort`, `ClientNetAddress`, `ProtocolType`, `AuthScheme`, and `EncryptOption`. Each `Instances[].Databases.Items[]` row can include `TableCount` and `Tables[]` with lightweight user-table metadata. When `Tables[]` is empty, the Estate Overview UI can load table rows on demand by calling `POST /api/databases/metadata` for the selected saved instance profile and database.

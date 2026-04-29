@@ -21,8 +21,9 @@ flowchart LR
 3. First run on a new machine: run `POST /api/object-search/index/rebuild` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Full`.
 4. Ongoing runs: run `POST /api/object-search/index/refresh` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Incremental`.
 5. Open SQL Cockpit and press `Ctrl+K`.
-6. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET.
-7. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
+6. Confirm the command-palette object-type filters show distinct icons for tables, views, procedures, functions, triggers, columns, indexes, constraints, synonyms, and SQL Server Agent jobs.
+7. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET.
+8. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
 
 If `dotnet` is installed outside `PATH`, pass the explicit executable path:
 
@@ -121,6 +122,40 @@ Write-Host 'Object-search index, spool, and manifests cleared.'
 ```
 
 Restart the workspace, then run `Sync Schema To Search` or a full sync again.
+
+## SQL Server Agent jobs
+
+Instance-wide sync through `POST /api/object-search/index/sync-connection` adds a stable `msdb` source for SQL Server Agent jobs. This keeps job documents server-scoped instead of duplicating them under each user database.
+
+The sync reads:
+
+- `msdb.dbo.sysjobs`
+- `msdb.dbo.sysjobsteps`
+- `msdb.dbo.sysjobschedules`
+- `msdb.dbo.sysschedules`
+- `msdb.dbo.syscategories`
+
+Each job becomes one Lucene document with:
+
+- `objectType = Agent Job`
+- `databaseName = msdb`
+- `schemaName = SQL Agent`
+- qualified name `[SQL Agent].[job name]`
+- job description, schedules, step names, subsystems, step database names, and step command text in searchable fields
+- `modifiedDate` from `msdb.dbo.sysjobs.date_modified`
+
+Safe test:
+
+1. Run `Sync Server To Search` for a non-production instance profile.
+2. Open the command palette and select the `Agent Jobs` filter.
+3. Search for a known SQL Agent job.
+4. Compare the result with SQL Agent Manager for the same instance.
+5. Optionally call `/api/object-search/search?q=<job-name>&objectType=Agent+Job` and confirm only active-workspace results are returned.
+
+Operational risk:
+
+- users with command-palette search access can see indexed SQL Agent job names, descriptions, schedules, step names, and step command text
+- if msdb job metadata cannot be read, the sync logs a warning and continues with database object indexing
 
 ## Guardrails for commits
 

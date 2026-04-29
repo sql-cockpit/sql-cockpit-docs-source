@@ -19,7 +19,7 @@ SQL Cockpit creates a packaged local SQLite database on the same machine as the 
 - storage location:
   `data/sql-cockpit/sql-cockpit-local.sqlite`
 - what it stores:
-  local users, password hashes, session records, theme choice, notification state, saved connection profiles, and saved instance profiles
+  local users, password hashes, session records, theme choice, notification state, account/team workspace records, saved connection profiles, and saved instance profiles
 - what it does not replace:
   `Sync.TableConfig`, `Sync.TableState`, `Sync.RunLog`, and `Sync.RunActionLog` still live in the SQL Server config database
 
@@ -48,8 +48,25 @@ Password guidance:
 - notification read and archive state
 - saved database connection profiles
 - saved SQL Server instance profiles
+- account-owned workspaces created from the Account page
 
 That means these values no longer depend on one browser profile alone. They now follow the signed-in SQL Cockpit user on that machine.
+
+## Account workspaces
+
+Signed-in users can create additional private workspaces from the dashboard header or the Account page.
+Each account workspace has its own saved connection and instance profile lists.
+The default `My Workspace` remains available for existing personal profiles.
+Users can create more than one account workspace, including multiple workspaces with the same display name when the slug field is left blank. SQL Cockpit derives a distinct slug for each workspace, such as `support`, `support-2`, and `support-3`.
+Changing workspace also changes the command palette search environment. Object-search syncs, manifests, locks, recent objects, search results, and object definition lookups are scoped by the active workspace, so databases must be synchronized separately in each workspace where you want them searchable.
+
+Storage and access:
+
+- workspace records are stored in the local SQLite `workspaces` table with `owner_user_id` set to the signed-in user
+- account workspace slugs are unique per signed-in user; explicit slug values must not duplicate another workspace owned by the same user
+- profile lists for additional account workspaces are stored in `user_preferences` under `workspace.personal.<workspaceId>`
+- team-created workspaces use the same `workspaces` table with `team_id` set, and profile lists remain in `settings.workspace.team.<teamId>`
+- access checks are enforced by the API before reading or saving workspace profiles
 
 ## Safe handling notes
 

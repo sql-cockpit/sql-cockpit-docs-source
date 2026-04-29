@@ -17,6 +17,7 @@ SQL Cockpit has two profile types because server-level workflows and database-le
 Instance profiles are saved in the active workspace profile store:
 
 - Personal workspace: private to your account.
+- Account workspace: private to your account and isolated from your other account workspaces.
 - Team workspace: shared with members of that team.
 
 They include:
@@ -35,6 +36,7 @@ Use instance profiles for workflows that do not start with a single database.
 Database connection profiles are saved in the active workspace profile store:
 
 - Personal workspace: private to your account.
+- Account workspace: private to your account and isolated from your other account workspaces.
 - Team workspace: shared with members of that team.
 
 They include the instance fields plus a database name. They do not automatically create or update rows in `Sync.TableConfig`.
@@ -46,8 +48,19 @@ Use database connection profiles when planning or validating source and destinat
 Use the workspace switcher in the dashboard header to choose where profiles are loaded from and saved to.
 
 - In personal workspace, saved profiles stay private.
+- In account workspace, saved profiles stay private and separate from your other workspaces.
 - In team workspace, profile changes are visible to team members.
-- `Share To Team` in Connection Manager and Instance Manager copies selected personal profiles into a team workspace.
+- Command palette search follows the active workspace. Run object-search sync separately in each workspace where you need searchable databases.
+- Connection Manager keeps saved connections in their own panel and uses a separate full-width, horizontally scrolling `Share Connections` panel where workspace names are columns and connections can be dragged into another workspace to copy them. Copied connections appear in the destination workspace column.
+- Instance Manager keeps saved instances in their own panel and uses a separate full-width, horizontally scrolling `Share Instances` panel where workspace names are columns and instances can be dragged into another workspace to copy them. Copied instances appear in the destination workspace column.
+- Use `Revoke` on a connection card in a destination workspace column to remove it from that workspace. Revoke asks for confirmation and does not automatically remove matching instance profiles.
+- Use `Revoke` on an instance card in a destination workspace column to remove it from that workspace. Revoke asks for confirmation and also removes database connection profiles for the same server from that workspace.
+- Use `Revoke All` on a destination workspace column only when every connection or instance should be removed from that workspace. In the instance sharing board, `Revoke All` removes both instances and connections. You must type the workspace name exactly to confirm; an incorrect name shows a toast and removes nothing.
+- `Share` copies selected profiles into another personal/account workspace or a team workspace.
+- `Share All Instances` and `Share All Connections` ask for confirmation before copying the current manager list into the selected target workspace.
+- Sharing an instance also shares matching database connection profiles for that server.
+- Sharing a database connection also shares the matching instance profile when one exists.
+- Existing target profiles are skipped by server name for instances and by server/database pair for connections.
 
 Primary benefit: teams can share reusable profiles without sending passwords through chat, email, or tickets.
 
@@ -82,8 +95,9 @@ Primary benefit: teams can share reusable profiles without sending passwords thr
 1. Prefer integrated security where the workstation account is the approved operator identity.
 2. Avoid saving SQL-auth passwords on shared workstations.
 3. Share SQL-auth profiles to teams only when required by target policy.
-4. Test shared profiles before using them in Server Explorer, Agent Manager, or sync planning.
-5. Delete stale profiles after server aliases, roles, or credentials change.
+4. Review bulk-shared profiles and delete any generated or copied profile the team should not reuse.
+5. Test shared profiles before using them in Server Explorer, Agent Manager, or sync planning.
+6. Delete stale profiles after server aliases, roles, or credentials change.
 
 ## Troubleshooting
 
@@ -92,7 +106,7 @@ If a saved profile is missing, check:
 - active workspace selection (personal vs team)
 - team membership for the selected team workspace
 - profile was saved to the same workspace you are viewing
-- profile may be in personal workspace and not yet shared to team workspace
+- profile may be in another personal/account workspace or not yet shared to the target team workspace
 
 If a connection test fails, check:
 

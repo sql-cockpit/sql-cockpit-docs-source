@@ -44,6 +44,23 @@ Then restart the API process and validate:
 2. `GET /metrics` returns Prometheus content (when metrics are enabled).
 3. Audit events appear in logs when authentication actions occur.
 
+## Quick start: local + LDAP auth
+
+Use a comma-separated `SQL_COCKPIT_AUTH_MODE` value when more than one provider should be available from the login page.
+
+```dotenv
+SQL_COCKPIT_EDITION=enterprise
+SQL_COCKPIT_AUTH_MODE=local,ldap
+SQL_COCKPIT_LDAP_URL=ldaps://ad.example.com
+SQL_COCKPIT_LDAP_USER_PRINCIPAL_SUFFIX=example.com
+```
+
+Then restart the API process and validate:
+
+1. `GET /api/auth/status` returns `"authModes": ["local", "ldap"]`.
+2. The login page shows both local and LDAP sign-in choices.
+3. A known local admin and a known LDAP user can each sign in.
+
 ## Auth-mode flow
 
 ```mermaid
@@ -55,6 +72,7 @@ flowchart TD
     E -->|local| F[local setup, local users, preferences and password change enabled]
     E -->|oidc| G[OIDC code flow and bearer validation]
     E -->|ldap| H[LDAP bind on login]
+    E -->|local,ldap| I[local and LDAP login choices enabled]
 ```
 
 ## Settings reference
@@ -62,7 +80,7 @@ flowchart TD
 | Setting | Storage location | Valid values | Default | Code paths affected | Operational risk | Safe change procedure | Confidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `SQL_COCKPIT_EDITION` | `SQL_COCKPIT_EDITION` env var (`.env.local`, `.env.example`, optional CLI `--edition`) | `standard`, `enterprise`, `rbac` (legacy alias that normalizes to enterprise) | `standard` | `sql-cockpit-api/server.js` option mapping, `sql-cockpit-api/lib/enterprise-mode.js` edition normalization and authz enforcement | Unexpected auth behavior changes if flipped in-place (for example RBAC checks begin enforcing). | Change during a maintenance window, restart API, verify `/api/auth/status` and a basic sign-in path before opening to users. | Confirmed |
-| `SQL_COCKPIT_AUTH_MODE` | `SQL_COCKPIT_AUTH_MODE` env var (optional CLI `--authMode`) | `local`, `oidc`, `ldap` (other values fall back to `local`) | `local` | `server.js` auth routes (`/api/auth/*`), setup/password/preferences gating, `enterprise-mode.js` auth mode normalization and request authentication | Lockout risk if mode is changed without completing required OIDC/LDAP settings. | Stage in non-prod first, set required OIDC/LDAP variables, restart API, then validate login/logout and `/api/auth/status`. | Confirmed |
+| `SQL_COCKPIT_AUTH_MODE` | `SQL_COCKPIT_AUTH_MODE` env var (optional CLI `--authMode`) | Comma-separated list containing `local`, `ldap`, and/or `oidc`; single values such as `local` still work; unknown/empty values fall back to `local` | `local` | `server.js` auth routes (`/api/auth/*`), setup/password/preferences gating, `enterprise-mode.js` auth mode normalization and request authentication, `rbac-auth-store.js` provider defaults | Lockout risk if external modes are enabled without completing required OIDC/LDAP settings; disabling `local` removes break-glass local login. | Stage in non-prod first, set required OIDC/LDAP variables, restart API, then validate `/api/auth/status` reports the expected `authModes` and test each enabled sign-in path. | Confirmed |
 | `SQL_COCKPIT_OIDC_ISSUER` | `SQL_COCKPIT_OIDC_ISSUER` env var (optional CLI `--oidcIssuer`) | HTTPS issuer URL, no trailing slash required | empty | `enterprise-mode.js` OIDC discovery and token issuer validation | OIDC sign-in fails if missing/incorrect in `oidc` mode. | Set issuer, restart API, test `/.well-known/openid-configuration` reachability and full login callback flow. | Confirmed |
 | `SQL_COCKPIT_OIDC_AUDIENCE` | `SQL_COCKPIT_OIDC_AUDIENCE` env var (optional CLI `--oidcAudience`) | Audience string expected in token `aud` claim | empty | `enterprise-mode.js` token audience verification (`expectedAudience = oidcAudience || oidcClientId`) | Incorrect value causes valid tokens to be rejected. | Set to IdP app audience, restart API, validate one successful and one intentionally invalid-token request. | Confirmed |
 | `SQL_COCKPIT_OIDC_CLIENT_ID` | `SQL_COCKPIT_OIDC_CLIENT_ID` env var (optional CLI `--oidcClientId`) | OIDC client/app id | empty | `enterprise-mode.js` auth code flow (required for `/api/auth/oidc/start`) and audience fallback | OIDC browser login cannot start without it; audience checks may be weaker if both audience and client id are blank. | Set client id, restart API, verify `/api/auth/oidc/start` redirect and callback success. | Confirmed |
@@ -81,7 +99,7 @@ flowchart TD
 ## Safe rollout checklist
 
 1. Set `SQL_COCKPIT_EDITION=enterprise`.
-2. Choose exactly one auth mode (`local`, `oidc`, or `ldap`) and set only the related dependency variables.
+2. Choose one or more auth modes with `SQL_COCKPIT_AUTH_MODE`; for example `local,ldap`.
 3. Keep `SQL_COCKPIT_LDAP_SKIP_CERT_VALIDATION=false` unless in a documented temporary exception.
 4. Set observability (`METRICS_ENABLED`, `AUDIT_LOG_SINK`, `OTEL_*`) before production cutover.
 5. Restart API.
@@ -94,9 +112,11 @@ flowchart TD
 ## Troubleshooting quick notes
 
 - `405` on `/api/auth/oidc/start` or `/api/auth/oidc/callback`:
-  - `SQL_COCKPIT_AUTH_MODE` is not `oidc`.
+  - `SQL_COCKPIT_AUTH_MODE` does not include `oidc`, or Azure AD is disabled in persisted provider settings.
 - LDAP login returns bind failures:
+  - invalid credentials show a friendly browser message asking the user to check username, password, and domain.
   - validate `SQL_COCKPIT_LDAP_URL` protocol/host/port and username suffix/domain mapping.
+  - check trusted audit output for the underlying `authn-ldap-bind` provider error when support needs more detail.
 - No OTLP audit data:
   - ensure all three are set correctly: `SQL_COCKPIT_AUDIT_LOG_SINK=otlp`, `SQL_COCKPIT_OTEL_ENABLED=true`, `SQL_COCKPIT_OTEL_ENDPOINT=<collector>`.
 - `/metrics` returns `metrics disabled`:
