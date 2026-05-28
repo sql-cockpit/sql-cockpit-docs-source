@@ -515,6 +515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user/auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user/desktop-service-manager/" class="md-nav__link">
         
   
@@ -523,6 +551,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -607,6 +691,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1017,6 +1129,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1081,6 +1221,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4125,6 +4293,8 @@
   <code>service.listenUrl</code> must be a loopback HTTP URL, <code>service.executablePath</code> may be blank or a relative or absolute path to a bundled <code>SqlObjectSearch.Service.exe</code>, <code>service.indexRoot</code> and <code>sync.*Path</code> values must resolve to writable local paths, <code>sync.batchSize</code> must be a positive integer, and each source row must contain a SQL Server name, database name, and auth mode</li>
 <li>defaults:
   <code>service.listenUrl = http://127.0.0.1:8094/</code>, <code>service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe</code>, <code>service.maxResults = 40</code>, <code>service.snippetLength = 240</code>, <code>sync.batchSize = 200</code>, <code>sync.manifestDirectory = ./data/object-search/manifests</code>, <code>sync.spoolDirectory = ./data/object-search/spool</code>, <code>sync.statusPath = ./data/object-search/sync-status.json</code>, <code>sync.logPath = ./Logs/ObjectSearch/sync.log</code></li>
+<li>compatibility note:
+  <code>service.snippetLength</code> is retained for older settings files, but current search result rows do not load definition text or build definition snippets. Definitions are loaded only through the selected-object detail API.</li>
 <li>code paths affected:
   <code>Start-SqlObjectSearchService.ps1</code>, <code>Publish-SqlObjectSearchService.ps1</code>, <code>Sync-SqlObjectSearchIndex.ps1</code>, <code>sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs</code>, <code>sql-cockpit-api/server.js</code>, and <code>sql-cockpit-api/components/object-search-palette.js</code></li>
 <li>operational risk:
@@ -4140,17 +4310,17 @@
 <li>storage location:
   <code>data/sql-cockpit/sql-cockpit-local.sqlite</code></li>
 <li>valid values:
-  <code>users.username</code> accepts the local username format enforced by <code>webapp/lib/local-auth.js</code>; <code>users.role</code> currently defaults to <code>admin</code>; <code>user_preferences.preference_key</code> currently uses <code>theme</code>, <code>focusMode</code>, <code>notificationPreferences</code>, <code>connectionProfiles</code>, and <code>instanceProfiles</code>; <code>focusMode</code> stores a boolean that enables the distraction-reduced dashboard shell; <code>sessions.expires_at_utc</code> stores UTC timestamps; the browser cookie name is <code>sql_cockpit_session</code></li>
+  <code>users.username</code> accepts the local username format enforced by <code>sql-cockpit-api/lib/rbac-auth-store.js</code>; <code>user_preferences.preference_key</code> currently uses <code>theme</code>, <code>focusMode</code>, <code>notificationPreferences</code>, <code>connectionProfiles</code>, <code>instanceProfiles</code>, <code>activeWorkspace</code>, <code>visualServerExplorerSettings</code>, <code>commandPaletteDefaultMode</code>, <code>defaultPage</code>, <code>welcomePageLayout</code>, and <code>dashboardIntroPanels</code>; <code>welcomePageLayout</code> stores compact welcome-page widget order, collapsed state, CSS-grid-style <code>colSpan</code>/<code>rowSpan</code> sizing, and clock/greeting display settings such as <code>timeFormat</code>, <code>dateStyle</code>, <code>showSeconds</code>, and <code>textScale</code>; supported welcome widgets include the workspace-scoped <code>recentObjectCache</code> widget, which reads instance/database filter metadata from <code>GET /api/object-search/status</code>, reads displayed rows from <code>GET /api/object-search/recent</code>, and stores optional <code>objectType</code>, <code>sourceServer</code>, <code>databaseName</code>, and <code>limit</code> filters in widget settings; <code>dashboardIntroPanels</code> stores per-section intro-panel expanded state and defaults to collapsed when unset; <code>notificationPreferences.teamSyncFailureNotificationsEnabled</code> and <code>notificationPreferences.syncFailureEmailEnabled</code> default to <code>true</code>; <code>focusMode</code> stores a boolean that enables the distraction-reduced dashboard shell; <code>sessions.expires_at_utc</code> stores UTC timestamps; the browser cookie name is <code>sql_cockpit_session</code></li>
 <li>defaults:
-  first workstation user is created through <code>/setup</code>; default session lifetime is 7 days with rolling touch; lockout threshold is 5 failed logins in 15 minutes; default <code>theme = dark</code>; default <code>focusMode = false</code>; notification and saved-profile preference stores start empty or false-like</li>
+  first workstation user is created through <code>/setup</code>; default session lifetime is 7 days with rolling touch; lockout threshold is 5 failed logins in 15 minutes; default <code>theme = dark</code>; default <code>focusMode = false</code>; browser notification permission starts disabled, while sync-failure team alerts and creator email preferences start enabled</li>
 <li>code paths affected:
-  <code>webapp/lib/local-auth.js</code>, <code>webapp/server.js</code>, <code>webapp/components/dashboard-client.js</code>, <code>webapp/components/dashboard-shell.js</code>, <code>webapp/components/dashboard-data.js</code>, <code>webapp/app/login/page.js</code>, <code>webapp/app/setup/page.js</code>, and <code>webapp/app/preferences/page.js</code></li>
+  <code>sql-cockpit-api/lib/rbac-auth-store.js</code>, <code>sql-cockpit-api/server.js</code>, <code>sql-cockpit-api/lib/task-management-store.js</code>, <code>sql-cockpit-api/components/dashboard-client.js</code>, and <code>sql-cockpit-api/components/notifications-data.js</code></li>
 <li>operational risk:
-  medium, because the local app database now contains workstation-local auth state and may also contain saved SQL-auth connection passwords through the per-user preference store; low for <code>focusMode</code> itself because it changes presentation rather than API behavior, but operators should confirm they can still find hidden chrome such as breadcrumbs and the footer when they leave focus mode</li>
+  medium, because the local app database now contains workstation-local auth state and may also contain saved SQL-auth connection passwords through the per-user preference store; low for <code>focusMode</code> itself because it changes presentation rather than API behavior, but operators should confirm they can still find hidden chrome such as breadcrumbs when they leave focus mode</li>
 <li>safe change procedure:
   back up the SQLite file before incompatible schema changes, keep the app on loopback, validate first-run setup, login, logout, password change, focus-mode toggle persistence, and preference persistence after deployment, and prefer integrated SQL authentication in saved profiles whenever possible</li>
 <li>confidence:
-  confirmed for the storage path, session cookie name, password hashing, rate limit values, and current preference keys; inferred that future hardening may add a stronger machine-bound encryption layer for saved SQL-auth profile passwords</li>
+  confirmed for the storage path, session cookie name, password hashing, rate limit values, sync-failure notification preferences, and current preference keys; inferred that future hardening may add a stronger machine-bound encryption layer for saved SQL-auth profile passwords</li>
 </ul>
 <h3 id="8-legacy-browser-local-preference-migration"><a class="headerlink" href="#8-legacy-browser-local-preference-migration" title="Permanent link">¶</a>8. Legacy browser-local preference migration</h3>
 <p>The dashboard still reads older browser-local profile data once during migration so existing operators are not forced to recreate saved connections immediately.</p>

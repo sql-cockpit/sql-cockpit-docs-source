@@ -517,6 +517,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../desktop-service-manager/" class="md-nav__link">
         
   
@@ -525,6 +553,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -688,6 +772,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-one-row-from-sql-cockpit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run One Row From SQL Cockpit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-to-look-up-fields" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -744,6 +839,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1154,6 +1277,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1218,6 +1369,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -3909,6 +4088,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-one-row-from-sql-cockpit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run One Row From SQL Cockpit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-to-look-up-fields" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4022,6 +4212,24 @@
 <li>Confirm <code>BatchSize</code> is conservative enough for the first run.</li>
 <li>Confirm the current <code>Sync.TableState</code> checkpoint is expected.</li>
 </ol>
+<h2 id="run-one-row-from-sql-cockpit"><a class="headerlink" href="#run-one-row-from-sql-cockpit" title="Permanent link">¶</a>Run One Row From SQL Cockpit</h2>
+<p>Fleet View and Live Inspector can start an individual sync row with the same
+legacy entrypoint used by the Aptos spawn scripts: <code>Sync-ConfiguredSqlTable.ps1</code>
+with a single <code>SyncId</code>. SQL Cockpit queues the run in Task Manager first and
+then executes the script from that task run.</p>
+<p>Before selecting <strong>Run Sync Now</strong>:</p>
+<ol>
+<li>Confirm the row is enabled and points at the intended source and destination.</li>
+<li>Confirm <code>Sync.TableState.LastStatus</code> is not <code>Running</code>.</li>
+<li>Review <code>PreSyncSql</code>, <code>PostSyncSql</code>, <code>SyncMode</code>, <code>SourceWhereClause</code>, and
+   batch limits.</li>
+<li>Use a low-risk row first; the API returns <code>TaskId</code> and <code>TaskRunId</code>.</li>
+<li>Inspect the Task Manager run logs for script output, then refresh the row
+   after completion and inspect <code>Sync.RunLog</code> and
+   <code>Sync.RunActionLog</code>.</li>
+</ol>
+<p>Operational risk: high. A manual run can write destination data and advance
+incremental checkpoints. Disabled rows are rejected by default.</p>
 <h2 id="where-to-look-up-fields"><a class="headerlink" href="#where-to-look-up-fields" title="Permanent link">¶</a>Where To Look Up Fields</h2>
 <p>Use:</p>
 <ul>

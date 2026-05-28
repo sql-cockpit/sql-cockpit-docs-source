@@ -707,6 +707,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../desktop-service-manager/" class="md-nav__link">
         
   
@@ -715,6 +743,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -799,6 +883,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1209,6 +1321,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1273,6 +1413,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4075,6 +4243,47 @@
 <p>SQL Cockpit is a browser workspace for local SQL Server operations. The dashboard calls the local Node REST host, which calls PowerShell, which reads SQL Server metadata or SQL Cockpit config tables.</p>
 <p>You can also run the same dashboard as a standalone desktop window through Electron using <code>Start-SqlCockpitDesktop.ps1</code>.</p>
 <h2 id="page-map"><a class="headerlink" href="#page-map" title="Permanent link">¶</a>Page Map</h2>
+<p>The left navigation groups pages as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Heading</th>
+<th>Pages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overview</td>
+<td>Estate Overview, Instance Manager, Connection Manager</td>
+</tr>
+<tr>
+<td>Operations &amp; Monitoring</td>
+<td>Agent Manager, Runtime Analysis, Job Run History, Agent Runtime Comparison</td>
+</tr>
+<tr>
+<td>Data Synchronisation</td>
+<td>Sync Overview, Sync Launchpad, Fleet View, Live Inspector, Schema Studio, Largest Tables, Index Inspector, Batch Copilot, Bulk Intake</td>
+</tr>
+<tr>
+<td>Development &amp; Engineering</td>
+<td>Server Explorer, Visual Server Explorer, View Mapper, Procedure Repointer, Stored Procedure Mapper, SQL Editor, Task Manager</td>
+</tr>
+<tr>
+<td>Access &amp; Administration</td>
+<td>Users, RBAC, Workspaces (directory, create team, invites), Roles, Auth Providers, Active Sessions, Audit Logs</td>
+</tr>
+<tr>
+<td>System Configuration</td>
+<td>SMTP Settings, Cache, Service Manager</td>
+</tr>
+</tbody>
+</table>
+<p>Administration and system-configuration entries are still permission-filtered. <code>Workspaces</code> expands to <code>/admin/workspaces</code>, <code>/admin/workspaces/create</code>, and <code>/admin/workspaces/invites</code>; legacy <code>/admin/teams*</code> routes redirect to the matching workspace route. Signed-in users also have <code>/workspaces</code>, which lists their personal and team workspaces; legacy <code>/teams</code> redirects there. The create page requires <code>teams.create</code>, while invite creation/revocation requires <code>teams.assign_members</code>. <code>Service Manager</code> appears in System Configuration only for users with <code>service.status</code>; <code>Task Manager</code> appears in Development &amp; Engineering for standard signed-in users because the built-in <code>standard_user</code> role includes <code>tasks.view</code>.</p>
+<p>Submenus in the left navigation are collapsed by default to reduce scrolling through the menu. Use the small expand control on a parent item to show its action pages. When a child action page is active, its parent group opens automatically. Manager-style pages also render a compact inline page menu above the content so action pages remain visible in focus mode.</p>
+<p>Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.</p>
+<p>Dashboard tables use a shared row hover state so operators can track the active row while scanning dense sync, estate, Agent, admin, and SQL Editor grids.</p>
+<p>The Welcome Page keeps the greeting and workflow search above the workspace controls. On large dashboard viewports, <strong>Active workspace</strong> and <strong>Good starting points</strong> share a two-column row; on narrower screens they stack vertically. The workspace switcher and quick-start buttons include icons so their intent remains scannable in the compact dashboard layout.</p>
+<p>Instance Manager SQL Server discovery results render as a table with instance, server, version, cluster state, and a direct <strong>Use Server</strong> action.</p>
 <table>
 <thead>
 <tr>
@@ -4113,6 +4322,11 @@
 <td>Server Explorer</td>
 <td>Browse live databases, schemas, tables, views, procedures, and functions.</td>
 <td>Live SQL catalog metadata.</td>
+</tr>
+<tr>
+<td>Visual Server Explorer</td>
+<td>Expand the same live catalog metadata as a spiderweb graph, including object child metadata and optional SQL Agent jobs.</td>
+<td>Live SQL catalog metadata and SQL Agent inventory.</td>
 </tr>
 <tr>
 <td>SQL Editor</td>
@@ -4185,7 +4399,7 @@
 </tr>
 </tbody>
 </table>
-<p>Use the workspace selector to switch profile scope at runtime.</p>
+<p>Use the workspace selector in the top-right profile dropdown to switch profile scope at runtime.</p>
 <h2 id="sensitive-information"><a class="headerlink" href="#sensitive-information" title="Permanent link">¶</a>Sensitive Information</h2>
 <p>Treat the dashboard as an operator tool, not a public web app:</p>
 <ul>
@@ -4240,7 +4454,7 @@
 <ul>
 <li>the setting is saved per signed-in local user in the packaged preference store</li>
 <li>the dashboard collapses to a reduced-chrome layout and leaves behind a slim sidebar rail with icon links; hover the icons to see tooltip text and use the same control at the top of the rail to exit focus mode on the next page</li>
-<li>on <code>Estate Overview</code>, focus mode hides the summary cards, breadcrumbs, intro block, footer, and payload box so the instance table becomes the primary surface</li>
+<li>on <code>Estate Overview</code>, focus mode hides the summary cards, breadcrumbs, intro block, and payload box so the instance table becomes the primary surface; the footer remains available</li>
 <li>on <code>SQL Agent Manager</code>, focus mode removes summary cards and the payload box, keeps core filters and refresh controls visible, and prioritizes the jobs grid for faster triage</li>
 <li>turning focus mode on while you are on <code>Estate Overview</code> scrolls the instance table into view automatically</li>
 <li>turning focus mode on while you are on <code>SQL Agent Manager</code> scrolls the jobs panel into view automatically</li>
@@ -4248,7 +4462,7 @@
 <p>Safe use notes:</p>
 <ul>
 <li>use focus mode for review tasks, especially estate and table-heavy pages</li>
-<li>turn it off when you need the broader navigation, page description, or footer context again</li>
+<li>turn it off when you need the broader navigation or page description again</li>
 </ul>
 <h2 id="dashboard-screenshot"><a class="headerlink" href="#dashboard-screenshot" title="Permanent link">¶</a>Dashboard Screenshot</h2>
 <!-- AUTO_SCREENSHOT:dashboard-home:START -->

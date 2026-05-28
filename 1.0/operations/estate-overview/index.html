@@ -515,6 +515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user/auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user/desktop-service-manager/" class="md-nav__link">
         
   
@@ -523,6 +551,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -607,6 +691,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1237,6 +1349,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../service-manager/" class="md-nav__link">
         
   
@@ -1301,6 +1441,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4171,11 +4339,12 @@
 <p>The browser reads saved instance profiles from local storage key <code>sql-cockpit-instance-profiles</code>. The dashboard creates one table row per saved profile immediately, then calls <code>POST /api/sql-estate/overview</code> separately for each instance profile. As each response returns, the matching row is replaced with live SQL Server metadata and the summary cards are recalculated. This keeps fast instances visible while slower or unreachable instances are still being queried.</p>
 <p>Each instance is evaluated independently. If one instance fails to connect, the response still returns the other instances and marks the failed instance as <code>Critical</code>.</p>
 <p>The browser limits the per-instance refresh fan-out to six concurrent requests. This is not a database-stored flag; it is a dashboard constant intended to improve responsiveness without opening a separate PowerShell and SQL connection for every saved profile at once.</p>
+<p>The Estate Overview toolbar has a <code>Refresh now</code> dropdown button. The dropdown contains the ad-hoc <code>Refresh now</code> action and interval controls for repeating browser-side refreshes. Operators can choose <code>30s</code>, <code>1 min</code>, <code>5 min</code>, <code>10 min</code>, <code>15 min</code>, or <code>Custom</code>; the custom value is entered as seconds. The area above the instance table shows <code>Next refresh in:</code> followed by a countdown to the next scheduled refresh and resets the countdown after each manual or automatic refresh completes. Automatic interval refreshes show a toast when the polling AJAX request completes, including failed per-instance requests if any occurred. The interval choice is session UI state only; it is not written to a database config table or shared with other operators.</p>
 <h2 id="focused-review"><a class="headerlink" href="#focused-review" title="Permanent link">¶</a>Focused Review</h2>
 <p>If the surrounding shell feels noisy during estate review, use the sidebar control near the <code>SQL Cockpit</code> brand to enter <code>Focus mode</code>.</p>
 <p>In the current UI this:</p>
 <ul>
-<li>removes the page intro, breadcrumb trail, KPI cards, payload box, and footer</li>
+<li>removes the page intro, breadcrumb trail, KPI cards, and payload box while keeping the footer available</li>
 <li>keeps the refresh action and main instance table visible</li>
 <li>automatically scrolls the instance inventory table into view when focus mode is enabled on this page</li>
 </ul>
@@ -4346,8 +4515,10 @@
 <li>instances array: 1 to 30 saved instance profiles</li>
 <li>auth mode: <code>Integrated</code> or <code>SQL</code></li>
 <li>trust server certificate: <code>true</code> or <code>false</code></li>
+<li>toolbar refresh interval: <code>30s</code>, <code>1 min</code>, <code>5 min</code>, <code>10 min</code>, <code>15 min</code>, or a custom positive whole number of seconds</li>
 <li>defaults:</li>
 <li>Estate Overview auto-refreshes when the home page opens and at least one instance profile exists</li>
+<li>repeating Estate Overview toolbar refresh defaults to <code>5 min</code> in the current browser session</li>
 <li>no data is shown until an instance profile exists</li>
 <li>the refresh creates pending table rows immediately and updates each row as that instance returns</li>
 <li>the browser refreshes up to six instances concurrently until all saved profiles have completed</li>
@@ -4363,12 +4534,13 @@
 <li>operational risk:</li>
 <li>medium for metadata exposure because instance names, database names, table names, approximate row counts, edition, capacity, Agent job counts, local SQL Server addresses, ports, authentication scheme, and encryption state are visible</li>
 <li>medium for credential handling when saved instance profiles contain SQL-auth credentials in browser local storage</li>
-<li>medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard</li>
+<li>medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard; short repeat intervals such as <code>30s</code> can sustain that read load across the saved estate</li>
 <li>low for write safety because the route is read-only</li>
 <li>safe change procedure:</li>
 <li>Save and test one low-risk instance in Instance Manager.</li>
 <li>Open Estate Overview and confirm the reported server name.</li>
 <li>Add additional instances in small batches.</li>
+<li>Keep the interval at <code>5 min</code> or longer while validating broad estates; use <code>30s</code> or a short custom interval only during active triage.</li>
 <li>Treat low free-space and failed Agent job counts as triage signals, then verify with SQL Server operational tooling.</li>
 <li>Avoid sharing screenshots or payloads outside trusted support channels.</li>
 </ul>
@@ -4379,6 +4551,7 @@
 <p>Check the row error text. Common causes include login failure, SSPI/Kerberos errors, TLS/certificate settings, DNS or network failure, and missing SQL Server permissions.</p>
 <h3 id="free-space-is-blank"><a class="headerlink" href="#free-space-is-blank" title="Permanent link">¶</a>Free Space Is Blank</h3>
 <p>The SQL login may not be able to read <code>sys.dm_os_volume_stats</code>, or the SQL Server environment may not expose volume details. Database file allocation and Agent summaries can still be useful.</p>
+<p>If every reachable instance shows <code>0 B free of 0 B</code> with no row error, verify the SQL Cockpit runtime is using a build where DataTable rows are flattened before Estate Overview summarizes volume rows. A nested row-array shape can turn valid <code>sys.dm_os_volume_stats</code> results into an empty volume row in the dashboard.</p>
 <h3 id="ip-address-or-port-is-blank"><a class="headerlink" href="#ip-address-or-port-is-blank" title="Permanent link">¶</a>IP Address Or Port Is Blank</h3>
 <p>Confirm the connection is using TCP. Local shared-memory, named pipes, listener routing, and some locked-down environments can return blank local address or port values even when the instance is reachable.</p>
 <h3 id="sql-agent-counts-are-blank"><a class="headerlink" href="#sql-agent-counts-are-blank" title="Permanent link">¶</a>SQL Agent Counts Are Blank</h3>

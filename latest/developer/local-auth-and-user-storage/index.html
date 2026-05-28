@@ -515,6 +515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user/auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user/desktop-service-manager/" class="md-nav__link">
         
   
@@ -523,6 +551,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -607,6 +691,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1017,6 +1129,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1081,6 +1221,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -3445,6 +3613,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#admin-active-sessions-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Active Sessions Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reset-procedure-for-support" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3997,6 +4176,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#admin-active-sessions-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Active Sessions Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reset-procedure-for-support" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4127,6 +4317,12 @@
 <li><code>POST /api/auth/password</code></li>
 <li><code>GET /api/preferences</code></li>
 <li><code>PUT /api/preferences</code></li>
+<li><code>GET /api/integrations</code></li>
+<li><code>PUT /api/integrations/slack</code></li>
+<li><code>POST /api/integrations/slack/test</code></li>
+<li><code>PUT /api/integrations/pagerduty</code></li>
+<li><code>POST /api/integrations/pagerduty/test</code></li>
+<li><code>GET /api/admin/active-sessions</code></li>
 </ul>
 <h2 id="security-controls"><a class="headerlink" href="#security-controls" title="Permanent link">¶</a>Security Controls</h2>
 <ul>
@@ -4147,7 +4343,15 @@
 <li>failed sign-in lockout default:
   5 failed attempts in 15 minutes</li>
 <li>default preferences created at setup:
-  <code>theme</code>, <code>notificationPreferences</code>, <code>connectionProfiles</code>, <code>instanceProfiles</code></li>
+  <code>theme</code>, <code>notificationPreferences</code>, <code>integrationSettings</code>, <code>connectionProfiles</code>, <code>instanceProfiles</code></li>
+<li><code>notificationPreferences</code> defaults:
+  <code>readById={}</code>, <code>archivedById={}</code>, <code>lastOpenedAt=""</code>, <code>browserNotificationsEnabled=false</code>, <code>teamSyncFailureNotificationsEnabled=true</code>, <code>syncFailureEmailEnabled=true</code></li>
+<li><code>integrationSettings</code> defaults:
+  Slack disabled with no webhook; PagerDuty disabled with no routing key and Events API URL <code>https://events.pagerduty.com/v2/enqueue</code></li>
+<li>sync-failure preference behavior:
+  team notification recipients are filtered by <code>teamSyncFailureNotificationsEnabled</code>; creator email is filtered by <code>syncFailureEmailEnabled</code></li>
+<li>job-event external delivery behavior:
+  Task Manager checks each subscribed recipient's <code>integrationSettings</code> for Slack and PagerDuty before using global connector fallbacks</li>
 </ul>
 <h2 id="files-to-touch-when-maintaining-this-area"><a class="headerlink" href="#files-to-touch-when-maintaining-this-area" title="Permanent link">¶</a>Files To Touch When Maintaining This Area</h2>
 <ul>
@@ -4173,16 +4377,69 @@
 <ol>
 <li>Back up <code>data/sql-cockpit/sql-cockpit-local.sqlite</code> before making incompatible schema changes.</li>
 <li>Keep route guards in <code>webapp/server.js</code> and schema logic in <code>webapp/lib/local-auth.js</code> aligned.</li>
-<li>Build the webapp with <code>npm run build</code>.</li>
+<li>Prefer live-server validation via the dev server <code>listenPrefix</code>.</li>
 <li>Start the workspace and test:</li>
 <li>first-run setup on a clean local DB</li>
 <li>login on an existing local DB</li>
 <li>logout</li>
 <li>password change</li>
 <li>preference persistence for theme and saved profiles</li>
+<li><code>GET /api/admin/active-sessions</code> as an admin user</li>
 <li>authenticated preference reads and writes after login, confirming <code>GET /api/preferences</code> returns stored values instead of defaults only</li>
 <li>Update both user and developer docs in the same task.</li>
 </ol>
+<h2 id="admin-active-sessions-endpoint"><a class="headerlink" href="#admin-active-sessions-endpoint" title="Permanent link">¶</a>Admin Active Sessions Endpoint</h2>
+<ul>
+<li>endpoint:</li>
+<li><code>GET /api/admin/active-sessions</code></li>
+<li>authentication / RBAC:</li>
+<li>requires authenticated admin context and permission <code>admin.audit.view</code></li>
+<li>request shape:</li>
+<li>optional query parameter: <code>limit</code> (integer, defaults to <code>200</code>)</li>
+<li>example:<ul>
+<li><code>GET /api/admin/active-sessions?limit=50</code></li>
+</ul>
+</li>
+<li>response shape:</li>
+<li>object with <code>activeSessions</code> array</li>
+<li>session items include:<ul>
+<li><code>id</code></li>
+<li><code>session_user_id</code></li>
+<li><code>username</code></li>
+<li><code>display_name</code></li>
+<li><code>role</code></li>
+<li><code>provider</code></li>
+<li><code>ip_address</code></li>
+<li><code>user_agent</code></li>
+<li><code>created_at</code></li>
+<li><code>last_seen_at</code></li>
+<li><code>expires_at</code></li>
+<li><code>metadata</code> (parsed object from <code>sessions.metadata_json</code>)</li>
+</ul>
+</li>
+<li>storage location:</li>
+<li><code>sessions</code> table (active session rows)</li>
+<li><code>users</code> table (identity info)</li>
+<li>optional <code>auth_identities</code> table join for provider metadata</li>
+<li>valid values:</li>
+<li><code>limit</code> must be an integer; invalid values fall back to default</li>
+<li>defaults:</li>
+<li>only unexpired and unrevoked sessions are returned</li>
+<li>sorted by <code>last_seen_at DESC</code></li>
+<li>code paths affected:</li>
+<li><code>sql-cockpit-api/lib/rbac-auth-store.js</code> (<code>listActiveSessions</code>)</li>
+<li><code>sql-cockpit-api/server.js</code> (<code>GET /api/admin/active-sessions</code>)</li>
+<li><code>sql-cockpit-api/components/dashboard-client.js</code> (Admin active sessions section loader/render)</li>
+<li><code>sql-cockpit-api/app/admin/active-sessions/page.js</code> (route wrapper)</li>
+<li>operational risk:</li>
+<li>medium:
+    returning session metadata is admin-only data; keep route permissioned and avoid exposing this in low-privilege roles</li>
+<li>safe test procedure:</li>
+<li>login as admin and request <code>GET /api/admin/active-sessions?limit=10</code></li>
+<li>confirm endpoint returns current connected users</li>
+<li>confirm <code>user</code>, <code>provider</code>, <code>remote address</code>, and <code>last seen</code> values are visible for live sessions</li>
+<li>logout or revoke a session and confirm it disappears from this list</li>
+</ul>
 <h2 id="reset-procedure-for-support"><a class="headerlink" href="#reset-procedure-for-support" title="Permanent link">¶</a>Reset Procedure For Support</h2>
 <p>Use this only when the local account state is unrecoverable and the operator accepts losing workstation-local users, sessions, and preferences:</p>
 <ol>

@@ -515,6 +515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user/auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user/desktop-service-manager/" class="md-nav__link">
         
   
@@ -523,6 +551,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -607,6 +691,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1275,6 +1387,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../service-manager/" class="md-nav__link">
         
   
@@ -1339,6 +1479,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4613,12 +4781,16 @@
 <li>the shell now presents SQL Cockpit as a browser-based SQL tooling suite with a left navigation rail, sticky top header, search bar, and white metric cards.</li>
 <li>the web app now includes a persistent theme toggle in the top header. It stores the operator preference in browser local storage under <code>sql-cockpit-theme</code>.</li>
 <li>the header notification bell now merges dashboard-derived notifications with a live standalone notifications service, while still storing read or archived state in browser local storage.</li>
-<li><code>Ctrl+K</code> now opens a mocked command palette that groups quick links, syncs, tables, and servers from the current in-memory dashboard data. This is a UI-only search layer for now and is intended to be replaced by a backend search API later.</li>
+<li><code>Ctrl+K</code> (<code>Cmd+K</code> on macOS) now opens a mocked command palette that groups quick links, syncs, tables, and servers from the current in-memory dashboard data. This is a UI-only search layer for now and is intended to be replaced by a backend search API later.</li>
 <li><code>Server Explorer</code> now lets you browse live server-object metadata from saved Instance Manager profiles, then narrow the browse scope by database.</li>
 <li><code>Instance Manager</code> and <code>Connection Manager</code> now use separate browser-local vaults. Instance Manager stores server-level instance profiles first; Connection Manager stores database-level connection profiles under those instances.</li>
 <li><code>Agent Manager</code> now lets you choose a saved instance profile, query live SQL Server Agent metadata from <code>msdb</code>, sort the jobs table, filter by status or enabled state, and expand jobs to review step-level runtime context.</li>
-<li><code>Sync Overview</code>, <code>Sync Launchpad</code>, <code>Fleet View</code>, <code>Live Inspector</code>, <code>Schema Studio</code>, <code>Batch Copilot</code>, and <code>Bulk Intake</code> now live together under the <code>Table Sync</code> navigation section.</li>
-<li><code>Server Explorer</code> stays in the <code>Engineering</code> section.</li>
+<li><code>Estate Overview</code>, <code>Instance Manager</code>, and <code>Connection Manager</code> live under the <code>Overview</code> navigation section.</li>
+<li><code>Agent Manager</code>, <code>Runtime Analysis</code>, <code>Job Run History</code>, and <code>Agent Runtime Comparison</code> live under <code>Operations &amp; Monitoring</code>.</li>
+<li><code>Sync Overview</code>, <code>Sync Launchpad</code>, <code>Fleet View</code>, <code>Live Inspector</code>, <code>Schema Studio</code>, <code>Largest Tables</code>, <code>Batch Copilot</code>, and <code>Bulk Intake</code> live together under <code>Data Synchronisation</code>.</li>
+<li><code>Server Explorer</code>, <code>Visual Server Explorer</code>, <code>View Mapper</code>, <code>Procedure Repointer</code>, <code>Stored Procedure Mapper</code>, <code>SQL Editor</code>, and <code>Task Manager</code> live under <code>Development &amp; Engineering</code>. Permission-gated entries remain hidden when the current user lacks access.</li>
+<li>Access tools are grouped under <code>Access &amp; Administration</code> in this order: <code>Users</code>, <code>RBAC</code>, <code>Workspaces</code>, <code>Roles</code>, <code>Auth Providers</code>, <code>Active Sessions</code>, and <code>Audit Logs</code>. <code>Workspaces</code> expands to the workspace directory (<code>/admin/workspaces</code>), create-team form (<code>/admin/workspaces/create</code>), and invite management (<code>/admin/workspaces/invites</code>); legacy <code>/admin/teams*</code> routes redirect to the matching workspace route.</li>
+<li>System tools are grouped under <code>System Configuration</code> in this order: <code>SMTP Settings</code>, <code>Cache</code>, and <code>Service Manager</code>. <code>Service Manager</code> remains gated by the existing <code>service.status</code> permission.</li>
 <li><code>Fleet View</code> still shows stacked sync cards on smaller viewports and a full table on wider viewports.</li>
 <li><code>Live Inspector</code> can be opened directly with a selected <code>syncId</code> from Fleet View or Overview attention items.</li>
 </ul>
@@ -4635,10 +4807,10 @@
 <li>command palette:
   storage location: browser memory only for the current page session
   valid values: query text entered by the operator; no persisted setting yet
-  default: closed, with an empty query until <code>Ctrl+K</code> or the header search trigger opens it
+  default: closed, with an empty query until <code>Ctrl+K</code> (<code>Cmd+K</code> on macOS) opens it, or until the header search toolbar submits typed text with <code>Enter</code>
   code paths affected: <code>webapp/components/dashboard-client.js</code> and <code>webapp/components/dashboard-shell.js</code>
   operational risk: low, because the current implementation only filters already-loaded client data and route links; it does not change database state or call a new backend API
-  safe change procedure: open the palette with <code>Ctrl+K</code>, verify that sync, table, and server results match the currently loaded fleet data, then use the selected result to route into Fleet or Inspector views</li>
+  safe change procedure: open the palette with <code>Ctrl+K</code> (<code>Cmd+K</code> on macOS), verify that sync, table, and server results match the currently loaded fleet data, then use the selected result to route into Fleet or Inspector views</li>
 <li>notifications center:
   storage location: browser local storage key <code>sql-cockpit-notifications-state</code>
   valid values: JSON object with <code>readById</code>, <code>archivedById</code>, <code>lastOpenedAt</code>, and <code>browserNotificationsEnabled</code>; items can come from dashboard-derived mock state and from the standalone notifications service over HTTP plus WebSocket, and native browser alerts can be toggled on for newly arriving realtime events when the browser grants permission

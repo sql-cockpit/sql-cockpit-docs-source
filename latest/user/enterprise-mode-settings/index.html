@@ -15,7 +15,7 @@
         <link rel="prev" href="../runtime-modes/">
       
       
-        <link rel="next" href="../desktop-service-manager/">
+        <link rel="next" href="../auth-provider-settings/">
       
       
         
@@ -663,6 +663,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../desktop-service-manager/" class="md-nav__link">
         
   
@@ -671,6 +699,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -755,6 +839,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1165,6 +1277,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1229,6 +1369,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4040,6 +4208,8 @@
 <li>The login page shows both local and LDAP sign-in choices.</li>
 <li>A known local admin and a known LDAP user can each sign in.</li>
 </ol>
+<p>LDAP sign-in binds as the submitted user and then reads standard Active Directory attributes for the local SQL Cockpit profile. New LDAP users are provisioned with <code>sAMAccountName</code> as the local username, <code>mail</code> as email when present, and a human display name from <code>displayName</code>, or <code>givenName</code> + <code>sn</code> when <code>displayName</code> is missing or email-shaped. If <code>mail</code> is empty, an email-shaped UPN is used as the email fallback.</p>
+<p>Admins can tighten new external account creation from <code>/admin/signup-allow-list</code>. The default is <code>externalSignupAllowListEnabled=false</code>, which allows all users who can authenticate through enabled external providers to sign up when auto-provisioning is enabled. Enabling the allow list permits only listed LDAP/OIDC subjects, usernames, or emails to create a new local account; existing linked identities can still sign in.</p>
 <h2 id="auth-mode-flow"><a class="headerlink" href="#auth-mode-flow" title="Permanent link">¶</a>Auth-mode flow</h2>
 <pre class="mermaid"><code>flowchart TD
     A[SQL_COCKPIT_EDITION] --&gt; B{enterprise or rbac alias?}
@@ -4120,9 +4290,9 @@
 <td><code>SQL_COCKPIT_LDAP_URL</code> env var (optional CLI <code>--ldapUrl</code>)</td>
 <td><code>ldap://...</code> or <code>ldaps://...</code> URL</td>
 <td>empty</td>
-<td><code>enterprise-mode.js</code> LDAP bind path in <code>authenticateLdapCredentials</code></td>
-<td>Login hard-fails in LDAP mode when missing/invalid.</td>
-<td>Prefer <code>ldaps://</code>, test with one service account/user in staging, then roll to production.</td>
+<td><code>enterprise-mode.js</code> LDAP bind and AD attribute lookup path in <code>authenticateLdapCredentials</code></td>
+<td>Login hard-fails in LDAP mode when missing/invalid; profile enrichment also depends on RootDSE/search visibility for the bound user.</td>
+<td>Prefer <code>ldaps://</code>, test with one service account/user in staging, then roll to production. Confirm the admin user list shows expected username/email/display name.</td>
 <td>Confirmed</td>
 </tr>
 <tr>
@@ -4143,6 +4313,56 @@
 <td><code>enterprise-mode.js</code> bind username construction (takes precedence over <code>LDAP_DOMAIN</code>)</td>
 <td>Wrong suffix prevents successful binds.</td>
 <td>Set explicitly for multi-domain estates; validate with two representative users.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_LDAP_BIND_USERNAME</code></td>
+<td><code>SQL_COCKPIT_LDAP_BIND_USERNAME</code> env var (optional CLI <code>--ldapBindUsername</code>)</td>
+<td>Non-secret LDAP username or UPN used to prefill admin LDAP search bind username</td>
+<td>empty</td>
+<td><code>server.js</code> admin provider settings response and LDAP search fallback; <code>/admin/signup-allow-list</code> bind username field</td>
+<td>Low by itself because it is only a username, but using a privileged account for searches increases directory exposure risk.</td>
+<td>Use a least-privileged directory search account, keep its password out of environment variables, and verify the admin page pre-fills only the username.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_LDAP_BIND_USER</code></td>
+<td><code>SQL_COCKPIT_LDAP_BIND_USER</code> env var (optional CLI <code>--ldapBindUser</code>; Node also accepts <code>LDAP_BIND_USER</code>)</td>
+<td>LDAP service bind DN or UPN</td>
+<td>empty</td>
+<td><code>enterprise-mode.js</code> service-account LDAP search before user-password validation and admin allow-list lookup/listing</td>
+<td>A privileged bind account can expose more directory metadata than intended. Some AD service accounts bind only with their full DN, not UPN.</td>
+<td>Use a dedicated least-privileged directory read/search account, not a human admin account. Prefer the exact bind DN when testing service-account search.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_LDAP_BIND_PASSWORD</code></td>
+<td><code>SQL_COCKPIT_LDAP_BIND_PASSWORD</code> env var (optional CLI <code>--ldapBindPassword</code>; Node also accepts <code>LDAP_BIND_PASS</code>)</td>
+<td>Secret password for <code>SQL_COCKPIT_LDAP_BIND_USER</code></td>
+<td>empty</td>
+<td><code>enterprise-mode.js</code> service bind path</td>
+<td>Secret leakage risk; incorrect value breaks LDAP login/search when service search is configured.</td>
+<td>Store as a secret in production, keep <code>.env.local</code> out of commits, restart API, test one valid and one invalid user login.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_LDAP_SEARCH_BASE</code></td>
+<td><code>SQL_COCKPIT_LDAP_SEARCH_BASE</code> env var (optional CLI <code>--ldapSearchBase</code>; Node also accepts <code>LDAP_SEARCH_BASE</code>)</td>
+<td>LDAP base DN, for example <code>DC=example,DC=com</code></td>
+<td>RootDSE default naming context</td>
+<td><code>enterprise-mode.js</code> service-account user search and admin LDAP search</td>
+<td>Wrong base returns zero users or wrong-domain users.</td>
+<td>Confirm base with AD admins, test exact-user search before enabling allow-list restriction.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_LDAP_SEARCH_FILTER</code></td>
+<td><code>SQL_COCKPIT_LDAP_SEARCH_FILTER</code> env var (optional CLI <code>--ldapSearchFilter</code>; Node also accepts <code>LDAP_SEARCH_FILTER</code>)</td>
+<td>LDAP filter template such as <code>(sAMAccountName={{username}})</code>; placeholders: <code>{{username}}</code>, <code>{{rawUsername}}</code>, <code>{{shortUsername}}</code>, <code>{{userPrincipalName}}</code>, <code>{{bindUser}}</code></td>
+<td>empty; SQL Cockpit automatically matches UPN, <code>sAMAccountName</code>, and email for exact-user service search</td>
+<td><code>enterprise-mode.js</code> exact-user service search for login and non-blank admin LDAP search</td>
+<td>Wrong filter can block valid users or match unintended users.</td>
+<td>Leave blank first. Add a custom filter only when the directory requires a non-standard lookup, then test UPN and short-name input before production.</td>
 <td>Confirmed</td>
 </tr>
 <tr>

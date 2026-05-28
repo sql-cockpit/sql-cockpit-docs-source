@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://your-domain.github.io/sql-cockpit/latest/user/connection-and-instance-profiles/">
       
       
-        <link rel="prev" href="../desktop-service-manager/">
+        <link rel="prev" href="../admin-teams/">
       
       
         <link rel="next" href="../sync-configuration-workflow/">
@@ -517,6 +517,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../desktop-service-manager/" class="md-nav__link">
         
   
@@ -525,6 +553,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -783,6 +867,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1193,6 +1305,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1257,6 +1397,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4111,8 +4279,9 @@
 <li>In account workspace, saved profiles stay private and separate from your other workspaces.</li>
 <li>In team workspace, profile changes are visible to team members.</li>
 <li>Command palette search follows the active workspace. Run object-search sync separately in each workspace where you need searchable databases.</li>
-<li>Connection Manager keeps saved connections in their own panel and uses a separate full-width, horizontally scrolling <code>Share Connections</code> panel where workspace names are columns and connections can be dragged into another workspace to copy them. Copied connections appear in the destination workspace column.</li>
-<li>Instance Manager keeps saved instances in their own panel and uses a separate full-width, horizontally scrolling <code>Share Instances</code> panel where workspace names are columns and instances can be dragged into another workspace to copy them. Copied instances appear in the destination workspace column.</li>
+<li>Connection Manager shows saved connections in a table with profile, server, database, auth, and action columns. The separate full-width, horizontally scrolling <code>Share Connections</code> panel still uses workspace columns where connections can be dragged into another workspace to copy them. Copied connections appear in the destination workspace column.</li>
+<li>Clicking <strong>Edit</strong> for a saved connection opens <code>/connection-manager/edit?profileId=&lt;id&gt;</code> and loads that profile into the edit draft. New connections still use <code>/connection-manager/new</code>.</li>
+<li>Instance Manager shows saved instances in a table with profile, server, auth, search-sync status, and action columns. The separate full-width, horizontally scrolling <code>Share Instances</code> panel still uses workspace columns where instances can be dragged into another workspace to copy them. Copied instances appear in the destination workspace column.</li>
 <li>Use <code>Revoke</code> on a connection card in a destination workspace column to remove it from that workspace. Revoke asks for confirmation and does not automatically remove matching instance profiles.</li>
 <li>Use <code>Revoke</code> on an instance card in a destination workspace column to remove it from that workspace. Revoke asks for confirmation and also removes database connection profiles for the same server from that workspace.</li>
 <li>Use <code>Revoke All</code> on a destination workspace column only when every connection or instance should be removed from that workspace. In the instance sharing board, <code>Revoke All</code> removes both instances and connections. You must type the workspace name exactly to confirm; an incorrect name shows a toast and removes nothing.</li>

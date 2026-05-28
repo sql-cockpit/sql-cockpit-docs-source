@@ -515,6 +515,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user/auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user/desktop-service-manager/" class="md-nav__link">
         
   
@@ -523,6 +551,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -607,6 +691,34 @@
     
   
     Local Auth and Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
   
 
     
@@ -1017,6 +1129,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1081,6 +1221,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -3963,6 +4131,27 @@
 
 <h1 id="realtime-notifications"><a class="headerlink" href="#realtime-notifications" title="Permanent link">¶</a>Realtime Notifications</h1>
 <p><code>Start-SqlTablesSyncNotificationsServer.ps1</code> launches a standalone local notification service for SQL Cockpit. Long-running PowerShell jobs, Node scripts, and other local tools can post custom events into this service, and the web frontend listens continuously over WebSocket so the header bell updates without a manual refresh.</p>
+<p>Task Manager also publishes <code>task-run</code> notifications when a run is queued,
+dispatched, started, or completed. The Task Manager page consumes those
+WebSocket frames directly to show socket health, recent scheduler activity, live
+selected-run status, and matching redacted run-output lines without waiting for
+a manual refresh. Fleet View consumes the same frames to show recent
+queued/running sync task activity and refresh the sync table without waiting for
+a manual refresh.</p>
+<p>Task Manager job-event notifications also support account-level Slack and
+PagerDuty delivery. Users configure these targets from <code>/account/integrations</code>
+and the focused setup pages <code>/account/integrations/slack</code> and
+<code>/account/integrations/pagerduty</code>. Failures and timeouts are subscribed by
+default in <code>notificationPreferences</code>; external delivery only happens when the
+matching action is enabled and the signed-in user has configured the integration
+or a global fallback connector is configured.</p>
+<p>For high-volume runtime output, producers use <code>POST /api/events</code> instead of
+<code>POST /api/notifications</code>. Event payloads are broadcast to WebSocket clients as
+<code>type = event</code> frames and are not stored in the recent-notifications buffer.
+The sync task worker sends <code>task-run-output</code> events for PowerShell stdout/stderr
+chunks so Live Inspector can stream the selected sync run output as it arrives
+and Task Manager can append output to the open inline log viewer for the
+selected run.</p>
 <h2 id="purpose"><a class="headerlink" href="#purpose" title="Permanent link">¶</a>Purpose</h2>
 <ul>
 <li>Provide one local event hook for long-running processes, runbooks, and operator tooling.</li>
@@ -3976,6 +4165,10 @@
 <li>default bind address: <code>http://127.0.0.1:8090/</code></li>
 <li>transport model:</li>
 <li>publishers call <code>POST /api/notifications</code></li>
+<li>non-persistent realtime producers call <code>POST /api/events</code></li>
+<li>account integrations are read from <code>GET /api/integrations</code></li>
+<li>Slack setup uses <code>PUT /api/integrations/slack</code> and <code>POST /api/integrations/slack/test</code></li>
+<li>PagerDuty setup uses <code>PUT /api/integrations/pagerduty</code> and <code>POST /api/integrations/pagerduty/test</code></li>
 <li>the dashboard loads recent items from <code>GET /api/notifications/recent</code></li>
 <li>the dashboard subscribes to <code>ws://127.0.0.1:8090/ws</code> or the <code>wss://</code> equivalent for continuous updates</li>
 <li>when the operator enables browser alerts and grants site permission, newly arriving realtime events can also raise native browser notifications through a service-worker-backed browser notification path, with an in-page Notification API fallback</li>
@@ -3989,6 +4182,8 @@
 <li><code>Start-SqlTablesSyncRestApi.ps1</code></li>
 <li><code>webapp/notifications-server.js</code></li>
 <li><code>webapp/server.js</code></li>
+<li><code>webapp/lib/task-management-store.js</code></li>
+<li><code>webapp/lib/rbac-auth-store.js</code></li>
 <li><code>webapp/scripts/send-notification.js</code></li>
 <li><code>webapp/scripts/send-test-notifications.js</code></li>
 <li><code>webapp/public/notifications-sw.js</code></li>
@@ -3999,12 +4194,14 @@
 <li>low for SQL safety, because the service does not write to SQL Server or change sync config rows</li>
 <li>medium for operator trust, because any local caller that can reach the listener can publish a message that looks operationally important</li>
 <li>medium for data sensitivity, because notification payloads can contain process names, URLs, or other workflow context that appears in the browser UI</li>
+<li>high for PagerDuty account integrations, because setup tests and task failures can create real incidents</li>
 <li>safe change procedure:</li>
 <li>keep the listener on loopback unless you have an explicit trust and auth model</li>
 <li>start the service and verify <code>GET /health</code></li>
 <li>publish one harmless test notification</li>
 <li>confirm the header bell updates in the dashboard without a refresh</li>
 <li>if native browser alerts are wanted, open the bell menu, enable browser alerts, approve the browser permission prompt, then publish another harmless test notification while the tab is backgrounded</li>
+<li>configure Slack or PagerDuty on a non-production destination first, send the account setup test, and only then enable production job-event actions</li>
 <li>restart the service only after confirming operators do not need the in-memory recent history</li>
 <li>confidence: confirmed from code for the endpoints, payload shape, startup flow, and in-memory retention; inferred that broader network exposure would need an authentication design before it is safe</li>
 </ul>
@@ -4069,6 +4266,11 @@
 <td><code>POST</code></td>
 <td><code>/api/notifications</code></td>
 <td>Accept one custom notification and broadcast it to connected browser clients.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/events</code></td>
+<td>Accept one non-persistent event and broadcast it to connected browser clients without adding it to recent notifications.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>

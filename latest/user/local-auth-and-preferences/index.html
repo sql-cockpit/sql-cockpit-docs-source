@@ -15,7 +15,7 @@
         <link rel="prev" href="../sync-configuration-workflow/">
       
       
-        <link rel="next" href="../operational-safety/">
+        <link rel="next" href="../localization-preferences/">
       
       
         
@@ -517,6 +517,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auth-provider-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auth Provider Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../desktop-service-manager/" class="md-nav__link">
         
   
@@ -525,6 +553,62 @@
     
   
     Desktop Service Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-teams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin Teams
   
 
     
@@ -752,6 +836,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../localization-preferences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Localization Preferences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1154,6 +1266,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/visual-server-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Server Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/service-manager/" class="md-nav__link">
         
   
@@ -1218,6 +1358,34 @@
     
   
     SQL Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/query-analyser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Analyser
   
 
     
@@ -4004,18 +4172,62 @@
 <h2 id="what-preferences-now-follow-your-local-account"><a class="headerlink" href="#what-preferences-now-follow-your-local-account" title="Permanent link">¶</a>What preferences now follow your local account</h2>
 <ul>
 <li>theme mode</li>
+<li>default landing page</li>
 <li>notification read and archive state</li>
+<li>Slack and PagerDuty integration settings</li>
 <li>saved database connection profiles</li>
 <li>saved SQL Server instance profiles</li>
 <li>account-owned workspaces created from the Account page</li>
+<li>dashboard page-intro visibility</li>
 </ul>
 <p>That means these values no longer depend on one browser profile alone. They now follow the signed-in SQL Cockpit user on that machine.</p>
 <h2 id="account-workspaces"><a class="headerlink" href="#account-workspaces" title="Permanent link">¶</a>Account workspaces</h2>
-<p>Signed-in users can create additional private workspaces from the dashboard header or the Account page.
+<p>Signed-in users can create additional private workspaces from the top-right profile dropdown or the Account page.
 Each account workspace has its own saved connection and instance profile lists.
 The default <code>My Workspace</code> remains available for existing personal profiles.
 Users can create more than one account workspace, including multiple workspaces with the same display name when the slug field is left blank. SQL Cockpit derives a distinct slug for each workspace, such as <code>support</code>, <code>support-2</code>, and <code>support-3</code>.
 Changing workspace also changes the command palette search environment. Object-search syncs, manifests, locks, recent objects, search results, and object definition lookups are scoped by the active workspace, so databases must be synchronized separately in each workspace where you want them searchable.</p>
+<p>The command palette default lane is stored in the local account profile as <code>commandPaletteDefaultMode</code>. Use <strong>Preferences</strong> to choose <code>Server Objects</code> (<code>index</code>) or <code>Quick Links</code> (<code>quick</code>) as the opening mode when the palette starts without a search query.</p>
+<p>The dashboard landing page is stored in the local account profile as <code>defaultPage</code>. The default value is <code>/new-tab</code>, labelled <strong>Welcome Page</strong> in the UI. Open <strong>Account</strong>, then change <strong>Default page</strong> to choose where SQL Cockpit sends you when you open the main dashboard URL <code>/</code>. Valid values are the options shown in the Account page selector, including <code>/new-tab</code>, <code>/connection-manager</code>, <code>/instance-manager</code>, <code>/sql-editor</code>, <code>/index-inspector</code>, and other common operational pages. Invalid or missing values fall back to <code>/new-tab</code>.</p>
+<p>The welcome-page widget layout is stored in the local account profile as <code>welcomePageLayout</code>.</p>
+<ul>
+<li>storage location: local SQLite <code>user_preferences.preference_key = welcomePageLayout</code></li>
+<li>valid value: versioned JSON with <code>version</code> and <code>widgets</code></li>
+<li>widget fields: <code>id</code>, <code>type</code>, <code>size</code>, <code>colSpan</code>, <code>rowSpan</code>, <code>collapsed</code>, and optional <code>settings</code></li>
+<li>supported widget types: <code>clockGreeting</code>, <code>quickActionSearch</code>, <code>activeWorkspace</code>, <code>startingPoints</code>, <code>openTabs</code>, <code>recentObjectCache</code>, and <code>coreNavigation</code></li>
+<li>supported legacy sizes: <code>full</code>, <code>wide</code>, <code>half</code>, and <code>third</code>, normalized to CSS-grid column spans</li>
+<li>supported column spans: <code>3</code>, <code>4</code>, <code>6</code>, <code>8</code>, and <code>12</code> across the 12-column desktop grid</li>
+<li>supported row spans: <code>1</code>, <code>2</code>, and <code>3</code>, used as compact widget height hints</li>
+<li>clock/greeting settings: <code>timeFormat</code> (<code>12h</code> or <code>24h</code>), <code>showSeconds</code> (<code>true</code> or <code>false</code>), <code>dateStyle</code> (<code>short</code>, <code>medium</code>, or <code>full</code>), and <code>textScale</code> (<code>compact</code>, <code>default</code>, or <code>large</code>)</li>
+<li>recently changed object-cache settings: <code>objectType</code> (<code>All</code>, <code>Table</code>, <code>View</code>, <code>Procedure</code>, <code>Function</code>, <code>Trigger</code>, <code>Column</code>, <code>Index</code>, <code>Constraint</code>, <code>Synonym</code>, or <code>Agent Job</code>), <code>sourceServer</code> (<code>All</code> or an instance name returned by the active workspace cache), <code>databaseName</code> (<code>All</code> or a database name returned for the selected instance), and <code>limit</code> (<code>3</code> through <code>50</code>); the widget reads instance/database filter options from <code>GET /api/object-search/status</code>, then fetches only the displayed recent rows from <code>GET /api/object-search/recent</code> using the selected type, instance, database, and display count</li>
+<li>default: the shared dashboard template copied from <code>joel.murphy</code>: large clock/greeting, active workspace, a full-width recently changed Procedure object-cache widget showing 50 items, starting points, action search, open tabs, and core navigation widgets</li>
+<li>code path: <code>sql-cockpit-api/components/dashboard-client.js</code>, <code>GET /api/object-search/status</code> for workspace-scoped <code>recentObjectCache</code> filter options, <code>GET /api/object-search/recent</code> for displayed widget rows, and existing <code>GET /api/preferences</code> and <code>PUT /api/preferences</code></li>
+<li>operational risk: low; this is personalization plus a workspace-scoped read from object search and does not alter SQL execution, RBAC, saved profiles, or workspace membership</li>
+<li>safe reset: open <strong>Welcome Page</strong>, select the widget configuration icon, then use the reset icon and confirm the messagebox</li>
+</ul>
+<p>The dashboard page-intro panel state is stored in the local account profile as <code>dashboardIntroPanels</code>.</p>
+<ul>
+<li>storage location: local SQLite <code>user_preferences.preference_key = dashboardIntroPanels</code></li>
+<li>valid value: JSON object keyed by dashboard section; each value stores <code>expanded: true</code> or <code>expanded: false</code></li>
+<li>default: <code>{}</code>; page intro panels are collapsed by default when no saved state exists</li>
+<li>code path: <code>sql-cockpit-api/components/dashboard-client.js</code>, via existing <code>GET /api/preferences</code> and <code>PUT /api/preferences</code></li>
+<li>operational risk: low; this changes only page-intro visibility and does not alter SQL execution, RBAC, saved profiles, or workspace membership</li>
+<li>safe reset: open <strong>Preferences</strong> and use <strong>Reset intro panels</strong></li>
+</ul>
+<p>The account integration settings are stored in the local account profile as <code>integrationSettings</code>.</p>
+<ul>
+<li>storage location: local SQLite <code>user_preferences.preference_key = integrationSettings</code></li>
+<li>setup routes: <code>/account/integrations</code>, <code>/account/integrations/slack</code>, and <code>/account/integrations/pagerduty</code></li>
+<li>API routes: <code>GET /api/integrations</code>, <code>PUT /api/integrations/slack</code>, <code>POST /api/integrations/slack/test</code>, <code>PUT /api/integrations/pagerduty</code>, and <code>POST /api/integrations/pagerduty/test</code></li>
+<li>valid Slack values: <code>enabled</code>, Slack incoming-webhook URL from <code>https://hooks.slack.com/services/...</code>, and optional channel override</li>
+<li>valid PagerDuty values: <code>enabled</code>, Events v2 routing key, HTTPS Events API URL, and optional service label</li>
+<li>defaults: both integrations disabled; Slack fields blank; PagerDuty routing key blank; PagerDuty URL <code>https://events.pagerduty.com/v2/enqueue</code></li>
+<li>secret handling: read APIs return configured flags instead of raw webhook URLs or routing keys; leaving the secret field blank on the setup page preserves the stored secret</li>
+<li>code paths: <code>sql-cockpit-api/server.js</code>, <code>sql-cockpit-api/components/dashboard-client.js</code>, <code>sql-cockpit-api/lib/rbac-auth-store.js</code>, and <code>sql-cockpit-api/lib/task-management-store.js</code></li>
+<li>operational risk: medium for Slack because task names and redacted failure summaries can reach shared channels; high for PagerDuty because the test action and real job failures can create incidents</li>
+<li>safe test: configure on the focused setup page, send the test notification, confirm the destination received it, then use <strong>Notifications</strong> to keep only the required job-event actions enabled</li>
+<li>confidence: confirmed for storage, defaults, redacted reads, setup routes, test routes, and Task Manager delivery</li>
+</ul>
 <p>Storage and access:</p>
 <ul>
 <li>workspace records are stored in the local SQLite <code>workspaces</code> table with <code>owner_user_id</code> set to the signed-in user</li>
