@@ -2,6 +2,30 @@
 
 `Start-SqlTablesSyncNotificationsServer.ps1` launches a standalone local notification service for SQL Cockpit. Long-running PowerShell jobs, Node scripts, and other local tools can post custom events into this service, and the web frontend listens continuously over WebSocket so the header bell updates without a manual refresh.
 
+Task Manager also publishes `task-run` notifications when a run is queued,
+dispatched, started, or completed. The Task Manager page consumes those
+WebSocket frames directly to show socket health, recent scheduler activity, live
+selected-run status, and matching redacted run-output lines without waiting for
+a manual refresh. Fleet View consumes the same frames to show recent
+queued/running sync task activity and refresh the sync table without waiting for
+a manual refresh.
+
+Task Manager job-event notifications also support account-level Slack and
+PagerDuty delivery. Users configure these targets from `/account/integrations`
+and the focused setup pages `/account/integrations/slack` and
+`/account/integrations/pagerduty`. Failures and timeouts are subscribed by
+default in `notificationPreferences`; external delivery only happens when the
+matching action is enabled and the signed-in user has configured the integration
+or a global fallback connector is configured.
+
+For high-volume runtime output, producers use `POST /api/events` instead of
+`POST /api/notifications`. Event payloads are broadcast to WebSocket clients as
+`type = event` frames and are not stored in the recent-notifications buffer.
+The sync task worker sends `task-run-output` events for PowerShell stdout/stderr
+chunks so Live Inspector can stream the selected sync run output as it arrives
+and Task Manager can append output to the open inline log viewer for the
+selected run.
+
 ## Purpose
 
 - Provide one local event hook for long-running processes, runbooks, and operator tooling.
@@ -15,6 +39,10 @@
 - default bind address: `http://127.0.0.1:8090/`
 - transport model:
   - publishers call `POST /api/notifications`
+  - non-persistent realtime producers call `POST /api/events`
+  - account integrations are read from `GET /api/integrations`
+  - Slack setup uses `PUT /api/integrations/slack` and `POST /api/integrations/slack/test`
+  - PagerDuty setup uses `PUT /api/integrations/pagerduty` and `POST /api/integrations/pagerduty/test`
   - the dashboard loads recent items from `GET /api/notifications/recent`
   - the dashboard subscribes to `ws://127.0.0.1:8090/ws` or the `wss://` equivalent for continuous updates
   - when the operator enables browser alerts and grants site permission, newly arriving realtime events can also raise native browser notifications through a service-worker-backed browser notification path, with an in-page Notification API fallback
@@ -28,6 +56,8 @@
   - `Start-SqlTablesSyncRestApi.ps1`
   - `webapp/notifications-server.js`
   - `webapp/server.js`
+  - `webapp/lib/task-management-store.js`
+  - `webapp/lib/rbac-auth-store.js`
   - `webapp/scripts/send-notification.js`
   - `webapp/scripts/send-test-notifications.js`
   - `webapp/public/notifications-sw.js`
@@ -38,12 +68,14 @@
   - low for SQL safety, because the service does not write to SQL Server or change sync config rows
   - medium for operator trust, because any local caller that can reach the listener can publish a message that looks operationally important
   - medium for data sensitivity, because notification payloads can contain process names, URLs, or other workflow context that appears in the browser UI
+  - high for PagerDuty account integrations, because setup tests and task failures can create real incidents
 - safe change procedure:
   - keep the listener on loopback unless you have an explicit trust and auth model
   - start the service and verify `GET /health`
   - publish one harmless test notification
   - confirm the header bell updates in the dashboard without a refresh
   - if native browser alerts are wanted, open the bell menu, enable browser alerts, approve the browser permission prompt, then publish another harmless test notification while the tab is backgrounded
+  - configure Slack or PagerDuty on a non-production destination first, send the account setup test, and only then enable production job-event actions
   - restart the service only after confirming operators do not need the in-memory recent history
 - confidence: confirmed from code for the endpoints, payload shape, startup flow, and in-memory retention; inferred that broader network exposure would need an authentication design before it is safe
 
@@ -63,6 +95,7 @@
 | `GET` | `/health` | Basic liveness plus connected-client and buffer counts. |
 | `GET` | `/api/notifications/recent?limit=25` | Return recent notifications from the in-memory ring buffer. |
 | `POST` | `/api/notifications` | Accept one custom notification and broadcast it to connected browser clients. |
+| `POST` | `/api/events` | Accept one non-persistent event and broadcast it to connected browser clients without adding it to recent notifications. |
 | `GET` | `/ws` | WebSocket upgrade endpoint used by the SQL Cockpit frontend. |
 
 ## Notification payload

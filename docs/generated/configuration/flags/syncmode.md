@@ -6,7 +6,7 @@
 - Allowed values: `Incremental` or `FullRefresh`.
 - Default or observed default: Runtime default is `Incremental` when blank.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2418`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2641`
 - Functional effect: Chooses incremental seek paging or full destination replacement.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

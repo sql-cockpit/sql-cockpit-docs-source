@@ -38,6 +38,8 @@ When an operator tests an instance, the dashboard calls `POST /api/servers/explo
 
 Older dashboard builds used `sql-cockpit-connection-profiles` as a shared storage key. Current builds treat that as a legacy source for instance profiles only when the dedicated instance vault has not been created yet.
 
+The Instance Manager summary cards use a three-column row on standard dashboard desktop widths, then collapse to two columns and one column on narrower screens.
+
 ## Prerequisites
 
 Before using Instance Manager:
@@ -65,6 +67,16 @@ For SQL Agent Manager, the selected login also needs enough `msdb` access to rea
 
 2. Open the SQL Cockpit dashboard URL printed by the launcher.
 3. Select `Instance Manager` from the left navigation.
+
+The left navigation expands `Instance Manager` into separate compact routes:
+
+- `Instance Manager` opens `/instance-manager` and renders the saved profile list.
+- `New Instance` opens `/instance-manager/new` and renders the draft panel for creating or updating an instance profile.
+- `Share Instances` opens `/instance-manager/share` and renders the workspace sharing board.
+
+Each route renders only the content needed for that workflow. The routes reuse the same Instance Manager state, workspace profile store, validation, confirmation, and API calls; they do not change RBAC, alter local storage keys, or move profiles between vaults.
+
+Instance Manager also renders the same hierarchy as a compact inline page menu above the content. This keeps `Saved Instances`, `New Instance`, and `Share Instances` visible in focus mode, where the expanded left-navigation children are intentionally hidden.
 
 ## Create An Instance Profile
 
@@ -137,6 +149,8 @@ Only sync instances that are approved for local searchable metadata storage.
 - code paths affected:
   - `webapp/components/dashboard-client.js`
   - `webapp/app/instance-manager/page.js`
+  - `webapp/app/instance-manager/new/page.js`
+  - `webapp/app/instance-manager/share/page.js`
   - `webapp/server.js`
   - `Invoke-SqlTablesSyncRestOperation.ps1`
   - `SqlTablesSync.Tools.psm1`

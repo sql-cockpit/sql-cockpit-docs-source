@@ -99,6 +99,8 @@ The database object search feature uses tracked safe defaults plus a local overr
   `service.listenUrl` must be a loopback HTTP URL, `service.executablePath` may be blank or a relative or absolute path to a bundled `SqlObjectSearch.Service.exe`, `service.indexRoot` and `sync.*Path` values must resolve to writable local paths, `sync.batchSize` must be a positive integer, and each source row must contain a SQL Server name, database name, and auth mode
 - defaults:
   `service.listenUrl = http://127.0.0.1:8094/`, `service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe`, `service.maxResults = 40`, `service.snippetLength = 240`, `sync.batchSize = 200`, `sync.manifestDirectory = ./data/object-search/manifests`, `sync.spoolDirectory = ./data/object-search/spool`, `sync.statusPath = ./data/object-search/sync-status.json`, `sync.logPath = ./Logs/ObjectSearch/sync.log`
+- compatibility note:
+  `service.snippetLength` is retained for older settings files, but current search result rows do not load definition text or build definition snippets. Definitions are loaded only through the selected-object detail API.
 - code paths affected:
   `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs`, `sql-cockpit-api/server.js`, and `sql-cockpit-api/components/object-search-palette.js`
 - operational risk:
@@ -115,17 +117,17 @@ SQL Cockpit now has one packaged local SQLite database for workstation-local sig
 - storage location:
   `data/sql-cockpit/sql-cockpit-local.sqlite`
 - valid values:
-  `users.username` accepts the local username format enforced by `webapp/lib/local-auth.js`; `users.role` currently defaults to `admin`; `user_preferences.preference_key` currently uses `theme`, `focusMode`, `notificationPreferences`, `connectionProfiles`, and `instanceProfiles`; `focusMode` stores a boolean that enables the distraction-reduced dashboard shell; `sessions.expires_at_utc` stores UTC timestamps; the browser cookie name is `sql_cockpit_session`
+  `users.username` accepts the local username format enforced by `sql-cockpit-api/lib/rbac-auth-store.js`; `user_preferences.preference_key` currently uses `theme`, `focusMode`, `notificationPreferences`, `connectionProfiles`, `instanceProfiles`, `activeWorkspace`, `visualServerExplorerSettings`, `commandPaletteDefaultMode`, `defaultPage`, `welcomePageLayout`, and `dashboardIntroPanels`; `welcomePageLayout` stores compact welcome-page widget order, collapsed state, CSS-grid-style `colSpan`/`rowSpan` sizing, and clock/greeting display settings such as `timeFormat`, `dateStyle`, `showSeconds`, and `textScale`; supported welcome widgets include the workspace-scoped `recentObjectCache` widget, which reads instance/database filter metadata from `GET /api/object-search/status`, reads displayed rows from `GET /api/object-search/recent`, and stores optional `objectType`, `sourceServer`, `databaseName`, and `limit` filters in widget settings; `dashboardIntroPanels` stores per-section intro-panel expanded state and defaults to collapsed when unset; `notificationPreferences.teamSyncFailureNotificationsEnabled` and `notificationPreferences.syncFailureEmailEnabled` default to `true`; `focusMode` stores a boolean that enables the distraction-reduced dashboard shell; `sessions.expires_at_utc` stores UTC timestamps; the browser cookie name is `sql_cockpit_session`
 - defaults:
-  first workstation user is created through `/setup`; default session lifetime is 7 days with rolling touch; lockout threshold is 5 failed logins in 15 minutes; default `theme = dark`; default `focusMode = false`; notification and saved-profile preference stores start empty or false-like
+  first workstation user is created through `/setup`; default session lifetime is 7 days with rolling touch; lockout threshold is 5 failed logins in 15 minutes; default `theme = dark`; default `focusMode = false`; browser notification permission starts disabled, while sync-failure team alerts and creator email preferences start enabled
 - code paths affected:
-  `webapp/lib/local-auth.js`, `webapp/server.js`, `webapp/components/dashboard-client.js`, `webapp/components/dashboard-shell.js`, `webapp/components/dashboard-data.js`, `webapp/app/login/page.js`, `webapp/app/setup/page.js`, and `webapp/app/preferences/page.js`
+  `sql-cockpit-api/lib/rbac-auth-store.js`, `sql-cockpit-api/server.js`, `sql-cockpit-api/lib/task-management-store.js`, `sql-cockpit-api/components/dashboard-client.js`, and `sql-cockpit-api/components/notifications-data.js`
 - operational risk:
-  medium, because the local app database now contains workstation-local auth state and may also contain saved SQL-auth connection passwords through the per-user preference store; low for `focusMode` itself because it changes presentation rather than API behavior, but operators should confirm they can still find hidden chrome such as breadcrumbs and the footer when they leave focus mode
+  medium, because the local app database now contains workstation-local auth state and may also contain saved SQL-auth connection passwords through the per-user preference store; low for `focusMode` itself because it changes presentation rather than API behavior, but operators should confirm they can still find hidden chrome such as breadcrumbs when they leave focus mode
 - safe change procedure:
   back up the SQLite file before incompatible schema changes, keep the app on loopback, validate first-run setup, login, logout, password change, focus-mode toggle persistence, and preference persistence after deployment, and prefer integrated SQL authentication in saved profiles whenever possible
 - confidence:
-  confirmed for the storage path, session cookie name, password hashing, rate limit values, and current preference keys; inferred that future hardening may add a stronger machine-bound encryption layer for saved SQL-auth profile passwords
+  confirmed for the storage path, session cookie name, password hashing, rate limit values, sync-failure notification preferences, and current preference keys; inferred that future hardening may add a stronger machine-bound encryption layer for saved SQL-auth profile passwords
 
 ### 8. Legacy browser-local preference migration
 

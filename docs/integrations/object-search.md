@@ -40,6 +40,7 @@ Runtime resolution order for settings when no explicit path is supplied:
   omit `objectType` or pass an empty value to search all indexed object types
 - search response fields:
   `id`, `objectName`, `qualifiedName`, `objectType`, `schemaName`, `databaseName`, `score`, `previewSnippet`, `modifiedDate`, `sourceServer`, `parentQualifiedName`
+  `previewSnippet` is lightweight object context only, such as type, server, database, schema, and parent object. Stored SQL definition text is not loaded for search rows; it is returned only by `GET /api/object-search/objects/{id}`.
 - recent response fields:
   `totalHits` plus `items`; each item includes `id`, `objectName`, `qualifiedName`, `objectType`, `objectTypeDescription`, `schemaName`, `databaseName`, `modifiedDate`, `sourceServer`, `parentQualifiedName`, and `sourceName`
   the sidecar sorts by stored `modifiedDate` from the current Lucene index, so the list reflects indexed metadata and does not depend on browser local storage
@@ -93,6 +94,8 @@ Runtime resolution order for settings when no explicit path is supplied:
   `service.listenUrl` must be an absolute `http://` loopback URL, `service.executablePath` may be blank or point to a bundled `SqlObjectSearch.Service.exe`, `service.indexRoot` and `sync.*Path` values must resolve to writable local paths, `sync.batchSize` must be a positive integer, `sync.spoolDirectory` must be a writable local directory, and each source must define at least `server`, `database`, and an auth mode
 - defaults:
   `service.listenUrl = http://127.0.0.1:8094/`, `service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe`, `sync.batchSize = 200`, `sync.manifestDirectory = ./data/object-search/manifests`, `sync.spoolDirectory = ./data/object-search/spool`, `sync.statusPath = ./data/object-search/sync-status.json`, `sync.logPath = ./Logs/ObjectSearch/sync.log`, `service.maxResults = 40`, `service.snippetLength = 240`
+- compatibility note:
+  `service.snippetLength` is retained in settings for older deployments, but current command-palette search rows no longer build definition snippets. Full definitions are fetched through the selected-object detail endpoint.
 - code paths affected:
   `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Start-SqlTablesSyncWorkspace.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs`, `sql-cockpit-api/server.js`, `sql-cockpit-api/lib/object-search-service.js`, `sql-cockpit-api/components/dashboard-client.js`, and `sql-cockpit-api/components/object-search-palette.js`
 - operational risk:

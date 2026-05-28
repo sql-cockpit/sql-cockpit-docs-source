@@ -76,6 +76,27 @@ Before enabling:
 4. Confirm `BatchSize` is conservative enough for the first run.
 5. Confirm the current `Sync.TableState` checkpoint is expected.
 
+## Run One Row From SQL Cockpit
+
+Fleet View and Live Inspector can start an individual sync row with the same
+legacy entrypoint used by the Aptos spawn scripts: `Sync-ConfiguredSqlTable.ps1`
+with a single `SyncId`. SQL Cockpit queues the run in Task Manager first and
+then executes the script from that task run.
+
+Before selecting **Run Sync Now**:
+
+1. Confirm the row is enabled and points at the intended source and destination.
+2. Confirm `Sync.TableState.LastStatus` is not `Running`.
+3. Review `PreSyncSql`, `PostSyncSql`, `SyncMode`, `SourceWhereClause`, and
+   batch limits.
+4. Use a low-risk row first; the API returns `TaskId` and `TaskRunId`.
+5. Inspect the Task Manager run logs for script output, then refresh the row
+   after completion and inspect `Sync.RunLog` and
+   `Sync.RunActionLog`.
+
+Operational risk: high. A manual run can write destination data and advance
+incremental checkpoints. Disabled rows are rejected by default.
+
 ## Where To Look Up Fields
 
 Use:

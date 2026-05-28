@@ -34,7 +34,7 @@
 - `webapp/components/login-page-client.js` and `webapp/components/setup-page-client.js`: client-side auth forms for first-run setup and local login.
 - `webapp/components/dashboard-data.js`: dashboard form definitions, payload mapping, and formatting helpers.
 - `webapp/components/form-controls.js`: reusable field, toggle, and result-box primitives.
-- `webapp/components/dashboard-shell.js`, `webapp/components/panel.js`, `webapp/components/stat-card.js`, `webapp/components/sync-table.js`: shared SQL Cockpit shell, theme toggle, authenticated user header actions, `Ctrl+K` search trigger, KPI cards, and mobile/desktop fleet-display components.
+- `webapp/components/dashboard-shell.js`, `webapp/components/panel.js`, `webapp/components/stat-card.js`, `webapp/components/sync-table.js`: shared SQL Cockpit shell, theme toggle, authenticated user header actions, full-width header search toolbar, `Ctrl+K` (`Cmd+K` on macOS) command palette trigger, KPI cards, and mobile/desktop fleet-display components.
 - `scripts/runtime/Start-SqlTablesSyncMcpServer.ps1`: MCP launcher wrapper that starts the `sql-cockpit-mcp-server` submodule.
 - `SqlTablesSync.Tools.psm1`: shared SQL metadata and migration-planning module.
 - `Spawn-AptosJobs.ps1`: Windows Terminal launcher for Aptos jobs.

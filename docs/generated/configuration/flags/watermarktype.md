@@ -6,7 +6,7 @@
 - Allowed values: Type string used by watermark conversion helpers.
 - Default or observed default: `NULL` disables watermark paging.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2531`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2705`
 - Functional effect: Controls conversion of stored watermark state.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

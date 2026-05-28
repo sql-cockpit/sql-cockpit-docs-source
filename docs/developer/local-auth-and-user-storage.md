@@ -83,6 +83,12 @@ Auth and preference APIs:
 - `POST /api/auth/password`
 - `GET /api/preferences`
 - `PUT /api/preferences`
+- `GET /api/integrations`
+- `PUT /api/integrations/slack`
+- `POST /api/integrations/slack/test`
+- `PUT /api/integrations/pagerduty`
+- `POST /api/integrations/pagerduty/test`
+- `GET /api/admin/active-sessions`
 
 ## Security Controls
 
@@ -103,7 +109,15 @@ Auth and preference APIs:
 - failed sign-in lockout default:
   5 failed attempts in 15 minutes
 - default preferences created at setup:
-  `theme`, `notificationPreferences`, `connectionProfiles`, `instanceProfiles`
+  `theme`, `notificationPreferences`, `integrationSettings`, `connectionProfiles`, `instanceProfiles`
+- `notificationPreferences` defaults:
+  `readById={}`, `archivedById={}`, `lastOpenedAt=""`, `browserNotificationsEnabled=false`, `teamSyncFailureNotificationsEnabled=true`, `syncFailureEmailEnabled=true`
+- `integrationSettings` defaults:
+  Slack disabled with no webhook; PagerDuty disabled with no routing key and Events API URL `https://events.pagerduty.com/v2/enqueue`
+- sync-failure preference behavior:
+  team notification recipients are filtered by `teamSyncFailureNotificationsEnabled`; creator email is filtered by `syncFailureEmailEnabled`
+- job-event external delivery behavior:
+  Task Manager checks each subscribed recipient's `integrationSettings` for Slack and PagerDuty before using global connector fallbacks
 
 ## Files To Touch When Maintaining This Area
 
@@ -129,15 +143,64 @@ Auth and preference APIs:
 
 1. Back up `data/sql-cockpit/sql-cockpit-local.sqlite` before making incompatible schema changes.
 2. Keep route guards in `webapp/server.js` and schema logic in `webapp/lib/local-auth.js` aligned.
-3. Build the webapp with `npm run build`.
+3. Prefer live-server validation via the dev server `listenPrefix`.
 4. Start the workspace and test:
    - first-run setup on a clean local DB
    - login on an existing local DB
    - logout
    - password change
    - preference persistence for theme and saved profiles
+   - `GET /api/admin/active-sessions` as an admin user
    - authenticated preference reads and writes after login, confirming `GET /api/preferences` returns stored values instead of defaults only
 5. Update both user and developer docs in the same task.
+
+## Admin Active Sessions Endpoint
+
+- endpoint:
+  - `GET /api/admin/active-sessions`
+- authentication / RBAC:
+  - requires authenticated admin context and permission `admin.audit.view`
+- request shape:
+  - optional query parameter: `limit` (integer, defaults to `200`)
+  - example:
+    - `GET /api/admin/active-sessions?limit=50`
+- response shape:
+  - object with `activeSessions` array
+  - session items include:
+    - `id`
+    - `session_user_id`
+    - `username`
+    - `display_name`
+    - `role`
+    - `provider`
+    - `ip_address`
+    - `user_agent`
+    - `created_at`
+    - `last_seen_at`
+    - `expires_at`
+    - `metadata` (parsed object from `sessions.metadata_json`)
+- storage location:
+  - `sessions` table (active session rows)
+  - `users` table (identity info)
+  - optional `auth_identities` table join for provider metadata
+- valid values:
+  - `limit` must be an integer; invalid values fall back to default
+- defaults:
+  - only unexpired and unrevoked sessions are returned
+  - sorted by `last_seen_at DESC`
+- code paths affected:
+  - `sql-cockpit-api/lib/rbac-auth-store.js` (`listActiveSessions`)
+  - `sql-cockpit-api/server.js` (`GET /api/admin/active-sessions`)
+  - `sql-cockpit-api/components/dashboard-client.js` (Admin active sessions section loader/render)
+  - `sql-cockpit-api/app/admin/active-sessions/page.js` (route wrapper)
+- operational risk:
+  - medium:
+    returning session metadata is admin-only data; keep route permissioned and avoid exposing this in low-privilege roles
+- safe test procedure:
+  - login as admin and request `GET /api/admin/active-sessions?limit=10`
+  - confirm endpoint returns current connected users
+  - confirm `user`, `provider`, `remote address`, and `last seen` values are visible for live sessions
+  - logout or revoke a session and confirm it disappears from this list
 
 ## Reset Procedure For Support
 

@@ -6,7 +6,7 @@
 - Allowed values: Destination-side T-SQL batch.
 - Default or observed default: Blank means skipped.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2770`, `Sync-ConfiguredSqlTable.ps1:2773`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2998`, `Sync-ConfiguredSqlTable.ps1:3001`
 - Functional effect: Runs before data movement begins.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

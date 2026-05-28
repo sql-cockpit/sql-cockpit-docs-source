@@ -6,7 +6,7 @@
 - Allowed values: Comma-separated values.
 - Default or observed default: Blank means not active.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2529`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2703`
 - Functional effect: Changes the final sync column or key selection.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

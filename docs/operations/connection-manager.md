@@ -69,6 +69,17 @@ The selected login needs enough metadata visibility to read databases and catalo
 2. Open the SQL Cockpit dashboard URL printed by the launcher.
 3. Select `Connection Manager` from the left navigation.
 
+The left navigation expands `Connection Manager` into separate compact routes:
+
+- `Connection Manager` opens `/connection-manager` and renders the saved profile table.
+- `New Connection` opens `/connection-manager/new` and renders the draft, database refresh, bulk-create, and test controls.
+- `Edit Connection` opens `/connection-manager/edit?profileId=<id>` from a saved row and renders the selected profile in the edit draft.
+- `Share Connections` opens `/connection-manager/share` and renders the workspace sharing board.
+
+Each route renders only the content needed for that workflow. The split routes reuse the same Connection Manager state, workspace profile store, validation, confirmation, and API calls.
+
+Connection Manager also renders the same hierarchy as a compact inline page menu above the content. This keeps `Saved Connections`, `New Connection`, and `Share Connections` visible in focus mode, where the expanded left-navigation children are intentionally hidden.
+
 ## Save A Connection
 
 1. Enter a connection name.
@@ -115,7 +126,7 @@ Use:
 
 | Action | Use |
 | --- | --- |
-| Edit | Loads the saved profile back into the editor. |
+| Edit | Opens `/connection-manager/edit?profileId=<id>` and loads the saved profile back into the editor. |
 | Delete | Removes the profile from browser local storage. |
 
 Deleting a profile removes it from the Connection Manager vault in the current browser. Instance Manager profiles are unaffected.
@@ -149,6 +160,8 @@ Connection Manager no longer shows a separate server, authentication, integrated
 - code paths affected:
   - `webapp/components/dashboard-client.js`
   - `webapp/app/connection-manager/page.js`
+  - `webapp/app/connection-manager/new/page.js`
+  - `webapp/app/connection-manager/share/page.js`
   - `webapp/server.js`
   - `Invoke-SqlTablesSyncRestOperation.ps1`
   - `SqlTablesSync.Tools.psm1`

@@ -6,7 +6,7 @@
 - Allowed values: `0` or `1`.
 - Default or observed default: No database default confirmed; store explicitly.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2624`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2852`
 - Functional effect: Enables required-column validation before sync work.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

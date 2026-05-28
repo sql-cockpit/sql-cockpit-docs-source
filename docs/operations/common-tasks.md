@@ -376,12 +376,16 @@ Dashboard navigation notes:
 - the shell now presents SQL Cockpit as a browser-based SQL tooling suite with a left navigation rail, sticky top header, search bar, and white metric cards.
 - the web app now includes a persistent theme toggle in the top header. It stores the operator preference in browser local storage under `sql-cockpit-theme`.
 - the header notification bell now merges dashboard-derived notifications with a live standalone notifications service, while still storing read or archived state in browser local storage.
-- `Ctrl+K` now opens a mocked command palette that groups quick links, syncs, tables, and servers from the current in-memory dashboard data. This is a UI-only search layer for now and is intended to be replaced by a backend search API later.
+- `Ctrl+K` (`Cmd+K` on macOS) now opens a mocked command palette that groups quick links, syncs, tables, and servers from the current in-memory dashboard data. This is a UI-only search layer for now and is intended to be replaced by a backend search API later.
 - `Server Explorer` now lets you browse live server-object metadata from saved Instance Manager profiles, then narrow the browse scope by database.
 - `Instance Manager` and `Connection Manager` now use separate browser-local vaults. Instance Manager stores server-level instance profiles first; Connection Manager stores database-level connection profiles under those instances.
 - `Agent Manager` now lets you choose a saved instance profile, query live SQL Server Agent metadata from `msdb`, sort the jobs table, filter by status or enabled state, and expand jobs to review step-level runtime context.
-- `Sync Overview`, `Sync Launchpad`, `Fleet View`, `Live Inspector`, `Schema Studio`, `Batch Copilot`, and `Bulk Intake` now live together under the `Table Sync` navigation section.
-- `Server Explorer` stays in the `Engineering` section.
+- `Estate Overview`, `Instance Manager`, and `Connection Manager` live under the `Overview` navigation section.
+- `Agent Manager`, `Runtime Analysis`, `Job Run History`, and `Agent Runtime Comparison` live under `Operations & Monitoring`.
+- `Sync Overview`, `Sync Launchpad`, `Fleet View`, `Live Inspector`, `Schema Studio`, `Largest Tables`, `Batch Copilot`, and `Bulk Intake` live together under `Data Synchronisation`.
+- `Server Explorer`, `Visual Server Explorer`, `View Mapper`, `Procedure Repointer`, `Stored Procedure Mapper`, `SQL Editor`, and `Task Manager` live under `Development & Engineering`. Permission-gated entries remain hidden when the current user lacks access.
+- Access tools are grouped under `Access & Administration` in this order: `Users`, `RBAC`, `Workspaces`, `Roles`, `Auth Providers`, `Active Sessions`, and `Audit Logs`. `Workspaces` expands to the workspace directory (`/admin/workspaces`), create-team form (`/admin/workspaces/create`), and invite management (`/admin/workspaces/invites`); legacy `/admin/teams*` routes redirect to the matching workspace route.
+- System tools are grouped under `System Configuration` in this order: `SMTP Settings`, `Cache`, and `Service Manager`. `Service Manager` remains gated by the existing `service.status` permission.
 - `Fleet View` still shows stacked sync cards on smaller viewports and a full table on wider viewports.
 - `Live Inspector` can be opened directly with a selected `syncId` from Fleet View or Overview attention items.
 
@@ -398,10 +402,10 @@ Operational notes:
 - command palette:
   storage location: browser memory only for the current page session
   valid values: query text entered by the operator; no persisted setting yet
-  default: closed, with an empty query until `Ctrl+K` or the header search trigger opens it
+  default: closed, with an empty query until `Ctrl+K` (`Cmd+K` on macOS) opens it, or until the header search toolbar submits typed text with `Enter`
   code paths affected: `webapp/components/dashboard-client.js` and `webapp/components/dashboard-shell.js`
   operational risk: low, because the current implementation only filters already-loaded client data and route links; it does not change database state or call a new backend API
-  safe change procedure: open the palette with `Ctrl+K`, verify that sync, table, and server results match the currently loaded fleet data, then use the selected result to route into Fleet or Inspector views
+  safe change procedure: open the palette with `Ctrl+K` (`Cmd+K` on macOS), verify that sync, table, and server results match the currently loaded fleet data, then use the selected result to route into Fleet or Inspector views
 - notifications center:
   storage location: browser local storage key `sql-cockpit-notifications-state`
   valid values: JSON object with `readById`, `archivedById`, `lastOpenedAt`, and `browserNotificationsEnabled`; items can come from dashboard-derived mock state and from the standalone notifications service over HTTP plus WebSocket, and native browser alerts can be toggled on for newly arriving realtime events when the browser grants permission

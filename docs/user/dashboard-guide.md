@@ -6,6 +6,29 @@ You can also run the same dashboard as a standalone desktop window through Elect
 
 ## Page Map
 
+The left navigation groups pages as follows:
+
+| Heading | Pages |
+| --- | --- |
+| Overview | Estate Overview, Instance Manager, Connection Manager |
+| Operations & Monitoring | Agent Manager, Runtime Analysis, Job Run History, Agent Runtime Comparison |
+| Data Synchronisation | Sync Overview, Sync Launchpad, Fleet View, Live Inspector, Schema Studio, Largest Tables, Index Inspector, Batch Copilot, Bulk Intake |
+| Development & Engineering | Server Explorer, Visual Server Explorer, View Mapper, Procedure Repointer, Stored Procedure Mapper, SQL Editor, Task Manager |
+| Access & Administration | Users, RBAC, Workspaces (directory, create team, invites), Roles, Auth Providers, Active Sessions, Audit Logs |
+| System Configuration | SMTP Settings, Cache, Service Manager |
+
+Administration and system-configuration entries are still permission-filtered. `Workspaces` expands to `/admin/workspaces`, `/admin/workspaces/create`, and `/admin/workspaces/invites`; legacy `/admin/teams*` routes redirect to the matching workspace route. Signed-in users also have `/workspaces`, which lists their personal and team workspaces; legacy `/teams` redirects there. The create page requires `teams.create`, while invite creation/revocation requires `teams.assign_members`. `Service Manager` appears in System Configuration only for users with `service.status`; `Task Manager` appears in Development & Engineering for standard signed-in users because the built-in `standard_user` role includes `tasks.view`.
+
+Submenus in the left navigation are collapsed by default to reduce scrolling through the menu. Use the small expand control on a parent item to show its action pages. When a child action page is active, its parent group opens automatically. Manager-style pages also render a compact inline page menu above the content so action pages remain visible in focus mode.
+
+Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.
+
+Dashboard tables use a shared row hover state so operators can track the active row while scanning dense sync, estate, Agent, admin, and SQL Editor grids.
+
+The Welcome Page keeps the greeting and workflow search above the workspace controls. On large dashboard viewports, **Active workspace** and **Good starting points** share a two-column row; on narrower screens they stack vertically. The workspace switcher and quick-start buttons include icons so their intent remains scannable in the compact dashboard layout.
+
+Instance Manager SQL Server discovery results render as a table with instance, server, version, cluster state, and a direct **Use Server** action.
+
 | Page | Use it for | Data touched |
 | --- | --- | --- |
 | Estate Overview | Health, capacity, database state, and SQL Agent summary across saved instances. | Live SQL Server metadata only. |
@@ -14,6 +37,7 @@ You can also run the same dashboard as a standalone desktop window through Elect
 | Connection Manager | Database-level profiles for source and destination workflows. | Workspace profile store (personal or team). |
 | Service Manager | Start, stop, and monitor desktop background services from one panel. | Runtime supervisor state and service-host control API (when configured). |
 | Server Explorer | Browse live databases, schemas, tables, views, procedures, and functions. | Live SQL catalog metadata. |
+| Visual Server Explorer | Expand the same live catalog metadata as a spiderweb graph, including object child metadata and optional SQL Agent jobs. | Live SQL catalog metadata and SQL Agent inventory. |
 | SQL Editor | Draft SQL with syntax highlighting, run lint checks, or load object definitions from command palette. | Local browser state plus object-search read APIs. |
 | SQL Agent Manager | Read Agent jobs and start approved jobs. | Live `msdb`; start action calls `sp_start_job`. |
 | Fleet | Review sync rows and state summaries. | `Sync.TableConfig` and `Sync.TableState`. |
@@ -45,7 +69,7 @@ flowchart LR
 | Personal workspace | `user_preferences` profile keys for the signed-in user | Private profiles in Connection Manager and Instance Manager. |
 | Team workspace | `settings.workspace.team.<teamId>` entries (membership-gated) | Shared team profiles in Connection Manager and Instance Manager. |
 
-Use the workspace selector to switch profile scope at runtime.
+Use the workspace selector in the top-right profile dropdown to switch profile scope at runtime.
 
 ## Sensitive Information
 
@@ -111,7 +135,7 @@ Current behavior:
 
 - the setting is saved per signed-in local user in the packaged preference store
 - the dashboard collapses to a reduced-chrome layout and leaves behind a slim sidebar rail with icon links; hover the icons to see tooltip text and use the same control at the top of the rail to exit focus mode on the next page
-- on `Estate Overview`, focus mode hides the summary cards, breadcrumbs, intro block, footer, and payload box so the instance table becomes the primary surface
+- on `Estate Overview`, focus mode hides the summary cards, breadcrumbs, intro block, and payload box so the instance table becomes the primary surface; the footer remains available
 - on `SQL Agent Manager`, focus mode removes summary cards and the payload box, keeps core filters and refresh controls visible, and prioritizes the jobs grid for faster triage
 - turning focus mode on while you are on `Estate Overview` scrolls the instance table into view automatically
 - turning focus mode on while you are on `SQL Agent Manager` scrolls the jobs panel into view automatically
@@ -119,7 +143,7 @@ Current behavior:
 Safe use notes:
 
 - use focus mode for review tasks, especially estate and table-heavy pages
-- turn it off when you need the broader navigation, page description, or footer context again
+- turn it off when you need the broader navigation or page description again
 
 ## Dashboard Screenshot
 

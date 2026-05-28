@@ -91,6 +91,9 @@ Runtime config is passed to Electron through process environment variables:
 - `SQL_COCKPIT_NOTIFICATIONS_LISTEN_PREFIX`
 - `SQL_COCKPIT_MAX_REQUEST_BODY_BYTES`
 - `SQL_COCKPIT_OBJECT_SEARCH_SETTINGS_PATH`
+- `SQL_COCKPIT_TEMP_DIR`
+
+`SQL_COCKPIT_TEMP_DIR` controls SQL Cockpit scratch space. When it is unset, the PowerShell launchers and `sql-cockpit-api` npm scripts set `TEMP`, `TMP`, and `SQL_COCKPIT_TEMP_DIR` to the repo-local `.tmp` directory. This keeps local SQLite test stores, REST helper payload files, and child-process scratch files under the workspace drive instead of the Windows user-profile temp directory on `C:`.
 
 The desktop launcher now also starts the same sidecar services the workspace launcher starts:
 

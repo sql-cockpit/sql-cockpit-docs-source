@@ -56,13 +56,15 @@ Each instance is evaluated independently. If one instance fails to connect, the 
 
 The browser limits the per-instance refresh fan-out to six concurrent requests. This is not a database-stored flag; it is a dashboard constant intended to improve responsiveness without opening a separate PowerShell and SQL connection for every saved profile at once.
 
+The Estate Overview toolbar has a `Refresh now` dropdown button. The dropdown contains the ad-hoc `Refresh now` action and interval controls for repeating browser-side refreshes. Operators can choose `30s`, `1 min`, `5 min`, `10 min`, `15 min`, or `Custom`; the custom value is entered as seconds. The area above the instance table shows `Next refresh in:` followed by a countdown to the next scheduled refresh and resets the countdown after each manual or automatic refresh completes. Automatic interval refreshes show a toast when the polling AJAX request completes, including failed per-instance requests if any occurred. The interval choice is session UI state only; it is not written to a database config table or shared with other operators.
+
 ## Focused Review
 
 If the surrounding shell feels noisy during estate review, use the sidebar control near the `SQL Cockpit` brand to enter `Focus mode`.
 
 In the current UI this:
 
-- removes the page intro, breadcrumb trail, KPI cards, payload box, and footer
+- removes the page intro, breadcrumb trail, KPI cards, and payload box while keeping the footer available
 - keeps the refresh action and main instance table visible
 - automatically scrolls the instance inventory table into view when focus mode is enabled on this page
 
@@ -197,8 +199,10 @@ Treat the score as a triage guide. Use SQL Server tooling, Agent Manager, and se
   - instances array: 1 to 30 saved instance profiles
   - auth mode: `Integrated` or `SQL`
   - trust server certificate: `true` or `false`
+  - toolbar refresh interval: `30s`, `1 min`, `5 min`, `10 min`, `15 min`, or a custom positive whole number of seconds
 - defaults:
   - Estate Overview auto-refreshes when the home page opens and at least one instance profile exists
+  - repeating Estate Overview toolbar refresh defaults to `5 min` in the current browser session
   - no data is shown until an instance profile exists
   - the refresh creates pending table rows immediately and updates each row as that instance returns
   - the browser refreshes up to six instances concurrently until all saved profiles have completed
@@ -214,14 +218,15 @@ Treat the score as a triage guide. Use SQL Server tooling, Agent Manager, and se
 - operational risk:
   - medium for metadata exposure because instance names, database names, table names, approximate row counts, edition, capacity, Agent job counts, local SQL Server addresses, ports, authentication scheme, and encryption state are visible
   - medium for credential handling when saved instance profiles contain SQL-auth credentials in browser local storage
-  - medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard
+  - medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard; short repeat intervals such as `30s` can sustain that read load across the saved estate
   - low for write safety because the route is read-only
 - safe change procedure:
   1. Save and test one low-risk instance in Instance Manager.
   2. Open Estate Overview and confirm the reported server name.
   3. Add additional instances in small batches.
-  4. Treat low free-space and failed Agent job counts as triage signals, then verify with SQL Server operational tooling.
-  5. Avoid sharing screenshots or payloads outside trusted support channels.
+  4. Keep the interval at `5 min` or longer while validating broad estates; use `30s` or a short custom interval only during active triage.
+  5. Treat low free-space and failed Agent job counts as triage signals, then verify with SQL Server operational tooling.
+  6. Avoid sharing screenshots or payloads outside trusted support channels.
 
 ## Troubleshooting
 
@@ -236,6 +241,8 @@ Check the row error text. Common causes include login failure, SSPI/Kerberos err
 ### Free Space Is Blank
 
 The SQL login may not be able to read `sys.dm_os_volume_stats`, or the SQL Server environment may not expose volume details. Database file allocation and Agent summaries can still be useful.
+
+If every reachable instance shows `0 B free of 0 B` with no row error, verify the SQL Cockpit runtime is using a build where DataTable rows are flattened before Estate Overview summarizes volume rows. A nested row-array shape can turn valid `sys.dm_os_volume_stats` results into an empty volume row in the dashboard.
 
 ### IP Address Or Port Is Blank
 

@@ -6,7 +6,7 @@
 - Allowed values: `0` or `1`.
 - Default or observed default: Runtime helper default is false.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2569`, `Sync-ConfiguredSqlTable.ps1:2697`, `Sync-ConfiguredSqlTable.ps1:2951`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2826`, `Sync-ConfiguredSqlTable.ps1:2925`, `Sync-ConfiguredSqlTable.ps1:3179`
 - Functional effect: Skips updates and inserts only missing keys during incremental sync.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

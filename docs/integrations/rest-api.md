@@ -58,7 +58,8 @@
 - the object-search endpoints return indexed object names, definitions, columns, parameters, and dependency metadata from a local on-disk Lucene index
   - `POST /api/object-search/index/refresh` and `POST /api/object-search/index/rebuild` can now run either against configured sources or against an explicit Connection Manager saved profile supplied in the request body
   - browser and server exception logs can now capture request URLs, page URLs, user agents, stack traces, and any response body text surfaced through the UI, so operators should treat `.\Logs\WebApp\*.jsonl` as sensitive local troubleshooting data
-  - the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes
+- the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes
+  - `POST /api/configs/{syncId}/run` and `POST /api/configs/run` queue a TaskRun that executes `Sync-ConfiguredSqlTable.ps1`; they can write destination data and advance `Sync.TableState`
   - keep the listener bound to loopback unless you have an explicit security design
 - Safe change procedure:
   - start on `127.0.0.1`
@@ -74,6 +75,7 @@
   - test one `POST /api/databases/metadata` request against a low-risk database and confirm that the returned table and column metadata matches the current catalog
   - validate `GET /api/object-search/health`, run `POST /api/object-search/index/refresh`, then confirm `GET /api/object-search/search?q=<known object>` returns the expected object near the top
   - open `/api-docs` while signed in, confirm the page loads `/openapi.json`, and test read-only routes before trying any mutating endpoint
+  - for manual sync starts, choose a low-risk row, confirm `Sync.TableState.LastStatus` is not `Running`, call `POST /api/configs/{syncId}/run`, and inspect the returned `TaskRunId` logs plus `Sync.RunLog`
   - trigger one controlled browser-side failure, confirm a new line appears in `.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl`, and sanitize any credentials or business data before sharing the log externally
   - only widen the listener prefix after a security review
 - Confidence: confirmed for script parameters, web app path, endpoints below, and the local JSONL error-log file locations; inferred that wider exposure would be high risk because credentials may be returned to callers and rows can now be inserted
@@ -118,6 +120,8 @@ Credential-resolution behavior for authenticated API requests:
 | `POST` | `/api/client-errors` | Accepts same-origin browser error reports and appends them to the local `.\Logs\WebApp` JSONL files. |
 | `POST` | `/api/configs/import-csv` | Preview or import multiple sync rows from CSV text. |
 | `GET` | `/api/configs/{syncId}` | Return one sync row plus state columns. |
+| `POST` | `/api/configs/{syncId}/run` | Queue one SQL table sync job with `Sync-ConfiguredSqlTable.ps1`; returns `TaskId` and `TaskRunId`. |
+| `POST` | `/api/configs/run` | Queue one SQL table sync job by `syncId` or `syncName` in the JSON body. |
 | `GET` | `/api/servers/explorer` | Return live server-object data for simple loopback queries using URL parameters. |
 | `POST` | `/api/servers/explorer` | Return live server-object data from an explicit JSON connection payload. |
 | `POST` | `/api/servers/discover` | Discover SQL Server instances visible on the current network. |
@@ -128,17 +132,157 @@ Credential-resolution behavior for authenticated API requests:
 | `GET` | `/api/object-search/health` | Check whether the Lucene.NET sidecar is reachable. |
 | `GET` | `/api/object-search/status` | Return Lucene index status plus the latest PowerShell sync status. |
 | `GET` | `/api/object-search/search` | Search indexed database objects with optional filters. |
+| `GET` | `/api/object-search/recent` | Return recent indexed objects for the signed-in user's active workspace. Supports `limit`, filters such as `objectType`, and `perTypeLimit` for balanced command-palette startup lists. |
 | `GET` | `/api/object-search/objects/{id}` | Return one indexed object document. |
 | `POST` | `/api/object-search/index/refresh` | Run the incremental PowerShell object-search sync. |
 | `POST` | `/api/object-search/index/rebuild` | Run the full PowerShell object-search rebuild. |
 | `POST` | `/api/object-search/index/sync-connection` | Validate one Connection Manager saved profile payload, then run the incremental object-search sync with those explicit connection details. |
+| `GET` | `/api/sql/editor/tabs` | List SQL editor tabs scoped by optional `workspaceTabKey` for one workspace tab context. |
+| `POST` | `/api/sql/editor/tabs` | Create or update one SQL editor tab draft for one signed-in user and optional `workspaceTabKey`. |
+| `DELETE` | `/api/sql/editor/tabs/{id}` | Delete one SQL editor tab for one signed-in user. |
 | `GET` | `/api/sql/lint/providers` | Report SQL lint providers available to the local API process (for example SQLFluff). |
 | `POST` | `/api/sql/lint` | Lint SQL text using the selected provider (`sqlfluff`, `builtin`, or `auto`). |
 | `POST` | `/api/migrations/from-config` | Generate destination migration from `Sync.TableConfig` by `syncId` or `syncName`. |
 | `POST` | `/api/migrations/table-diff` | Generate migration by comparing two supplied SQL tables. |
 | `POST` | `/api/tables/batch-size-recommendation` | Profile one supplied SQL table and return advisory `BatchSize` guidance. |
+| `GET` | `/api/admin/active-sessions` | Return active local user sessions (non-revoked, non-expired) from `sessions` table for operator audit context. |
+
+## SQL editor tab persistence endpoints
+
+`GET /api/sql/editor/tabs`
+
+Request:
+
+```text
+GET /api/sql/editor/tabs?workspaceTabKey=sql-editor-20260511
+Authorization: existing signed-in web session cookie (`sql_cockpit_session`)
+```
+
+Response:
+
+```json
+[
+  {
+    "id": "sql-editor-...",
+    "userId": "f4...",
+    "workspaceTabKey": "sql-editor-20260511",
+    "tabName": "Source SQL",
+    "sqlText": "select * from dbo.TableName",
+    "connection": {
+      "server": "MY_SQL",
+      "database": "MyDb",
+      "integratedSecurity": true
+    },
+    "mode": "read",
+    "timeoutMs": 30000,
+    "documentId": "",
+    "documentVersionNumber": 0,
+    "isActive": true,
+    "createdAt": "2026-05-11T08:10:00.000Z",
+    "updatedAt": "2026-05-11T08:10:00.000Z",
+    "lastOpenedAt": "2026-05-11T08:10:00.000Z"
+  }
+]
+```
+
+`POST /api/sql/editor/tabs`
+
+Request:
+
+```json
+{
+  "id": "sql-editor-...",
+  "tabName": "Source SQL",
+  "sqlText": "select top 1 * from dbo.TableName",
+  "connection": {
+    "server": "MY_SQL",
+    "database": "MyDb",
+    "integratedSecurity": true
+  },
+  "mode": "write",
+  "timeoutMs": 30000,
+  "workspaceTabKey": "sql-editor-20260511",
+  "isActive": true
+}
+```
+
+Storage and scope:
+
+- storage location: `data/sql-editor/sql-query-editor.db` (`sql_query_tabs`)
+- valid values: `workspaceTabKey` is an alphanumeric window key up to 160 chars; when omitted, backend uses `""`
+- defaults: if omitted, `workspaceTabKey` defaults to `""`; `POST` can also read workspace key from query `?workspaceTabKey=...`
+- code paths affected:
+  - `sql-cockpit-api/server.js`
+  - `sql-cockpit-api/lib/sql-query-editor-store.js`
+  - `sql-cockpit-api/components/dashboard-client.js`
+  - `sql-cockpit-api/components/dashboard/dashboard-route-metadata.js`
+  - `sql-cockpit-api/components/advanced-sql-query-editor.js`
+  - `scripts/runtime/SqlTablesSync.Tools.psm1`
+- operational risk:
+  - medium: unsaved SQL draft text and editor state is persisted in local sqlite under `sql_query_tabs`
+  - low: requests are scoped by signed-in user and `workspaceTabKey`
+- safe test procedure:
+  1. open `/fleet` as a signed-in user
+  2. click one **Source SQL** action from the table
+  3. edit SQL text in the opened editor
+  4. open another workspace tab and return
+  5. confirm the same editor row and draft still appear when revisiting with same `workspaceTabKey`
+  6. call `GET /api/sql/editor/tabs?workspaceTabKey=sql-editor-20260511` and verify the tab entry and SQL text
 
 ## Example
+
+## Admin active sessions endpoint
+
+`GET /api/admin/active-sessions`
+
+Request:
+
+```text
+GET /api/admin/active-sessions?limit=200
+Authorization: existing signed-in web session cookie (`sql_cockpit_session`)
+```
+
+Response:
+
+```json
+{
+  "activeSessions": [
+    {
+      "sessionId": "7f7b...f2c1",
+      "userId": "b9c3...",
+      "authIdentityId": null,
+      "createdAt": "2026-05-01T10:12:00.000Z",
+      "expiresAt": "2026-05-08T10:12:00.000Z",
+      "lastSeenAt": "2026-05-01T10:20:03.000Z",
+      "userAgent": "Mozilla/5.0 ...",
+      "remoteAddress": "127.0.0.1",
+      "metadata": {},
+      "username": "admin",
+      "displayName": "Admin User",
+      "email": "admin@example.com",
+      "isActive": true,
+      "isLocalAdmin": true,
+      "authIdentityProviderType": "local",
+      "authIdentityProviderSubject": "",
+      "authIdentityProviderTenantId": null,
+      "authIdentityProviderUsername": null,
+      "authIdentityProviderEmail": null
+    }
+  ]
+}
+```
+
+Request options:
+
+- storage location: `data/sql-cockpit/sql-cockpit-local.sqlite` (`sessions`, `users`, `auth_identities`)
+- valid values: `limit` optional integer, minimum 1, maximum 1000, defaults to 200
+- defaults: returned newest sessions first and non-revoked/non-expired filter applied by default
+- code paths affected: `scripts/runtime/SqlTablesSync.Tools.psm1`, `sql-cockpit-api/server.js`, `sql-cockpit-api/lib/rbac-auth-store.js`, `sql-cockpit-api/components/dashboard-client.js`
+- operational risk: low for SQL Cockpit config, medium for exposing current user/remote-address/session metadata to admins
+- safe test procedure:
+  1. open `/api-docs` and sign in with an account that has `admin.audit.view`
+  2. call `GET /api/admin/active-sessions?limit=20`
+  3. verify descending `lastSeenAt` order and non-empty `sessionId`
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRestApi.ps1 `
@@ -529,7 +673,23 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/databases/metadat
 
 ## Create/import payload notes
 
-- Storage location: rows are inserted into `Sync.TableConfig`. No new flags or columns are introduced.
+- Storage location: rows are inserted into the active sqlite-backed `TableConfig` store. The default local store is `data/sql-cockpit/sql-cockpit-local.sqlite`; an explicit `configStorePath` can override it. No new flags or columns are introduced.
+- Running a sync uses the same active config store. In sqlite mode the runner
+  reads `TableConfig` and writes `TableState`, `RunLog`, and `RunActionLog`
+  through the sqlite database. The REST run endpoints queue a Task Manager
+  `TaskRun`, dispatch a worker process, and execute
+  `Sync-ConfiguredSqlTable.ps1` from the queued action.
+  Duplicate starts for the same `SyncId` are blocked by the active `TaskRun`
+  check and by the sqlite `RunLock` table before sync work starts; the child
+  runner releases the matching lock token during cleanup.
+- Task Manager run history uses `GET /api/tasks/{id}/runs?limit=25&offset=0`.
+  The response includes `runs` and `page` metadata (`limit`, `offset`, `total`,
+  `hasPrevious`, `hasNext`) so dashboard clients can expand a task row without
+  fetching thousands of historical runs. The route requires `tasks.view` and
+  follows the same owner/team/system-task visibility rules as `GET /api/tasks`.
+- SQLite mode keeps `TableState` to one row per `SyncId` and collapses stale
+  duplicate state rows on read/write so config-detail joins do not return the
+  same sync row more than once.
 - Valid values:
   - `SyncMode`: `Incremental` or `FullRefresh`
   - `SourceAuthMode` and `DestinationAuthMode`: `Integrated` or `SQL`

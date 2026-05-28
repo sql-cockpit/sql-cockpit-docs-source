@@ -88,10 +88,14 @@ nav:
     - First Run: user/first-run.md
     - Runtime Modes: user/runtime-modes.md
     - Enterprise Mode Settings: user/enterprise-mode-settings.md
+    - Auth Provider Settings: user/auth-provider-settings.md
     - Desktop Service Manager: user/desktop-service-manager.md
+    - Workspaces: user/workspaces.md
+    - Admin Teams: user/admin-teams.md
     - Connection and Instance Profiles: user/connection-and-instance-profiles.md
     - Sync Configuration Workflow: user/sync-configuration-workflow.md
     - Local Auth and Preferences: user/local-auth-and-preferences.md
+    - Localization Preferences: user/localization-preferences.md
     - Operational Safety: user/operational-safety.md
   - Operations:
     - Common Tasks: operations/common-tasks.md
@@ -105,9 +109,11 @@ nav:
     - Estate Overview: operations/estate-overview.md
     - Instance Manager: operations/instance-manager.md
     - SQL Agent Manager: operations/sql-agent-manager.md
+    - Visual Server Explorer: operations/visual-server-explorer.md
     - Service Manager: operations/service-manager.md
     - Object Search: operations/object-search.md
     - SQL Editor: operations/sql-editor.md
+    - Query Analyser: operations/query-analyser.md
     - Analyze Table Batch Sizing: operations/analyze-table-batch-sizing.md
     - Batch Size Caveats: operations/batch-size-caveats.md
     - Analyze Run Logs: operations/analyze-run-logs.md

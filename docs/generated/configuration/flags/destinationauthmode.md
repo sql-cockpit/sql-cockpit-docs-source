@@ -6,7 +6,7 @@
 - Allowed values: `Integrated` for Windows auth; anything else resolves to SQL auth.
 - Default or observed default: No database default confirmed; store explicitly.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2439`, `Sync-ConfiguredSqlTable.ps1:2444`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2667`, `Sync-ConfiguredSqlTable.ps1:2672`
 - Functional effect: Changes how the runtime connects to or writes to the destination side.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

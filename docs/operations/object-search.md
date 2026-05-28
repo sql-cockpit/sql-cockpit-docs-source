@@ -1,5 +1,16 @@
 # Database Object Search Operations
 
+## Upstream attribution
+
+`sql-cockpit-object-search` is based on Apache Lucene.NET. Credit and thanks go to the Apache Software Foundation and Lucene.NET project contributors for the upstream search library and origin project.
+
+- Upstream project: `https://lucenenet.apache.org/`
+- Upstream source: `https://github.com/apache/lucenenet`
+- License: Apache License, Version 2.0
+- Local notice file: `sql-cockpit-object-search/NOTICE`
+
+No endorsement by the Apache Software Foundation or the Lucene.NET project is implied.
+
 ## Local-only cache model
 
 ```mermaid
@@ -20,10 +31,16 @@ flowchart LR
 2. Start SQL Cockpit through `Start-SqlTablesSyncWorkspace.ps1` or start the Lucene.NET sidecar manually with `Start-SqlObjectSearchService.ps1` and then start `Start-SqlTablesSyncRestApi.ps1`.
 3. First run on a new machine: run `POST /api/object-search/index/rebuild` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Full`.
 4. Ongoing runs: run `POST /api/object-search/index/refresh` or `.\Sync-SqlObjectSearchIndex.ps1 -Mode Incremental`.
-5. Open SQL Cockpit and press `Ctrl+K`.
+5. Open SQL Cockpit and press `Ctrl+K` (`Cmd+K` on macOS).
 6. Confirm the command-palette object-type filters show distinct icons for tables, views, procedures, functions, triggers, columns, indexes, constraints, synonyms, and SQL Server Agent jobs.
-7. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET.
-8. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
+7. With an empty search, confirm `Recent Objects` contains recently modified indexed objects from Lucene.NET, with up to five entries for each indexed object type when that type has enough cached objects.
+8. Submit text from the header search toolbar and confirm the palette skips `GET /api/object-search/recent`, then searches the object-search cache with that keyword.
+9. Use an **Open in command palette** action from Estate Overview or a visual object graph and confirm the palette query includes `instance:<server>` for the selected source while the object-type filter remains **All**.
+10. Drag the divider between search results and detail preview on desktop widths, then double-click it to reset the split to 50/50.
+11. With an empty text query, select an object filter or instance/database scope and confirm indexed results load for those criteria.
+12. Change the **Instance** selector while a table search is active and confirm result rows are limited to that selected instance.
+13. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
+14. Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open.
 
 If `dotnet` is installed outside `PATH`, pass the explicit executable path:
 

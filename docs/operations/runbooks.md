@@ -102,7 +102,7 @@ Connection Manager shortcut:
 1. Open `Connection Manager`.
 2. Make sure the saved profile includes the target server. Add a database only if you want to scope to one database instead of the whole instance.
 3. Use `Sync Schema To Search` on that saved profile. With no database selected, the sync enumerates all accessible online user databases on that SQL Server instance.
-4. Open the command palette with `Ctrl+K` and verify the new database objects appear.
+4. Open the command palette with `Ctrl+K` (`Cmd+K` on macOS) and verify the new database objects appear.
 
 ## Rebuild the database object search index safely
 

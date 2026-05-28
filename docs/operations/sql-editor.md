@@ -9,9 +9,15 @@ It does not execute SQL statements. It is a write-and-review surface with object
 ## How to open it
 
 1. Open the page directly from navigation: `Engineering` -> `SQL Editor`.
-2. Or open `Ctrl+K` command palette, select an indexed database object, and use the detail panel dropdown action `Open in SQL Editor`.
+2. Or open the `Ctrl+K` (`Cmd+K` on macOS) command palette, select an indexed database object, and use the detail panel dropdown action `Open in SQL Editor`.
 
 When opened from command palette, SQL Editor receives object context (server, database, schema, object name, object type) and attempts to load the indexed `definition` text from local object search.
+
+## Compact editor workspace
+
+The `/sql-editor` workspace uses a compact IDE-style shell with dense query tabs, a narrow activity rail, small toolbar controls, and reduced default editor/results heights so content-heavy sessions keep more SQL, results, and context visible at once.
+
+Editor UI preferences are stored in browser local storage key `sql-cockpit-advanced-editor-ui-prefs`. `editorColorMode` defaults to `dashboard`, which follows the signed-in dashboard theme; older saved payloads that only inherited the previous `light` default migrate to `dashboard`, while explicit version `2` `light` or `dark` choices remain available from **UI Customization**. The compact defaults are `editorMinHeight = 360`, `resultsPanelHeight = 220`, and `compactGrid = true`.
 
 ## Lint checks currently included
 

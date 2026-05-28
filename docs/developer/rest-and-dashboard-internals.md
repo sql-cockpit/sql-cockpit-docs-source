@@ -36,12 +36,17 @@ sequenceDiagram
 | `POST /api/configs` | `createConfig` | Preview or insert one `Sync.TableConfig` row. |
 | `POST /api/configs/import-csv` | `importConfigsFromCsv` | Preview or insert many rows. |
 | `GET /api/configs/{syncId}` | `getConfigById` | Reads one config row. |
+| `POST /api/configs/{syncId}/run` | Task Manager `sql-table-sync-run` | Queues one `TaskRun`, then executes `Sync-ConfiguredSqlTable.ps1` for the selected row. |
+| `POST /api/configs/run` | Task Manager `sql-table-sync-run` | Queues one row by `syncId` or `syncName` from the JSON body. |
 | `GET`/`POST /api/servers/explorer` | `getServerExplorer` | Live SQL catalog metadata. |
 | `POST /api/servers/discover` | `discoverSqlServers` | SQL Server discovery from the API host. |
 | `POST /api/databases/metadata` | `getDatabaseMetadata` | Full metadata for one database. |
 | `POST /api/sql-agent/jobs` | `getSqlAgentInventory` | Reads `msdb` Agent metadata. |
 | `POST /api/sql-agent/jobs/run` | `startSqlAgentJob` | Calls `msdb.dbo.sp_start_job`. |
 | `POST /api/sql-estate/overview` | `getSqlEstateOverview` | Reads estate health and capacity metadata. |
+| `GET /api/sql/editor/tabs` | Node host route handler | Loads signed-in user SQL editor tab rows from local sqlite, filtered by optional `workspaceTabKey`. |
+| `POST /api/sql/editor/tabs` | Node host route handler | Upserts signed-in user SQL editor tab rows; active tab scope is cleared only within same `workspaceTabKey`. |
+| `DELETE /api/sql/editor/tabs/{id}` | Node host route handler | Deletes one SQL editor tab row by id. |
 | `POST /api/migrations/from-config` | `migrationFromConfig` | Generates migration SQL from a config row. |
 | `POST /api/migrations/table-diff` | `migrationTableDiff` | Generates migration SQL from explicit endpoints. |
 | `POST /api/tables/batch-size-recommendation` | `batchSizeRecommendation` | Profiles one table and returns advisory batch sizes. |
@@ -75,12 +80,26 @@ Operational notes:
 
 The dashboard now stores local accounts, sessions, and per-user preference blobs in `data/sql-cockpit/sql-cockpit-local.sqlite`.
 
+```mermaid
+flowchart LR
+    A[Open Fleet row action] --> B[Build sql-editor workspaceTabKey]
+    B --> C[/Navigate to /sql-editor?workspaceTabKey=.../]
+    C --> D[GET /api/sql/editor/tabs?workspaceTabKey=...]
+    D --> E[(data/sql-editor/sql-query-editor.db)]
+    F[Editor text changes] --> G[POST /api/sql/editor/tabs]
+    G --> E
+```
+
 Current per-user preference keys:
 
 - `theme`
+- `defaultPage`
 - `notificationPreferences`
 - `connectionProfiles`
 - `instanceProfiles`
+- `sql editor tab workspace state` is persisted in `data/sql-editor/sql-query-editor.db` (`sql_query_tabs` table), keyed by signed-in user and `workspaceTabKey`
+
+`defaultPage` stores the route opened when the user visits `/`. The default is `/new-tab` (**Welcome Page**). Invalid or missing values fall back to `/new-tab`, and users change the value from the Account page profile settings.
 
 Legacy browser-local storage keys are still read once during migration when the new local store is empty for that key.
 

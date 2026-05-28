@@ -6,7 +6,7 @@
 - Allowed values: Project-specific string value.
 - Default or observed default: `NULL` means unlimited incremental batches.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2573`, `Sync-ConfiguredSqlTable.ps1:2701`, `Sync-ConfiguredSqlTable.ps1:2861`, `Sync-ConfiguredSqlTable.ps1:2910`, `Sync-ConfiguredSqlTable.ps1:3250`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2830`, `Sync-ConfiguredSqlTable.ps1:2929`, `Sync-ConfiguredSqlTable.ps1:3089`, `Sync-ConfiguredSqlTable.ps1:3138`, `Sync-ConfiguredSqlTable.ps1:3471`
 - Functional effect: Stops incremental processing after the configured number of batches.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.
