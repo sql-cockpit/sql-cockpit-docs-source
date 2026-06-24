@@ -58,7 +58,7 @@
 - the object-search endpoints return indexed object names, definitions, columns, parameters, and dependency metadata from a local on-disk Lucene index
   - `POST /api/object-search/index/refresh` and `POST /api/object-search/index/rebuild` can now run either against configured sources or against an explicit Connection Manager saved profile supplied in the request body
   - browser and server exception logs can now capture request URLs, page URLs, user agents, stack traces, and any response body text surfaced through the UI, so operators should treat `.\Logs\WebApp\*.jsonl` as sensitive local troubleshooting data
-- the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes
+- the Swagger UI can execute the same authenticated API calls as the signed-in browser session, so its "try it out" controls can create sync rows, alter admin settings, start or stop SQL Agent jobs, kill monitored sessions, or control runtime components when pointed at those routes
   - `POST /api/configs/{syncId}/run` and `POST /api/configs/run` queue a TaskRun that executes `Sync-ConfiguredSqlTable.ps1`; they can write destination data and advance `Sync.TableState`
   - keep the listener bound to loopback unless you have an explicit security design
 - Safe change procedure:
@@ -79,6 +79,46 @@
   - trigger one controlled browser-side failure, confirm a new line appears in `.\Logs\WebApp\client-errors-YYYY-MM-DD.jsonl`, and sanitize any credentials or business data before sharing the log externally
   - only widen the listener prefix after a security review
 - Confidence: confirmed for script parameters, web app path, endpoints below, and the local JSONL error-log file locations; inferred that wider exposure would be high risk because credentials may be returned to callers and rows can now be inserted
+
+## SQL bridge installer authorization
+
+The SQL Server invocation bridge installer uses an OAuth-style browser handoff by default when no explicit profile context is supplied. `Install-CockpitInvoke.ps1` posts non-secret metadata to `POST /api/bridge-installer/authorization/start`, opens `/bridge-installer/authorize`, then polls `POST /api/bridge-installer/authorization/poll` with the private `deviceCode`.
+
+Approval requires a normal authenticated SQL Cockpit browser session. The approval page calls `GET /api/bridge-installer/authorization/request`, loads the signed-in user's accessible workspaces, then submits `POST /api/bridge-installer/authorization/approve` with `requestId`, `userCode`, and selected `workspaces`. Rejection uses `POST /api/bridge-installer/authorization/reject`.
+
+The approved poll response contains sanitized context plus a short-lived bearer `accessToken` scoped to the selected workspaces. The installer can call `GET /api/bridge-installer/grant/workspaces` and `GET /api/bridge-installer/grant/resources?type=team&teamId=...` or `?type=personal&workspaceId=...` to list sanitized connection profiles, instance profiles, and Remote Source profiles that belong to each granted workspace. The installer uses that resource list to prompt for a default Remote Source profile and writes the selected profile id/workspace/user context into the SQL bridge config. The token expires after 30 minutes, is held in memory by the web process, and is stripped before the installer writes SQL bridge config.
+
+The flow does not return saved SQL passwords, browser session cookies, OIDC tokens, or profile secret fields. Authorization requests are stored in memory by the web process for 10 minutes and are consumed by the first successful installer poll.
+
+Operational risk is medium. The flow can grant setup-time visibility into resource names/servers/databases for selected workspaces, and it can bind a SQL Server bridge default to a workspace/profile that future T-SQL calls will use for data movement. Safe testing is to approve a non-production workspace, select a non-production Remote Source, confirm `Cockpit.BridgeConfig.ProfileUserId`, `ProfileWorkspaceJson`, `ProfileWorkspaceGrantJson`, and `DefaultRemoteSourceProfileId`, then configure a low-row-count `FetchRemote` call before using production tables. Headless automation should pass `-SkipBrowserAuthorization` plus explicit profile ids instead of relying on a browser prompt.
+
+## SQL bridge invocation monitoring
+
+`GET /api/sql-bridge/invocations` and `GET /api/sql-bridge/invocations/{id}` power the `/sql-bridge` dashboard page. Both routes require the signed-in user to have `tasks.view` or be a local admin. They are read-only and query the SQL Server bridge control database through the configured bridge control-database connection. This is bridge monitoring metadata, not direct hosted/cloud access to customer SQL target instances; target-instance operations should be routed through the paired SQL Cockpit Agent.
+
+Request shape:
+
+- `GET /api/sql-bridge/invocations?status=all&page=1&pageSize=50&view=procedureRuns`
+- `status` may be `all`, `Started`, `Succeeded`, or `Failed`
+- `page` is one-based and `pageSize` is clamped from `1` to `500`
+- `view=procedureRuns` pages by stored procedure run and nests sync invocations plus trace/log events
+- omit `view=procedureRuns` for the legacy flat invocation list
+- detail path `{id}` must be an invocation GUID
+
+Response shape:
+
+- `ok`
+- `bridge.sqlServer`, `bridge.database`, and `bridge.configPath`
+- `summary` counts for returned, running, succeeded, failed, total rows affected, and longest running seconds
+- `procedureRuns[]` when `view=procedureRuns`, with caller database/schema/procedure, trace run id, nested `invocations[]`, and nested trace/log events
+- `invocations[]` with status, command/default names, correlation metadata, source/destination hints, row counts, elapsed time, and output line count
+- detail responses include `invocation`, redacted `payload`, redacted `originalPayload` when recorded, `apiCall`, `sourceQuery`, `invocationSql.sql` as an equivalent reconstructed `Cockpit.Invoke` batch, `output[]`, and a `progress` capability marker
+
+`apiCall` is the simple read-only dashboard detail request. `sourceQuery` and `invocationSql.sql` are generated from the stored JSON payload and are intended for copy/paste diagnostics. SQL Server does not store the exact caller wrapper batch text or the FetchRemote metadata-resolved column list, so wrapper calls such as `Cockpit.FetchRemote` are represented as equivalent low-level `Cockpit.Invoke` calls and representative source `SELECT` text.
+
+Operational risk is medium because invocation logs can reveal server names, database names, table names, SQL logins, host names, application names, and error text for SQL-originated data movement. The API redacts password/token/key-like fields from returned payload JSON, but callers with `tasks.view` should still be treated as trusted operations users.
+
+Safe test procedure: set `SQL_COCKPIT_BRIDGE_SQL_SERVER` and `SQL_COCKPIT_BRIDGE_DATABASE` when the bridge control database is not local/default, restart the web process, sign in as an authorized user, call the list endpoint, compare one invocation id with `Cockpit.InvocationLog`, then open `/api-docs` and confirm the `SQL Bridge` tag is present.
 
 ## Parameters
 
@@ -114,6 +154,8 @@ Credential-resolution behavior for authenticated API requests:
 | `GET` | `/api/runtime` | Return runtime discovery details for the browser shell, including standalone notifications URLs when configured. |
 | `GET` | `/` | Serves the built-in web UI. |
 | `GET` | `/app` | Alias for the built-in web UI. |
+| `GET` | `/api/sql-bridge/invocations` | List recent SQL Server bridge invocations from `Cockpit.InvocationLog`; requires `tasks.view`. |
+| `GET` | `/api/sql-bridge/invocations/{id}` | Read one bridge invocation, redacted payload, and captured output rows; requires `tasks.view`. |
 | `GET` | `/api/configs` | List sync rows and latest state summary. Optional `enabledOnly=true|false`; when omitted or blank, no enabled-state filter is applied. |
 | `POST` | `/api/configs` | Preview or create one sync row. |
 | `GET` | `/api/configs/template` | Returns create defaults, supported pick-lists, and CSV headers from the live schema. |
@@ -129,9 +171,11 @@ Credential-resolution behavior for authenticated API requests:
 | `POST` | `/api/sql-estate/overview` | Return capacity, health, database state, and SQL Agent summary for saved instance profiles. |
 | `POST` | `/api/sql-agent/jobs` | Return SQL Server Agent jobs, steps, schedules, and runtime history for one instance profile. |
 | `POST` | `/api/sql-agent/jobs/run` | Start one SQL Server Agent job on the selected instance. |
+| `POST` | `/api/sql-agent/jobs/stop` | Stop one running SQL Server Agent job on the selected instance. |
 | `GET` | `/api/object-search/health` | Check whether the Lucene.NET sidecar is reachable. |
-| `GET` | `/api/object-search/status` | Return Lucene index status plus the latest PowerShell sync status. |
-| `GET` | `/api/object-search/search` | Search indexed database objects with optional filters. |
+| `GET` | `/api/object-search/status` | Return Lucene index status plus workspace-scoped sync metadata. Completed source rows are merged from durable manifest files and the latest PowerShell heartbeat so parallel/manual syncs remain visible after the final operation completes. Pass `compact=1` for the smaller dashboard-startup status shape. |
+| `GET` | `/api/object-search/search` | Search indexed database objects with optional filters. Supports `limit` and `offset`; `totalHits` is the full active-workspace match count and `items` is the requested page. |
+| `GET` | `/api/object-search/analytics/object-types` | Return active-workspace total indexed object counts grouped by SQL object type. |
 | `GET` | `/api/object-search/recent` | Return recent indexed objects for the signed-in user's active workspace. Supports `limit`, filters such as `objectType`, and `perTypeLimit` for balanced command-palette startup lists. |
 | `GET` | `/api/object-search/objects/{id}` | Return one indexed object document. |
 | `POST` | `/api/object-search/index/refresh` | Run the incremental PowerShell object-search sync. |
@@ -146,6 +190,41 @@ Credential-resolution behavior for authenticated API requests:
 | `POST` | `/api/migrations/table-diff` | Generate migration by comparing two supplied SQL tables. |
 | `POST` | `/api/tables/batch-size-recommendation` | Profile one supplied SQL table and return advisory `BatchSize` guidance. |
 | `GET` | `/api/admin/active-sessions` | Return active local user sessions (non-revoked, non-expired) from `sessions` table for operator audit context. |
+
+## Object-search status compact response
+
+`GET /api/object-search/status?compact=1` is a read-only response-shaping option for dashboard startup widgets that need object-search counts, source freshness, and sync progress but not full manifest details.
+
+Request:
+
+```text
+GET /api/object-search/status?compact=1
+Authorization: existing signed-in web session cookie (`sql_cockpit_session`)
+```
+
+Supported truthy compact values are `1`, `true`, `yes`, `compact`, and `summary`; `summary=1` is accepted as an alias. Omitting those query values returns the existing full status payload.
+
+Response shape:
+
+- `status`
+- `service.status`, `service.documentCount`, and `service.maxResults`
+- `sync.workspaceKey`, `sync.workspaceLabel`, running/progress fields, active locks, and compact `sources` / `syncedInstances`
+- compact source rows: `workspaceKey`, `sourceServer`, `databaseName`, `mode`, `manifestDocumentCount`, `uploadedDocumentCount`, `deletedDocumentCount`, and `lastSuccessfulSyncUtc`
+- `activeTaskSyncs`
+- `activeTaskSyncs[].operationId` is populated from the live object-search heartbeat when it can be matched to the running Task Manager run, from matching workspace/source locks for existing live runs, or from the deterministic TaskRun-derived operation id for new Task Manager object-sync runs. Use it for task-specific log calls instead of assuming `sync.operationId` belongs to the selected task.
+- `workspace`
+
+Authentication/RBAC expectations: same as full `GET /api/object-search/status`. The API derives scope from the signed-in user's active workspace, accepts personal workspaces only for the owner, accepts team workspaces only for active members, and rejects caller-supplied `workspaceKey` with `400 WORKSPACE_SCOPE_IMMUTABLE`.
+
+Operational risk: low. The endpoint remains read-only and workspace-scoped. The main risk is using the compact form in a diagnostic workflow that needs manifest paths or full source metadata; use full `GET /api/object-search/status` for those cases.
+
+Safe test:
+
+1. Sign in and call full `GET /api/object-search/status`.
+2. Call `GET /api/object-search/status?compact=1` with the same session.
+3. Confirm workspace, service document count, running-state fields, and source/database names match.
+4. Confirm the compact response is smaller and does not include manifest paths.
+5. Open `/api-docs` and confirm `/api/object-search/status` shows the optional `compact` query parameter under the Object Search tag.
 
 ## SQL editor tab persistence endpoints
 
@@ -369,7 +448,7 @@ Confirmed implementation note:
 - confirmed: the new `POST /api/databases/metadata` route is additive and uses live read-only metadata queries only; no database config columns, flags, or runtime sync behaviors changed
 - confirmed: the new `POST /api/sql-estate/overview` route is additive and uses live read-only SQL Server instance, capacity, database-state, and Agent-summary metadata queries only; no database config columns, flags, or runtime sync behaviors changed
 - confirmed: the new `POST /api/sql-agent/jobs` route is additive and uses read-only `msdb` SQL Agent metadata queries only; no database config columns, flags, or runtime sync behaviors changed
-- confirmed: the new `POST /api/sql-agent/jobs/run` route is additive to SQL Cockpit config, but it is not read-only against the target SQL Server Agent; it calls `msdb.dbo.sp_start_job` and does not change SQL Cockpit database config columns, flags, or runtime sync behaviors
+- confirmed: the `POST /api/sql-agent/jobs/run` and `POST /api/sql-agent/jobs/stop` routes are additive to SQL Cockpit config, but they are not read-only against the target SQL Server Agent; they call `msdb.dbo.sp_start_job` or `msdb.dbo.sp_stop_job` and do not change SQL Cockpit database config columns, flags, or runtime sync behaviors
 - confirmed: the new `POST /api/client-errors` route does not write to SQL tables or config state; it only appends local JSONL troubleshooting records under `.\Logs\WebApp`
 
 ## SQL estate overview endpoint
@@ -437,6 +516,8 @@ Operational notes:
 - safe change procedure: validate the profile in `Instance Manager`, refresh a low-risk instance first, confirm the source server in the summary, then filter before expanding jobs on sensitive instances
 
 `POST /api/sql-agent/jobs/run` starts one SQL Agent job by `jobId` or `jobName` using `msdb.dbo.sp_start_job`.
+
+`POST /api/sql-agent/jobs/stop` stops one running SQL Agent job by `jobId` or `jobName` using `msdb.dbo.sp_stop_job`.
 
 Request body:
 
@@ -557,19 +638,27 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/configs/import-cs
 
 ## Server Explorer endpoint
 
-`GET /api/servers/explorer?...` and `POST /api/servers/explorer` return the live object graph used by the dashboard page and the standalone `Get-ServerObjects.ps1` script.
+`GET /api/servers/explorer?...` and `POST /api/servers/explorer` return the live object graph used by the dashboard page and the standalone `Get-ServerObjects.ps1` script. Dashboard calls normally use saved Instance Manager or Remote Sources profile ids. The Instance Manager edit form may send an `instanceProfileDraft` payload, and the Remote Sources form may send a `remoteInstanceDraft` payload, for a test-only metadata probe before the profile has been saved.
 
 Interface notes:
 
 - storage location: no database storage yet; the endpoint reads live SQL Server catalog metadata and returns it directly without persisting explorer state
 - valid values:
-  - `serverName`: any non-empty SQL Server name string
-  - `databaseName`: any accessible database name on that server; repeat the query-string key to select multiple databases in `GET` requests
+  - `instanceProfileId`: saved Instance Manager profile id for normal server-level metadata reads
+  - `remoteInstanceProfileId`: saved Remote Sources profile id for linked-server-style source checks
+  - `instanceProfileDraft`: optional object for Instance Manager test flows; accepts the current `serverName`, `authMode`, `integratedSecurity`, `username`, `password`, `trustServerCertificate`, and `encryptConnection` form fields and is not persisted by this endpoint
+  - `remoteInstanceDraft`: optional object for Remote Sources test flows; accepts the current `serverName`, `authMode`, `integratedSecurity`, `username`, `password`, `trustServerCertificate`, `encryptConnection`, and `readOnly` form fields and is not persisted by this endpoint
+  - `workspace`: optional object with `type`, `workspaceId`, or `teamId`; when supplied, the API resolves the profile from that workspace instead of relying only on the signed-in user's active workspace preference
+  - `databaseName`: any accessible database name on that profile; repeat the query-string key to select multiple databases in `GET` requests
   - `databaseNames`: zero, one, or many accessible database names in `POST` requests; when omitted or empty, the endpoint returns the whole accessible server inventory
+  - `allowEmptyDatabaseInventory`: optional boolean for connection-test flows; when `true`, a successful SQL connection with no listable online user databases returns a success response with `InventoryStatus = NoListableDatabases` and `Warnings` instead of throwing a connection failure
 - defaults:
-  - the endpoint rejects a blank or missing `serverName`
-  - the `POST` endpoint rejects SQL-auth requests where `connection.integratedSecurity` is `false` and `connection.username` is blank
+  - the `POST` endpoint rejects requests without `instanceProfileId`, `remoteInstanceProfileId`, `instanceProfileDraft`, or `remoteInstanceDraft`
+  - the API resolves server/auth/certificate settings from the saved workspace profile
   - the dashboard Server Explorer page loads from saved Instance Manager profiles instead of a free-text server picker
+  - `allowEmptyDatabaseInventory` defaults to `false`; the Remote Sources and Connection Manager test flow sets it to `true`
+  - the Instance Manager edit flow sends the current form as `instanceProfileDraft`, so unsaved server/authentication/certificate/password changes can be tested before `Update Instance` saves them
+  - the Remote Sources test flow sends the current form as `remoteInstanceDraft`, so new or edited profiles can be tested before the workspace profile save has completed
   - when the dashboard only has a selected instance profile, it loads the available database list first and leaves the multi-select empty until the operator narrows the browse scope
 - code paths affected:
   - `SqlTablesSync.Tools.psm1`
@@ -581,6 +670,7 @@ Interface notes:
 - operational risk:
   - medium, because the endpoint now exposes live database names, schema inventory, and recently modified objects from the requested SQL Server
   - low for write safety, because the implementation uses read-only catalog queries only and does not persist a server registry
+  - medium for credential handling when `instanceProfileDraft` or `remoteInstanceDraft` uses SQL authentication, because typed credentials transit the authenticated same-origin API request for the immediate metadata probe; save the profile first and test by id when avoiding draft credential transit is operationally required
 - safe change procedure:
   - save and test a low-risk Instance Manager profile first so the available-database list matches operator expectations
   - narrow to one or more low-risk databases before sharing screenshots or copied payloads outside the trusted operations context
@@ -588,8 +678,10 @@ Interface notes:
   - keep saved instance profiles current because Server Explorer now uses their server, auth, and certificate settings
 - confidence:
   - confirmed: current endpoint paths, required payload shape, and read-only metadata-query implementation
+- confirmed: Instance Manager edit tests use `instanceProfileDraft` so the current input boxes are tested before saving, and Remote Sources can be tested with `remoteInstanceDraft` before a saved profile id exists.
   - confirmed: the Node route now validates the incoming JSON payload before calling PowerShell and returns HTTP `400` with an `errors` object for missing `serverName` or incomplete SQL-auth credentials
   - confirmed: the response now includes `AvailableDatabases` alongside the filtered `Databases` collection so the dashboard can keep the selector populated after a filtered browse
+  - confirmed: when `allowEmptyDatabaseInventory = true`, a login that connects successfully but cannot list online user databases returns `InventoryStatus = NoListableDatabases`, `Summary.DatabaseCount = 0`, and a warning message
   - confirmed: schema entries now include grouped object lists for tables, views, procedures, and functions so the graph view can expand each schema without extra round trips
   - confirmed: the current environment hit an SSPI-integrated-auth error when validating against `YOUR_SQL_SERVER`, so operator validation should use the same auth path you normally use for live SQL access
 
@@ -599,17 +691,21 @@ Example:
 Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/servers/explorer" `
   -ContentType "application/json" `
   -Body (@{
-      connection = @{
-          server = "YOUR_SQL_SERVER"
-          integratedSecurity = $true
-          trustServerCertificate = $true
+      remoteInstanceProfileId = "saved-remote-source-profile-id"
+      workspace = @{
+          type = "team"
+          teamId = "saved-team-id"
       }
+      databaseNames = @()
+      allowEmptyDatabaseInventory = $true
   } | ConvertTo-Json -Depth 5)
 ```
 
 Troubleshooting:
 
-- if `POST /api/servers/explorer` returns HTTP `400` with `{"error":"Connection validation failed."}`, correct the named fields under `errors` before retrying; current server-side checks cover `serverName` and SQL-auth `username`
+- if `POST /api/servers/explorer` returns HTTP `400` with `{"error":"Connection validation failed."}`, include `instanceProfileId`, `remoteInstanceProfileId`, an Instance Manager test-only `instanceProfileDraft`, or a Remote Sources test-only `remoteInstanceDraft`
+- if `POST /api/servers/explorer` says a requested remote source profile was not found, confirm the profile was saved in the selected workspace and include the matching `workspace` object in the request body, or test the current `/remote-sources/new` form so the dashboard sends `remoteInstanceDraft`
+- if `POST /api/servers/explorer` returns success with `InventoryStatus = NoListableDatabases`, the SQL connection worked but the login could not list any online user databases through the catalog query; verify metadata visibility or test with an explicit database in the feature that needs the remote source
 - if `POST /api/servers/explorer` returns `{"error":"Argument types do not match"}`, restart the local API after updating to the version that flattens PowerShell `DataRow` values into local scalars before building the explorer response object
 - confirmed: this failure came from PowerShell object construction inside `Get-StsServerObjectExplorer`, not from the REST payload shape itself
 - safe recovery procedure:
@@ -686,7 +782,22 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/databases/metadat
   The response includes `runs` and `page` metadata (`limit`, `offset`, `total`,
   `hasPrevious`, `hasNext`) so dashboard clients can expand a task row without
   fetching thousands of historical runs. The route requires `tasks.view` and
-  follows the same owner/team/system-task visibility rules as `GET /api/tasks`.
+  follows the same workspace-assigned or workspace-neutral system-task
+  visibility rules as `GET /api/tasks`.
+- The focused dashboard route `/task-manager/detail?taskId=<id>` composes
+  `GET /api/tasks/{id}`, `GET /api/tasks/{id}/runs?limit=25&offset=0`, and
+  `GET /api/task-runs/{runId}/logs?limit=500`. Supplying `taskRunId=<runId>`
+  opens that run's redacted log stream first. No new API surface is introduced;
+  the same `tasks.view`, `tasks.logs.view`, workspace-assigned, owner, team, and
+  workspace-neutral system-task visibility rules apply.
+- The cross-task run feed uses `GET /api/task-runs?limit=100&offset=0`.
+  `status=running` narrows the response to currently running visible runs in the
+  signed-in user's active workspace for dashboard surfaces such as the Welcome
+  Page **Running Tasks** widget.
+- `GET /api/tasks?nextRun=scheduled&limit=8` returns enabled visible task
+  definitions in the signed-in user's active workspace with a `nextRunUtc`,
+  ordered by due time, for dashboard surfaces such as the Welcome Page **Next
+  Tasks** widget.
 - SQLite mode keeps `TableState` to one row per `SyncId` and collapses stale
   duplicate state rows on read/write so config-detail joins do not return the
   same sync row more than once.

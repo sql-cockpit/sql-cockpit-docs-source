@@ -4,7 +4,7 @@ SQL Agent Manager is a read-only SQL Cockpit page for reviewing SQL Server Agent
 
 Use it when you need the kind of overview normally gathered from SQL Server Management Studio Agent nodes: job list, enabled state, running state, next run, latest outcome, runtime history, schedules, and job steps.
 
-The page can start a selected SQL Agent job when an operator confirms `Run Job Now` from the job action menu. It does not stop, enable, disable, edit, or delete SQL Agent jobs.
+The page can start a selected SQL Agent job when an operator confirms `Run Job Now` from the job action menu, and can stop a currently running job when an operator confirms `Stop Job`. It does not enable, disable, edit, or delete SQL Agent jobs.
 
 ## What It Shows
 
@@ -73,7 +73,7 @@ The selected login needs enough read access to SQL Server Agent metadata in `msd
     ```
 
 2. Open the SQL Cockpit dashboard URL printed by the launcher.
-3. Select `Agent Manager` from the left navigation.
+3. Select `Operations & Monitoring` > `Agent Jobs` > `Agent Manager` from the left navigation.
 4. Choose an instance profile from the dropdown.
 5. The page loads the selected instance. Use `Refresh Jobs` to reload the current `msdb` state.
 
@@ -138,6 +138,8 @@ Each job row has an ellipsis menu next to the job name. The current menu provide
 The menu is intentionally placed beside the job name so future job-level actions can be added without changing the table structure.
 
 `Run Job Now` calls `POST /api/sql-agent/jobs/run`, which invokes `msdb.dbo.sp_start_job` on the selected instance. SQL Agent accepts the start request and the dashboard refreshes the inventory after the request returns. If the job is already running, disabled, missing, or blocked by permissions, SQL Server returns the failure.
+
+`Stop Job` is enabled for jobs reported as currently running. It calls `POST /api/sql-agent/jobs/stop`, which invokes `msdb.dbo.sp_stop_job` on the selected instance after resolving the job from the saved profile. SQL Agent accepts the stop request and the dashboard refreshes inventory after the request returns.
 
 ## Expand A Job
 
@@ -224,6 +226,16 @@ Example response fields:
     "integratedSecurity": true,
     "trustServerCertificate": true
   }
+}
+```
+
+`POST /api/sql-agent/jobs/stop` stops one running selected job:
+
+```json
+{
+  "instanceProfileId": "prod-sql-01",
+  "jobId": "0f14a3d1-0000-0000-0000-000000000000",
+  "jobName": "Nightly ETL"
 }
 ```
 
@@ -328,9 +340,9 @@ Agent Manager does not poll continuously. Click `Refresh Jobs` to reread `msdb.d
   - `webapp/components/dashboard-client.js`
   - `webapp/app/agent-manager/page.js`
 - operational risk:
-  - medium for write safety, because `Run Job Now` starts live SQL Agent jobs through `msdb.dbo.sp_start_job`
+  - medium for write safety, because `Run Job Now` starts live SQL Agent jobs through `msdb.dbo.sp_start_job` and `Stop Job` stops live SQL Agent jobs through `msdb.dbo.sp_stop_job`
   - medium for metadata exposure, because job names, step names, schedules, messages, and command text can reveal operational detail
-  - medium for credential handling when saved profiles use SQL authentication, because those credentials are stored in browser local storage by the existing Instance Manager workflow
+  - medium for credential handling when saved profiles use SQL authentication, because the password must be present in the paired agent's Windows Credential Manager and referenced by saved profile metadata
   - Report Server subscription jobs are intentionally hidden from this view; inspect SQL Server Agent or SSRS directly when troubleshooting report subscriptions
 - safe change procedure:
   1. Save a low-risk instance profile first.
@@ -338,11 +350,11 @@ Agent Manager does not poll continuously. Click `Refresh Jobs` to reread `msdb.d
   3. Confirm the selected server name before loading Agent data.
   4. Review summary counts before expanding job detail.
   5. Filter before expanding jobs on sensitive instances.
-  6. Use `Run Job Now` only after confirming the target instance, job name, and operational window.
+  6. Use `Run Job Now` or `Stop Job` only after confirming the target instance, job name, and operational window.
   7. Avoid sharing raw Agent payloads outside the trusted operator context without redaction.
 - confidence:
   - confirmed: Agent Manager does not add, change, or remove `Sync.TableConfig` columns or flags
-  - confirmed: inventory reads from `msdb`; `Run Job Now` starts jobs through `msdb.dbo.sp_start_job`
+  - confirmed: inventory reads from `msdb`; `Run Job Now` starts jobs through `msdb.dbo.sp_start_job`; `Stop Job` stops jobs through `msdb.dbo.sp_stop_job`
   - confirmed: direct testing against `YOUR_SQL_SERVER` returned 246 jobs and 334 steps
   - inferred: runtime history completeness depends on target SQL Server Agent history retention
 

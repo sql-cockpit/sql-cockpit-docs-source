@@ -6,6 +6,12 @@
 
 It does not execute SQL statements. It is a write-and-review surface with object-definition loading and lint feedback.
 
+## Agent-backed execution
+
+When SQL Editor execution is enabled, live SQL Server queries are sent through the paired SQL Cockpit Agent with `sql.query.read`. The API process does not open direct customer SQL Server connections by default; the agent host is the customer-controlled network entrypoint.
+
+`SQL_COCKPIT_ALLOW_DIRECT_SQL_OPERATIONS=true` is a break-glass/test-only bypass and must not be used for normal local, on-prem, or hosted operation.
+
 ## How to open it
 
 1. Open the page directly from navigation: `Engineering` -> `SQL Editor`.

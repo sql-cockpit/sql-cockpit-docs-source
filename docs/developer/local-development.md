@@ -30,6 +30,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncWor
 Use `-DevMode` when you need dashboard hot reload through the custom Node host.
 
 - confirmed: if `webapp/.next/BUILD_ID` exists and you start the workspace without `-DevMode`, the launcher now prints a warning that frontend CSS and JavaScript edits will not auto-appear in the browser.
+- confirmed: in dev mode, the custom Node host uses an explicit PowerShell watcher to restart only the API child when backend or dashboard source files change. This covers `server.js`, `next.config.js`, `app/**/*.js`, `components/**/*.js`, and `lib/**/*.js`; it is separate from browser HMR because custom `server.js` routes are loaded into the Node process.
 - safe change procedure: when editing files under `webapp/`, prefer the same workspace command with `-DevMode`, or run `npm run dev` from `webapp/`.
 
 ## Run Only The REST API And Dashboard
@@ -45,6 +46,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-SqlTablesSyncRes
 ```
 
 - confirmed: if `webapp/.next/BUILD_ID` exists and you start this launcher without `-DevMode`, it now warns that the dashboard will prefer production output and frontend file edits will not hot-reload.
+- confirmed: with `-DevMode`, `Start-SqlTablesSyncRestApi.ps1` keeps the launcher process alive, watches the API repo, and restarts only the Node API child after a short debounce when watched JavaScript files change.
 
 ## Run Managed API From Split Folder
 

@@ -7,6 +7,7 @@ The Users admin menu is split into focused pages:
 | `/admin/users` | Review local users and open a focused edit page for a selected account. | `users.view`. |
 | `/admin/users/create` | Create a local SQL Cockpit user account. | `users.create`; existing users are shown when `users.view` is also available. |
 | `/admin/users/edit?userId=<id>` | Edit profile state, roles, teams, passwords, and linked identities for one user. | `users.view`; write actions require the matching API permissions. |
+| `/admin/rbac` | Open the same focused editor with the RBAC navigation context for role and team assignments. | `users.view`; role and team writes require `roles.assign` and `teams.assign_members`. |
 
 Operational notes:
 
@@ -14,6 +15,7 @@ Operational notes:
 - `/admin/users` no longer includes create-user or edit-user forms.
 - `/admin/users/create` posts to `/api/admin/users` and then clears the form.
 - User list `Edit` actions navigate to `/admin/users/edit?userId=<id>`.
+- `/admin/rbac` is a dashboard route wrapper for the same user detail editor, not a separate RBAC data model.
 - No database flags or settings are added by this route split.
 
 Safe test:
@@ -22,3 +24,4 @@ Safe test:
 2. Click `Edit` for a user and confirm `/admin/users/edit?userId=<id>` opens.
 3. Open `/admin/users/create` and create a non-admin test user.
 4. Return to `/admin/users` and confirm the user appears in the list.
+5. Open `/admin/rbac` and confirm the user-detail editor loads.

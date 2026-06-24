@@ -13,10 +13,15 @@ a manual refresh.
 Task Manager job-event notifications also support account-level Slack and
 PagerDuty delivery. Users configure these targets from `/account/integrations`
 and the focused setup pages `/account/integrations/slack` and
-`/account/integrations/pagerduty`. Failures and timeouts are subscribed by
-default in `notificationPreferences`; external delivery only happens when the
-matching action is enabled and the signed-in user has configured the integration
-or a global fallback connector is configured.
+`/account/integrations/pagerduty`. Queued, dispatched, started, failed, and
+timed-out events are subscribed by default in `notificationPreferences`; success,
+cancelled, skipped, disabled, and output-frame notifications are opt-in from
+Notification Center. External delivery only happens when the matching action is
+enabled and the signed-in user has configured the integration or a global
+fallback connector is configured.
+In-app Task Manager job notifications open
+`/task-manager/detail?taskId=<task-id>&taskRunId=<run-id>` so the notification
+button lands on the focused task page with the selected run logs available.
 
 For high-volume runtime output, producers use `POST /api/events` instead of
 `POST /api/notifications`. Event payloads are broadcast to WebSocket clients as
@@ -24,7 +29,9 @@ For high-volume runtime output, producers use `POST /api/events` instead of
 The sync task worker sends `task-run-output` events for PowerShell stdout/stderr
 chunks so Live Inspector can stream the selected sync run output as it arrives
 and Task Manager can append output to the open inline log viewer for the
-selected run.
+selected run. Users can subscribe to output-frame notifications, but this should
+usually be limited to short diagnostics because long-running syncs can emit many
+frames.
 
 ## Purpose
 

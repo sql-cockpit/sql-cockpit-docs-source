@@ -16,7 +16,6 @@ flowchart LR
     A --> D[Register tray startup task]
     C --> E[Service Host Control API :8610]
     F[Service Control Electron] --> E
-    F --> G[Launch Desktop UI in user session]
     H[Desktop App Auto-Updater] --> I[GitHub Releases]
     F --> J[Service Control Auto-Updater]
     J --> I
@@ -35,7 +34,7 @@ The Electron app supports:
 - bulk `Start All`, `Restart All`, `Stop All`
 - auto-refresh every 15 seconds
 - quick action button to open Docs in the default browser (uses docs component URL from service settings, falls back to `http://127.0.0.1:8000/`)
-- `Launch Desktop UI (User Session)` action that starts the `desktop-app` component command directly in the current logged-in user session
+- health-first component adoption: if a configured `healthUrl` or `alternateHealthUrls` endpoint answers successfully, Service Control shows the component as running even when the process was started by the local-dev stack instead of `SQLCockpitServiceHost`
 - automatic managed API bootstrap on app start:
   - reconciles `web-api` service settings contract (`--listenPrefix http://127.0.0.1:8000/`, `autoStart=true`, `workingDirectory={ApiRepoRoot}`)
   - ensures split-era repo root keys exist in settings (`desktopRepoRoot`, `apiRepoRoot`, `serviceRepoRoot`, `objectSearchRepoRoot`)
@@ -47,7 +46,34 @@ The Electron app supports:
 - update actions:
   - `Check For Updates`
   - `Install Downloaded Update`
-- optional desktop app component (`desktop-app`) that should launch `Start-SqlCockpitDesktopPackaged.ps1` in client mode
+- the legacy `desktop-app` managed component is no longer provisioned; Service Control manages the Windows service host, runtime services, updates, and SQL Cockpit Agent only
+- SQL Cockpit Agent live output viewer:
+  - connects to the agent's local named pipe, `\\.\pipe\SqlCockpit.Agent.LogStream` by default
+  - shows recent in-memory agent log events and follows new events
+  - does not write files unless an operator clicks `Log To File` and chooses a capture path
+
+## SQL Cockpit Agent live output
+
+Use the `Live Logs` button on the `sql-cockpit-agent` managed component when you need to see what the agent is doing without enabling persistent disk logging.
+
+Default behaviour:
+
+- agent-side setting: `Agent:LiveLogEnabled=true`
+- agent-side pipe: `Agent:LiveLogPipeName=SqlCockpit.Agent.LogStream`
+- agent-side memory replay: `Agent:LiveLogBufferSize=500`
+- Service Control reads the installed agent `appsettings.json` under `agentInstallDirectory` when it needs a non-default pipe name
+- no log files are created by the agent or Service Control by default
+
+File capture is operator-driven:
+
+1. Click `Live Logs` on the `sql-cockpit-agent` row.
+2. Confirm live output appears in the modal.
+3. Click `Log To File`.
+4. Choose a temporary `.ndjson` or `.log` file.
+5. Reproduce the issue or wait for the next heartbeat/job event.
+6. Click `Stop File Log` before sharing or deleting the capture.
+
+Operational risk: captured files can contain exception text, server names, profile identifiers, and local path details. Do not store long-running captures by default, and delete temporary captures after diagnosis unless your incident process requires retention.
 
 ## Files
 
@@ -67,7 +93,7 @@ With explicit settings path:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File ".\service\windows\Start-SqlCockpitServiceControlElectron.ps1" `
-  -SettingsPath "C:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json"
+  -SettingsPath "E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json"
 ```
 
 Disable startup API auto-bootstrap for troubleshooting:
@@ -81,7 +107,7 @@ Run launcher with elevation:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File ".\service\windows\Start-SqlCockpitServiceControlElectron.ps1" `
-  -SettingsPath "C:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json" `
+  -SettingsPath "E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json" `
   -RunAsAdministrator
 ```
 
@@ -126,7 +152,7 @@ The NSIS installer is now the canonical SQL Cockpit Suite installer and performs
 
 1. installs SQL Cockpit Desktop app from bundled setup payload
 2. installs or updates `SQLCockpitServiceHost` (Windows SCM)
-3. migrates settings so `desktop-app` uses packaged launcher + resolved desktop EXE path
+3. migrates settings and removes the legacy `desktop-app` managed component if it exists
 4. starts service host and validates `http://127.0.0.1:8610/health`
 5. registers/starts `SQLCockpitServiceTrayAtLogon`
 
@@ -220,13 +246,17 @@ Operator instruction for manual elevated launch:
 
 ## Settings and API auth
 
-The app reads `%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json` by default.
+The app reads `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json` by default. Operators can override this with `--settings` or the `SQL_COCKPIT_SERVICE_SETTINGS_PATH` environment variable.
 
 Used fields:
 
 - `serviceName`
+- `agentServiceName`
+- `agentRepoRoot`
+- `agentInstallDirectory`
 - `listenPrefix`
 - `apiKey`
+- per-component `healthUrl` and optional `alternateHealthUrls`; `alternateHealthUrls` is used for local-dev/prodlike overlap, for example recognizing `http://127.0.0.1:8080/health` while the service-host command remains configured for `http://127.0.0.1:8000/`
 
 If `apiKey` is present, requests include header:
 
@@ -237,13 +267,16 @@ If `apiKey` is present, requests include header:
 | Symptom | Likely cause | Action |
 | --- | --- | --- |
 | UI cannot load runtime components | service host not running or bad control URL | validate `Get-Service SQLCockpitServiceHost` and `Invoke-WebRequest http://127.0.0.1:8610/health` |
+| local-dev stack is healthy but components show `Stopped` | service host is using stale owned-process state instead of adopting externally started health endpoints | verify `alternateHealthUrls` includes the local-dev endpoint, for example `http://127.0.0.1:8080/health` for `web-api`, then restart `SQLCockpitServiceHost` |
 | actions return `401` | API key mismatch | align `apiKey` between service settings and client |
 | update checks fail in dev | app not packaged | expected; auto-updates are for packaged builds/releases |
 | service start/stop fails | UAC was canceled or elevation failed | retry action and accept the UAC prompt; if it still fails, run the app elevated and verify local policy allows service control |
+| Agent shows `Not Installed` | `SqlCockpit.Agent` has not been created on this machine | click `Install` on the `sql-cockpit-agent` managed row, choose local/on-prem/cloud, enter the SQL Cockpit URL, open `/admin/agent-binding` from the wizard, create/copy the binding code, approve UAC, then refresh |
+| Agent install fails with missing installer | `agentRepoRoot` does not point at the `sql-cockpit-agent` repository | update `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`, then verify `agentRepoRoot\windows\Install-SqlCockpitAgent.ps1` exists |
+| Agent install succeeds but pairing fails | invite code is expired/claimed or SQL Cockpit URL is wrong | create a fresh invite, confirm the URL reaches the tenant from the local machine, rerun Install/Repair Agent |
+| Integrated-auth SQL profile fails as `DOMAIN\MACHINE$` | `SqlCockpit.Agent` is running as `LocalSystem`, so SQL Server sees the machine account | grant SQL access to the machine account or change the agent to a domain service account/gMSA; see [SQL Cockpit Agent Identity And Windows Authentication](sql-cockpit-agent-identity.md) |
 | start/stop shows `...canceled at UAC prompt` | user dismissed UAC prompt | click action again and approve UAC, or start/stop service from elevated PowerShell |
-| desktop UI not visible when launched as service component | Session 0 / non-interactive service account | use `Launch Desktop UI (User Session)` from Service Control or run service under an interactive user account |
-| desktop app launch shows no UI | settings still use legacy desktop launcher or a non-interactive launch path | use `Start-SqlCockpitDesktopPackaged.ps1` with `-ExternalApiOnly true`; Service Control auto-upgrades legacy launch paths when available |
-| desktop UI opens but page shows `Not Found` or wrong app | desktop listen prefix port already in use (often stale docs/server process on `8000`) | clear the listener (`netstat -ano | findstr :8000`, then `Stop-Process -Id <pid> -Force`), then relaunch Desktop UI; packaged launcher now fails fast with a clear `Desktop API listen prefix ... is unavailable` error when the port is busy |
+| legacy `desktop-app` row appears in Managed Components | old service settings still include the retired desktop component | remove the `desktop-app` entry from `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`, restart `SQLCockpitServiceHost`, then refresh Service Control |
 | suite install fails with missing desktop setup | desktop setup artifact was not bundled before build | run `Prepare-SqlCockpitSuiteDesktopBundle.ps1` (or pass `-DesktopSetupPath`) then rebuild suite installer |
 | installer says app cannot be closed | tray/app process still running and locking install files | stop `SQL Cockpit Service Control`/`electron` processes, stop `SQLCockpitServiceTrayAtLogon` task, then click `Retry` |
 | suite repair fails with `MSB3027/MSB3021` file lock on `SqlCockpit.ServiceHost.Windows.dll` | service host process still holds publish output | stop/kill `SQLCockpitServiceHost`, then rerun `Repair-SqlCockpitSuite.ps1` (optionally with `-SkipDesktopInstall` for faster retries) |

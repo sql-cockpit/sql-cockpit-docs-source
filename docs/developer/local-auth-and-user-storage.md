@@ -21,7 +21,7 @@ This SQLite database gives the local Node host a workstation-scoped identity lay
 - password hashing:
   `argon2id`
 - session transport:
-  `HttpOnly`, `SameSite=Strict` cookie named `sql_cockpit_session`
+  `HttpOnly`, `SameSite=Lax` cookie named `sql_cockpit_session`, with both `Max-Age` and `Expires`
 - confidence:
   confirmed for path, schema, cookie name, and password hashing; inferred that future packaging may want a Windows-specific secret-at-rest layer for saved SQL-auth profile passwords
 
@@ -94,7 +94,7 @@ Auth and preference APIs:
 
 - password hashes use `argon2id`
 - session tokens are random and only stored server-side as hashes
-- cookies are `HttpOnly` and `SameSite=Strict`
+- cookies are `HttpOnly` and `SameSite=Lax`; `Lax` keeps the LAN dashboard usable when opened from mobile apps or top-level links while still withholding cookies from cross-site subresource and unsafe request contexts
 - non-GET mutations require same-origin `Origin` or `Referer`
 - failed sign-ins are rate-limited and temporarily locked out after repeated failures
 - protected app pages redirect to `/login` or `/setup`
@@ -105,13 +105,17 @@ Auth and preference APIs:
 - first user role default:
   `admin`
 - session lifetime default:
-  7 days with rolling touch
+  7 days with rolling touch; when a valid session has not been seen for at least 15 minutes, `getSessionFromToken` updates `sessions.expires_at` and the HTTP layer reissues `sql_cockpit_session` with the renewed expiry
 - failed sign-in lockout default:
   5 failed attempts in 15 minutes
 - default preferences created at setup:
   `theme`, `notificationPreferences`, `integrationSettings`, `connectionProfiles`, `instanceProfiles`
 - `notificationPreferences` defaults:
-  `readById={}`, `archivedById={}`, `lastOpenedAt=""`, `browserNotificationsEnabled=false`, `teamSyncFailureNotificationsEnabled=true`, `syncFailureEmailEnabled=true`
+  `readById={}`, `archivedById={}`, `lastOpenedAt=""`, `browserNotificationsEnabled=false`, `teamSyncFailureNotificationsEnabled=true`, `syncFailureEmailEnabled=true`,
+  `jobNotificationSubscriptions.queued=true`, `jobNotificationSubscriptions.dispatched=true`,
+  `jobNotificationSubscriptions.started=true`, `jobNotificationSubscriptions.failed=true`,
+  `jobNotificationSubscriptions.timedOut=true`, and output-frame notifications opt in with
+  `jobNotificationSubscriptions.output=true`
 - `integrationSettings` defaults:
   Slack disabled with no webhook; PagerDuty disabled with no routing key and Events API URL `https://events.pagerduty.com/v2/enqueue`
 - sync-failure preference behavior:

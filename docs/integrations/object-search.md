@@ -24,9 +24,10 @@ Runtime resolution order for settings when no explicit path is supplied:
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/api/object-search/health` | Check whether the Lucene.NET sidecar is reachable. |
-| `GET` | `/api/object-search/status` | Return index status plus the latest PowerShell sync status file. |
-| `GET` | `/api/object-search/sync-log?limit=80&operationId=...` | Return recent lines from the PowerShell object-search sync log, optionally scoped to one sync operation. |
+| `GET` | `/api/object-search/status` | Return index status plus workspace-scoped sync metadata assembled from durable source manifests and the latest PowerShell sync status file. Pass `compact=1` for the smaller dashboard-startup shape. |
+| `GET` | `/api/object-search/sync-log?limit=80&operationId=...&after=...` | Return a bounded tail or cursor stream from the PowerShell object-search sync log, optionally scoped to one sync operation. |
 | `GET` | `/api/object-search/search?q=...` | Search database objects with optional `database`, `schema`, `objectType`, and `limit` filters. |
+| `GET` | `/api/object-search/analytics/object-types` | Return active-workspace total indexed object counts grouped by SQL object type. |
 | `GET` | `/api/object-search/recent?limit=8` | Return the most recently modified indexed objects from Lucene.NET for command-palette suggestions. |
 | `GET` | `/api/object-search/objects/{id}` | Return one indexed object document and its stored detail fields. |
 | `POST` | `/api/object-search/index/refresh` | Run the PowerShell incremental sync pipeline. |
@@ -40,7 +41,9 @@ Runtime resolution order for settings when no explicit path is supplied:
   omit `objectType` or pass an empty value to search all indexed object types
 - search response fields:
   `id`, `objectName`, `qualifiedName`, `objectType`, `schemaName`, `databaseName`, `score`, `previewSnippet`, `modifiedDate`, `sourceServer`, `parentQualifiedName`
-  `previewSnippet` is lightweight object context only, such as type, server, database, schema, and parent object. Stored SQL definition text is not loaded for search rows; it is returned only by `GET /api/object-search/objects/{id}`.
+  `previewSnippet` is lightweight object context only, such as type, server, database, schema, and parent object. Stored SQL definition text is not loaded for search rows; it is returned only by `GET /api/object-search/objects/{id}`. Use `limit` and zero-based `offset` for pagination; `totalHits` reports the full active-workspace match count before paging while `items` contains the requested page.
+- object-type analytics response fields:
+  `totalHits` plus `items`; each item contains `objectType` and `totalHits` for the signed-in user's active workspace. Client-supplied `workspaceKey` query values are rejected.
 - recent response fields:
   `totalHits` plus `items`; each item includes `id`, `objectName`, `qualifiedName`, `objectType`, `objectTypeDescription`, `schemaName`, `databaseName`, `modifiedDate`, `sourceServer`, `parentQualifiedName`, and `sourceName`
   the sidecar sorts by stored `modifiedDate` from the current Lucene index, so the list reflects indexed metadata and does not depend on browser local storage
@@ -51,8 +54,11 @@ Runtime resolution order for settings when no explicit path is supplied:
   optional `connection` object for an explicit local saved profile, with `profileName`, `server`, `database`, `authMode`, `username`, `password`, `integratedSecurity`, and `trustServerCertificate`
   `Sync-SqlObjectSearchIndex.ps1` writes progress to `sync.log` and reserves stdout for the final JSON payload consumed by Node
 - progress tracking:
-  `GET /api/object-search/status` includes sync fields such as `operationId`, `isRunning`, `phase`, `message`, `currentSource`, `currentSourceIndex`, `totalSources`, `progressPercent`, `sourceProgressPercent`, and `lastHeartbeatUtc`
-  `GET /api/object-search/sync-log?limit=80&operationId=...` returns the tail of matching operation lines from `Logs/ObjectSearch/sync.log` for operator visibility during long-running server-wide indexing
+  `GET /api/object-search/status` includes sync fields such as `operationId`, `isRunning`, `phase`, `message`, `currentSource`, `currentSourceIndex`, `totalSources`, `progressPercent`, `sourceProgressPercent`, and `lastHeartbeatUtc`; `sync.sources` and `sync.syncedInstances` include every completed source manifest in the active workspace plus the latest live heartbeat row
+  `GET /api/object-search/sync-log?limit=80&operationId=...` returns a bounded tail of matching operation lines from `Logs/ObjectSearch/sync.log`; live viewers should reuse the returned `nextCursor` as `after=<nextCursor>` so later polls read only newly appended bytes instead of the whole file
+  sync-log responses include `lines`, `nextCursor`, `fileSize`, `bytesRead`, `truncated`, `hasMore`, and `reset`; callers should replace their visible buffer when `reset` is true because the log file was rotated or the cursor became stale
+- compact status:
+  `GET /api/object-search/status?compact=1` keeps the same authenticated active-workspace authorization as the full status route, rejects caller-supplied `workspaceKey` values, and returns `status`, compact `service`, compact `sync` progress/source rows, `activeTaskSyncs`, and `workspace`. Compact source rows contain `workspaceKey`, `sourceServer`, `databaseName`, `mode`, `manifestDocumentCount`, `uploadedDocumentCount`, `deletedDocumentCount`, and `lastSuccessfulSyncUtc`. The response intentionally omits manifest paths and other large source metadata; use the full status payload for sync diagnostics or manifest troubleshooting.
 - granular sync stages:
   the PowerShell sync updates status and logs around connecting, base object extraction, column extraction, parameter extraction, dependency extraction, index extraction, constraint extraction, document building, manifest reads, scope replacement, upload batches, stale-delete batches, and manifest writes
   the document-building step is split into `building-document-lookups`, `building-object-documents`, `building-column-documents`, `building-index-documents`, and `building-constraint-documents`; large loops emit periodic count updates so long PowerShell normalization phases do not look hung
@@ -74,9 +80,10 @@ Runtime resolution order for settings when no explicit path is supplied:
 - dashboard progress modal:
   `Sync Server To Search` opens a centered progress modal, polls `/api/object-search/status` and `/api/object-search/sync-log` while the sync is running, disables the active sync button, and moves all sync progress/log detail out of the Connection Manager form
   the modal displays elapsed `Time taken`, separate cards for `Overall progress` across the server-wide sync, and `Current database` progress for the active database
-  while a sync is running, dismissing the modal minimizes it into a floating progress control that also shows elapsed time; the completed status can be closed after the process finishes
-  the dashboard generates an `operationId` for each sync request and asks the log endpoint for only that operation, so older runs in the shared log file do not appear in the active modal
-  the streamed sync-log panel auto-scrolls to the newest line whenever fresh log lines arrive while the modal is open
+  while a sync is running, dismissing the modal minimizes it into a floating progress control that also shows elapsed time; the minimized control remains visible while active task syncs or workspace locks exist, and the bottom-right stack scrolls inside the viewport when several controls are visible
+  the dashboard generates an `operationId` for each manual sync request; Task Manager object-sync runs use a deterministic operation id from the TaskRun id, and active task rows can recover an existing live operation id from matching workspace/source locks, so the modal asks the log endpoint for the selected run instead of the latest global heartbeat
+  object-sync task notifications use `/task-manager/object-sync-progress?taskId=<task-id>&taskRunId=<run-id>` as their **Open** route, and include `operationId=<operation-id>` when the notification has it so the focused page can load the selected sync log immediately
+  the streamed sync-log panel uses the remaining modal height and includes an **Auto-scroll** checkbox underneath; auto-scroll is on by default and can be disabled to keep the current scroll position while fresh log lines arrive, and the browser keeps a bounded recent-line buffer to avoid holding very large sync logs in memory
 - completion notifications:
   when a saved-profile sync completes or fails, the dashboard adds a local bell notification and sends a native browser notification if the browser supports notifications, permission is granted, and browser alerts are enabled
   the sync button click is used to request browser notification permission when the browser has not already made a decision

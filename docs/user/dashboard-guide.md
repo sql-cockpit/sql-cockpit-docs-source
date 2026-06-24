@@ -11,19 +11,32 @@ The left navigation groups pages as follows:
 | Heading | Pages |
 | --- | --- |
 | Overview | Estate Overview, Instance Manager, Connection Manager |
-| Operations & Monitoring | Agent Manager, Runtime Analysis, Job Run History, Agent Runtime Comparison |
+| Operations & Monitoring | Agent Jobs (Agent Manager, Runtime Analysis, Job Run History), Agent Runtime Comparison, Query Audit, SQL Bridge, Task Manager |
 | Data Synchronisation | Sync Overview, Sync Launchpad, Fleet View, Live Inspector, Schema Studio, Largest Tables, Index Inspector, Batch Copilot, Bulk Intake |
-| Development & Engineering | Server Explorer, Visual Server Explorer, View Mapper, Procedure Repointer, Stored Procedure Mapper, SQL Editor, Task Manager |
+| Development & Engineering | Server Explorer, Visual Server Explorer, Views, Stored Procedures, SSIS Inspector, SQL Editor, Query Analyser |
 | Access & Administration | Users, RBAC, Workspaces (directory, create team, invites), Roles, Auth Providers, Active Sessions, Audit Logs |
 | System Configuration | SMTP Settings, Cache, Service Manager |
 
-Administration and system-configuration entries are still permission-filtered. `Workspaces` expands to `/admin/workspaces`, `/admin/workspaces/create`, and `/admin/workspaces/invites`; legacy `/admin/teams*` routes redirect to the matching workspace route. Signed-in users also have `/workspaces`, which lists their personal and team workspaces; legacy `/teams` redirects there. The create page requires `teams.create`, while invite creation/revocation requires `teams.assign_members`. `Service Manager` appears in System Configuration only for users with `service.status`; `Task Manager` appears in Development & Engineering for standard signed-in users because the built-in `standard_user` role includes `tasks.view`.
+Administration and system-configuration entries are still permission-filtered. `Workspaces` expands to `/admin/workspaces`, `/admin/workspaces/create`, and `/admin/workspaces/invites`; legacy `/admin/teams*` routes redirect to the matching workspace route. Signed-in users also have `/workspaces`, which lists their personal and team workspaces; legacy `/teams` redirects there. The create page requires `teams.create`, while invite creation/revocation requires `teams.assign_members`. `Service Manager` appears in System Configuration only for users with `service.status`; `Task Manager` appears in Operations & Monitoring for standard signed-in users because the built-in `standard_user` role includes `tasks.view`.
 
-Submenus in the left navigation are collapsed by default to reduce scrolling through the menu. Use the small expand control on a parent item to show its action pages. When a child action page is active, its parent group opens automatically. Manager-style pages also render a compact inline page menu above the content so action pages remain visible in focus mode.
+The Development & Engineering menu uses two focused submenus for database object workflows:
+
+- `Views` opens `/view-mapper` and expands to `View Mapper` and `View Repointer`.
+- `Stored Procedures` opens `/stored-procedure-mapper` and expands to `Stored Procedure Mapper` and `Stored Procedure Repointer`.
+
+Submenus in the left navigation are collapsed by default to reduce scrolling through the menu. Use the small expand control on a parent item to show its action pages. When a child action page is active, its parent group opens automatically. `Agent Jobs` opens `/agent-manager` and expands to `Agent Manager`, `Runtime Analysis`, and `Job Run History`. Manager-style pages also render a compact inline page menu above the content so action pages remain visible in focus mode; on mobile this inline menu becomes a capped vertical scroller so long submenu lists stay inside the page. Task Manager includes focused child pages for realtime events and single-task detail analysis; the detail page can be opened from a task row or with `/task-manager/detail?taskId=<task-id>`.
+
+Each left-navigation item includes a question-mark help icon. Hover or keyboard-focus the icon to see a tooltip to the right of the cursor explaining the page or action before opening it. Tooltip text comes from the shared dashboard route metadata, so it matches the page intro descriptions.
+
+Users with SaaS agent visibility also see an Agent connection indicator in the left navigation. It polls `GET /api/saas/agents` every 30 seconds and shows the active bound agent as `Online`, `Offline`, `Not Paired`, or `Unavailable`. The primary navigation does not show stale historical registration counts; selecting the indicator opens `/admin/agent-details`, and focus mode keeps the same state visible as a compact rail icon with a status dot.
+
+On Agent Details, **Refresh** reloads only the connected-agent data inside the current dashboard tab.
 
 Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.
 
-Dashboard tables use a shared row hover state so operators can track the active row while scanning dense sync, estate, Agent, admin, and SQL Editor grids.
+Dashboard tables use a shared row hover state so operators can track the active row while scanning dense sync, estate, Agent, admin, and SQL Editor grids. On mobile, table rows become compact cards with header labels copied into each cell, so common pages avoid excessive horizontal swiping while keeping row context readable.
+
+On touch/mobile browsers, pulling down from the top of the dashboard refreshes only the active workspace tab. A database icon fills as the pull gets closer to the release threshold. The dashboard shell, open tabs, account state, and other mounted tab panels stay in place; the gesture uses the same tab reload path as the workspace tab context menu.
 
 The Welcome Page keeps the greeting and workflow search above the workspace controls. On large dashboard viewports, **Active workspace** and **Good starting points** share a two-column row; on narrower screens they stack vertically. The workspace switcher and quick-start buttons include icons so their intent remains scannable in the compact dashboard layout.
 
@@ -38,8 +51,11 @@ Instance Manager SQL Server discovery results render as a table with instance, s
 | Service Manager | Start, stop, and monitor desktop background services from one panel. | Runtime supervisor state and service-host control API (when configured). |
 | Server Explorer | Browse live databases, schemas, tables, views, procedures, and functions. | Live SQL catalog metadata. |
 | Visual Server Explorer | Expand the same live catalog metadata as a spiderweb graph, including object child metadata and optional SQL Agent jobs. | Live SQL catalog metadata and SQL Agent inventory. |
+| View Mapper | Map all views in a selected schema and inspect nested view/table dependencies. | Live SQL catalog metadata only. |
+| View Repointer | Create workspace projects for one selected view and generate repointed local-view SQL through the shared repointer wizard. | Live SQL catalog metadata or Object Cache selectors, plus local workspace project snapshots. |
 | SQL Editor | Draft SQL with syntax highlighting, run lint checks, or load object definitions from command palette. | Local browser state plus object-search read APIs. |
-| SQL Agent Manager | Read Agent jobs and start approved jobs. | Live `msdb`; start action calls `sp_start_job`. |
+| SQL Agent Manager | Read Agent jobs and start or stop approved jobs. | Live `msdb`; job actions call `sp_start_job` or `sp_stop_job`. |
+| SQL Bridge | Review bridge overview counters, inspect invocation history under `/sql-bridge/history`, and copy T-SQL usage snippets under `/sql-bridge/usage`. | Read-only `Cockpit.InvocationLog` and `Cockpit.InvocationOutput` in the bridge control database. |
 | Fleet | Review sync rows and state summaries. | `Sync.TableConfig` and `Sync.TableState`. |
 | Inspector | Inspect one sync row in detail. | `Sync.TableConfig` and state/log summaries. |
 | Schema Studio | Compare source and destination schema and generate migration SQL. | Live source and destination metadata. |

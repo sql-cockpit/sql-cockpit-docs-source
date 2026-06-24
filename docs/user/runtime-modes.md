@@ -46,7 +46,7 @@ powershell -ExecutionPolicy Bypass -File ".\Start-SqlCockpitDesktop.Dev.ps1" `
 Expected behavior in `dev`:
 
 - docs run with MkDocs live-reload
-- web API runs in dev mode
+- web API runs in dev mode; the custom Node host has an explicit watcher that restarts only the API child when `server.js`, `next.config.js`, `app/**/*.js`, `components/**/*.js`, or `lib/**/*.js` changes
 - notifications run with Node watch
 - object-search runs with `dotnet watch run`
 - Service Manager controls locally-owned runtime components
