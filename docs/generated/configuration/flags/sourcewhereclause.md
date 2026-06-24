@@ -6,7 +6,7 @@
 - Allowed values: SQL predicate fragment valid in `WHERE (...)` against the source object.
 - Default or observed default: Blank means no extra filter.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2825`, `Sync-ConfiguredSqlTable.ps1:2845`, `Sync-ConfiguredSqlTable.ps1:2877`, `Sync-ConfiguredSqlTable.ps1:2878`, `Sync-ConfiguredSqlTable.ps1:2909`, `Sync-ConfiguredSqlTable.ps1:3242`, `Sync-ConfiguredSqlTable.ps1:3249`, `Sync-ConfiguredSqlTable.ps1:3269`, `Sync-ConfiguredSqlTable.ps1:3275`, `Sync-ConfiguredSqlTable.ps1:3276`, `Sync-ConfiguredSqlTable.ps1:3282`, `Sync-ConfiguredSqlTable.ps1:3308`, `Sync-ConfiguredSqlTable.ps1:3324`, `Sync-ConfiguredSqlTable.ps1:3354`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:3053`, `Sync-ConfiguredSqlTable.ps1:3073`, `Sync-ConfiguredSqlTable.ps1:3105`, `Sync-ConfiguredSqlTable.ps1:3106`, `Sync-ConfiguredSqlTable.ps1:3137`, `Sync-ConfiguredSqlTable.ps1:3463`, `Sync-ConfiguredSqlTable.ps1:3470`, `Sync-ConfiguredSqlTable.ps1:3490`, `Sync-ConfiguredSqlTable.ps1:3496`, `Sync-ConfiguredSqlTable.ps1:3497`, `Sync-ConfiguredSqlTable.ps1:3503`, `Sync-ConfiguredSqlTable.ps1:3529`, `Sync-ConfiguredSqlTable.ps1:3545`, `Sync-ConfiguredSqlTable.ps1:3575`
 - Functional effect: Restricts source reads, counts, and snapshots.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.

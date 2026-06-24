@@ -6,7 +6,7 @@
 - Allowed values: Positive integer. Tune it as a throughput-versus-memory control, not just a row-count setting.
 - Default or observed default: No database default confirmed; store explicitly.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2524`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2698`
 - Functional effect: Changes both source `SELECT TOP (...)` read size and `SqlBulkCopy.BatchSize`.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review `SyncMode`, `SourceWhereClause`, source row width, large-value columns, and destination log throughput together before changing this field.

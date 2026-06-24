@@ -6,7 +6,7 @@
 - Allowed values: Project-specific string value.
 - Default or observed default: No database default confirmed; store explicitly.
 - Null behaviour: Store explicit non-null values unless the field is documented as optional. The runtime mixes helper-based defaults with direct casts.
-- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2414`, `Sync-ConfiguredSqlTable.ps1:2434`, `Sync-ConfiguredSqlTable.ps1:2586`, `Sync-ConfiguredSqlTable.ps1:3228`, `Sync-ConfiguredSqlTable.ps1:3769`
+- Where it is read in code: `Sync-ConfiguredSqlTable.ps1:2637`, `Sync-ConfiguredSqlTable.ps1:2657`, `Sync-ConfiguredSqlTable.ps1:2724`, `Sync-ConfiguredSqlTable.ps1:3449`, `Sync-ConfiguredSqlTable.ps1:3985`
 - Functional effect: Changes runtime behaviour for this sync definition.
 - Side effects: Read once at process start. Mid-run edits do not reconfigure the already-running process.
 - Dependencies and conflicts: Review interactions with `SyncMode`, column selection, and `Sync.TableState` checkpoints before changing this field.
