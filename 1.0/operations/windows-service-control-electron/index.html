@@ -1034,6 +1034,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ui-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4083,6 +4094,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ui-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4234,9 +4256,9 @@
 <p>It provides:</p>
 <ul>
 <li>tray icon access</li>
-<li>dedicated service-control UI</li>
+<li>dedicated service-control UI with a desktop control-centre layout</li>
 <li>in-app update checks and install prompts using <code>electron-updater</code></li>
-<li>suite repair entrypoint (<code>Run Repair (UAC)</code>) for desktop/service/task reconciliation</li>
+<li>suite repair entrypoint (<code>Repair</code>) for desktop/service/task reconciliation</li>
 </ul>
 <pre class="mermaid"><code>flowchart LR
     A[SQL Cockpit Suite Setup.exe] --&gt; B[Install Desktop App]
@@ -4255,6 +4277,9 @@
 <li>runtime profile suffix in the badge when available (for example <code>Runtime: prod</code>)</li>
 <li>Windows service status (<code>SQLCockpitServiceHost</code>)</li>
 <li>service start/stop actions</li>
+<li>native confirmation prompts before stop-all, stop-component, stop-service, and force-kill actions</li>
+<li>status overview cards for running/stopped/warning component counts</li>
+<li>diagnostics panel that keeps settings, service, and runtime errors visible instead of hiding failed status calls</li>
 <li>component snapshot list (<code>id</code>, <code>display</code>, status, health, PID, restart count, last start, last error)</li>
 <li>per-component <code>Start</code>, <code>Restart</code>, <code>Stop</code></li>
 <li>bulk <code>Start All</code>, <code>Restart All</code>, <code>Stop All</code></li>
@@ -4274,6 +4299,26 @@
 <li><code>Install Downloaded Update</code></li>
 <li>optional desktop app component (<code>desktop-app</code>) that should launch <code>Start-SqlCockpitDesktopPackaged.ps1</code> in client mode</li>
 </ul>
+<h2 id="ui-behavior"><a class="headerlink" href="#ui-behavior" title="Permanent link">¶</a>UI behavior</h2>
+<p>The Service Control renderer is a static Electron surface using local HTML, CSS, and JavaScript. It does not load remote UI code and continues to use the preload IPC bridge for privileged operations.</p>
+<p>The current layout is designed as a native desktop control centre:</p>
+<ul>
+<li>left compact navigation rail for overview, components, and logs</li>
+<li>top command bar for refresh, desktop launch, and repair actions</li>
+<li>service overview panel with current status, last checked time, and primary service actions</li>
+<li>component health summary derived from the live runtime component snapshot</li>
+<li>managed-components table with keyboard-selectable rows</li>
+<li>selected-component detail/log viewer with copy/open-log actions</li>
+<li>maintenance panel for update checks and downloaded update installation</li>
+</ul>
+<p>Theme behavior:</p>
+<ul>
+<li>CSS uses semantic design tokens for color, spacing, radius, shadow, typography, and status states.</li>
+<li>Light and dark themes follow the operating system through <code>prefers-color-scheme</code>.</li>
+<li>Native fonts are preferred through the system font stack (<code>Segoe UI</code> on Windows, platform system fonts elsewhere).</li>
+<li>Focus rings remain visible, status badges include text as well as color, and reduced-motion preferences are respected.</li>
+</ul>
+<p>No service settings or database-backed flags were added for the redesign. The UI remains driven by the existing app metadata and service-host status responses.</p>
 <h2 id="files"><a class="headerlink" href="#files" title="Permanent link">¶</a>Files</h2>
 <ul>
 <li>app directory: <code>service/windows/SqlCockpit.ServiceControl.Electron</code></li>
@@ -4420,6 +4465,7 @@
 </ol>
 <h2 id="settings-and-api-auth"><a class="headerlink" href="#settings-and-api-auth" title="Permanent link">¶</a>Settings and API auth</h2>
 <p>The app reads <code>%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json</code> by default.</p>
+<p>When the app is installed on a non-system drive, it first checks the installed app drive for <code>\ProgramData\SqlCockpit\sql-cockpit-service.settings.json</code>. For example, an app installed under <code>E:\Program Files\SQL Cockpit Service Control</code> will prefer <code>E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json</code> when that file exists. An explicit <code>--settings</code> path still takes precedence.</p>
 <p>Used fields:</p>
 <ul>
 <li><code>serviceName</code></li>
