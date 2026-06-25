@@ -1,5 +1,25 @@
 ﻿# Troubleshooting
 
+## Symptom: Integrated auth works in SSMS but fails in SQL Cockpit
+
+Checks:
+
+- SQL Cockpit database operations run through the paired `SqlCockpit.Agent` Windows service.
+- Integrated authentication uses the Windows identity running `SqlCockpit.Agent`, not the browser user, the Next.js process, the Service Control UI, or the SSMS user.
+- If `SqlCockpit.Agent` runs as `LocalSystem`, remote SQL Server instances see the domain machine account, for example `DOMAIN\MACHINENAME$`.
+- SQL-auth passwords are resolved from the agent-side credential store, not from browser local storage or the hosted tenant database.
+
+Safe procedure:
+
+1. Verify the service identity:
+   `Get-CimInstance Win32_Service -Filter "Name='SqlCockpit.Agent'" | Select Name, State, StartName, PathName`
+2. Grant SQL Server permissions to the displayed identity, or change the service to a dedicated domain service account or gMSA.
+3. Restart `SqlCockpit.Agent`.
+4. If SQL authentication is used and the service identity changed, re-save the password from Instance Manager so the new service identity can read it from Windows Credential Manager.
+5. On every target SQL Server, verify the displayed identity or its AD group has a Windows login plus the least server, `msdb`, and database metadata permissions needed by the enabled SQL Cockpit features.
+
+See [SQL Cockpit Agent Identity And Windows Authentication](sql-cockpit-agent-identity.md) for service-account commands, SQL grant examples, and Credential Manager notes.
+
 ## Symptom: dashboard redirects to `/setup`
 
 Checks:

@@ -30,7 +30,7 @@ Windows SCM host files:
   - `service/windows/sql-cockpit-service.prod.settings.json`
   - `service/windows/sql-cockpit-service.dev.settings.json`
   - `service/windows/sql-cockpit-service.settings.json` (compatibility baseline)
-- active deployed settings: `%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json`
+- active deployed settings: `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`
 
 Related GUI bridge:
 
@@ -140,7 +140,7 @@ Authentication behavior:
 
 Settings file:
 
-- `%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json`
+- `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`
 
 | Setting | Storage location | Valid values | Default | Code paths affected | Operational risk | Safe change procedure |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -148,6 +148,10 @@ Settings file:
 | `repoRoot` | JSON root | Absolute path | inferred when omitted | path expansion, working directory resolution | Bad root breaks script/project resolution for all components. | Verify `repoRoot` contains `webapp`, scripts, and `object-search` before restart. |
 | `desktopRepoRoot` | JSON root | Absolute path | `{repoRoot}\webapp` when omitted | `{DesktopRepoRoot}` token expansion for component command/args/working directory | Wrong path breaks desktop launcher and packaged artifact discovery. | Set to desktop repo containing `package.json` and `electron/`, then validate Desktop UI launch. |
 | `apiRepoRoot` | JSON root | Absolute path | `{repoRoot}\sql-cockpit-api` when omitted | `{ApiRepoRoot}` token expansion for component command/args/working directory | Wrong path breaks `web-api` startup when API is split to a separate repository. | Set to the directory containing `server.js`, then verify component `web-api` starts and `/health` returns `200`. |
+| `agentServiceName` | JSON root | Windows service-safe name | `SqlCockpit.Agent` | Service Control agent status, install/repair, start/stop/restart actions | Wrong name makes the UI report the agent as missing or control a different service. | Keep aligned with the agent installer `-ServiceName`, refresh Service Control, then verify the `sql-cockpit-agent` managed row. |
+| `agentRepoRoot` | JSON root | Absolute path | `{repoRoot}\sql-cockpit-agent` when omitted | Service Control agent install/repair action | Wrong path prevents install because `windows\Install-SqlCockpitAgent.ps1` cannot be found. | Set to the agent repository root, click Install/Repair Agent with a test invite, and verify UAC install output completes. |
+| `agentInstallDirectory` | JSON root | Absolute Windows folder path | `E:\Program Files\SqlCockpit\Agent` | Agent installer target path and service binary location | Wrong path can install the agent in an unexpected trust boundary or leave stale service binaries. | Use a dedicated E-drive Program Files path, approve UAC, then verify `Get-Service SqlCockpit.Agent` and the appsettings file under `app\`. |
+| `SqlCockpit.Agent` service account | Windows SCM service identity | `LocalSystem`, domain user, or gMSA | installer default is service-account dependent; verify with `Get-CimInstance Win32_Service` | Integrated-auth live SQL operations and agent-side Credential Manager scope | Wrong identity causes SQL login failures such as `DOMAIN\MACHINE$`; changing identity can hide previously stored SQL-auth passwords from the new service account. | Prefer a dedicated domain service account or gMSA, grant least SQL permissions, restart the agent, then re-save SQL-auth passwords if needed. See [SQL Cockpit Agent Identity And Windows Authentication](sql-cockpit-agent-identity.md). |
 | `serviceRepoRoot` | JSON root | Absolute path | `{repoRoot}\service` when omitted | `{ServiceRepoRoot}` token expansion and service-host log path root (`Logs\ServiceHost`) | Wrong path causes launcher and maintenance scripts to fail or write logs to unexpected locations. | Set to service-control repo root containing `windows\` scripts, then restart host and verify logs are created under that repo. |
 | `objectSearchRepoRoot` | JSON root | Absolute path | `{repoRoot}\object-search` when omitted | `{ObjectSearchRepoRoot}` token expansion for object-search command/args/working directory | Wrong path prevents object-search service from starting and breaks search features. | Set to object-search repo root containing `SqlObjectSearch.Service\`, then validate `http://127.0.0.1:8094/health`. |
 | `listenPrefix` | JSON root | `http://127.0.0.1:<port>/` | `http://127.0.0.1:8610/` | host control API listener | Port conflict or invalid URL blocks all remote management. | Pick unused localhost port, restart service, then test `/health`. |
@@ -217,7 +221,7 @@ Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8610/api/runtime/components
 
 ### Upgrade
 
-1. backup `%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json`
+1. backup `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`
 2. run installer again (publishes latest host and updates SCM binary path)
 3. run validation checks above
 4. open `/service-manager` and confirm components report expected state

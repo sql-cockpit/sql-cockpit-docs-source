@@ -40,7 +40,14 @@ flowchart LR
 11. With an empty text query, select an object filter or instance/database scope and confirm indexed results load for those criteria.
 12. Change the **Instance** selector while a table search is active and confirm result rows are limited to that selected instance.
 13. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
-14. Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open.
+14. Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open. Confirm the streamed sync log uses the larger modal space, auto-scrolls by default, preserves the current scroll position when **Auto-scroll** is unchecked, and appends new lines without replacing the whole panel.
+15. Open `/` and confirm Welcome Page status-backed widgets call `GET /api/object-search/status?compact=1`; use full `GET /api/object-search/status` for manifest or sync-diagnostic work.
+
+## Sync Log Streaming
+
+`GET /api/object-search/sync-log` is read-only and authenticated. Use `operationId=<id>` to scope to one sync operation, `limit` for the maximum returned line count, and `after=<nextCursor>` to continue from a previous response. The API reads bounded chunks from `Logs/ObjectSearch/sync.log`; it does not load the whole file into memory for each dashboard poll.
+
+Response fields include `lines`, `nextCursor`, `fileSize`, `bytesRead`, `truncated`, `hasMore`, and `reset`. When `reset` is true, replace the visible buffer because the log file was rotated or the cursor became stale. Operational risk is low; the main tradeoff is that very old operation lines may no longer be visible if they fall outside the bounded tail window.
 
 If `dotnet` is installed outside `PATH`, pass the explicit executable path:
 
@@ -139,6 +146,170 @@ Write-Host 'Object-search index, spool, and manifests cleared.'
 ```
 
 Restart the workspace, then run `Sync Schema To Search` or a full sync again.
+
+## Scheduled object sync jobs
+
+Task Manager can run object-search cache rebuilds with the `InternalCommand`
+value `object-sync`. The command uses a saved Instance Manager
+`instanceProfileId`; `databaseName` is optional and narrows the run to one
+database. When `databaseName` is empty, the sync covers all visible databases on
+the instance and includes SQL Agent job metadata.
+The task also stores `workspaceKey` and `sourceServer`. If the saved profile id
+is later recreated, the worker may resolve the same source server inside that
+stored workspace key, but it does not cross into another personal or team
+workspace. The default object-sync task seeder discovers source servers from
+current workspace profiles instead of embedding fixed profile ids.
+
+Concurrency is source-aware. Each task uses `ForbidOverlap` so the same job
+cannot run twice at once, and the sync script takes a workspace/source/database
+lock before writing cache data. Separate instance jobs in the same workspace may
+run at the same time, while a duplicate sync for the same workspace/source is
+rejected or skipped as already running.
+
+Hanging run visibility is explicit. `GET /api/tasks` and `GET /api/tasks/{id}`
+include `runtimeHealth` for object-sync tasks whose latest task state is still
+`Running`; the Task Manager UI shows stale heartbeat evidence as **Possibly
+hung** instead of a normal running badge. `Object Sync Watchdog` marks orphaned
+object-sync `TaskRun` rows as `TimedOut` with
+`OBJECT_SYNC_STALE_HEARTBEAT`, releases stale Task Manager locks, and then
+resumes from the safest checkpoint when recovery evidence exists. Each watchdog
+pass also repairs its own older orphaned `Running` rows with
+`OBJECT_SYNC_WATCHDOG_STALE_RUN` when the recorded SQL Cockpit agent process is
+no longer alive, so stale recovery notifications do not linger after API
+restarts.
+The Task Manager child page `/task-manager/events` shows the realtime task-run
+event stream separately from task definitions, including lifecycle frames and
+redacted task output frames, so operators can watch recovery and hanging-task
+signals without expanding individual task rows. The page also backfills recent
+persisted runs from `GET /api/task-runs?limit=100`, so opening it after a run
+started still shows timeline rows before new socket frames arrive.
+Manual object-sync task runs are dispatched to a detached Task Manager worker
+and return immediately with the queued `TaskRun`; the worker keeps the
+PowerShell sync process attached until completion, publishes realtime events,
+and uses the temporary connection handoff file so SQL passwords are not placed
+in PowerShell command-line arguments.
+Object-sync app notifications use
+`/task-manager/object-sync-progress?taskId=<task-id>&taskRunId=<run-id>` as
+their **Open** action, with `operationId=<object-search-operation-id>` included
+when the notification has it. The focused page uses the same authorized
+Task Manager detail/log endpoints, but labels the route as Object Sync Progress
+and loads the selected run's source-count summary plus object-search sync log
+ahead of the generic task definition table.
+`GET /api/object-search/status` also returns `activeTaskSyncs`, a
+workspace-authorized list of visible running Task Manager object-sync runs. The
+dashboard uses that list to keep minimized running-sync controls visible even
+though the sidecar's global status file can only describe the latest heartbeat.
+The browser keeps polling while `activeTaskSyncs`, `sync.isRunning`, or
+workspace locks are present, and the bottom-right control stack is constrained
+to the viewport with internal scrolling so several task/lock rows remain
+recoverable. The Welcome Page also loads the object-search status feed when it
+opens, so a second browser window opened after the start notification can still
+discover the running task and render the minimized control. Task Manager
+object-sync runs use a deterministic object-search operation id derived from
+the TaskRun id, and the dashboard can recover an existing live operation id from
+matching workspace/source locks. Use `activeTaskSyncs[].operationId` or the
+matching `sync.activeLocks` operation id for task-specific logs because
+`sync.operationId` can describe another overlapping sync's latest heartbeat.
+
+Operational contract:
+
+- Storage location: `TaskDefinition`, `TaskSchedule`, and
+  `TaskAction.action_config_json` in the local SQL Cockpit SQLite database.
+- Valid values: `instanceProfileId`, optional `sourceServer`, optional
+  `databaseName`, and `mode` (`Full` or `Incremental`; default `Full`).
+- Defaults during stabilization: manual/run-on-demand jobs, `ForbidOverlap`, no
+  retries. Enable a `FixedInterval` schedule only after the rebuild path is
+  stable for the target instance.
+- Failure behavior: failed or timed-out object-sync jobs are disabled so they do
+  not retry unattended. The task keeps its stored schedule type and interval so
+  an operator can re-enable the same cadence after fixing the profile or sidecar
+  issue. A same-source lock conflict is treated as `Skipped`, not `Failed`, so
+  concurrent rebuild batches do not disable unrelated jobs. The watchdog checks
+  fresh per-source recovery records before broad stale marking, which protects
+  unrelated parallel object-sync task runs when the single global status file is
+  overwritten by another source.
+- Operational risk: medium to high on large or sensitive instances because the
+  sync reads broad catalog metadata and can expose object names, definitions,
+  columns, indexes, constraints, dependencies, and SQL Agent job details to
+  users who can search the active workspace cache.
+
+## Differential incremental sync
+
+Incremental object-search syncs use a per-source manifest to avoid rewriting
+unchanged Lucene documents. The sync still asks SQL Server for objects touched
+since the last successful source sync and still reads the current source
+manifest so deleted objects can be removed. Before upload, each candidate
+document is converted to a stable JSON shape and hashed with SHA-256. The hash
+is compared with the previous manifest entry for the same document id.
+
+Only documents with a new or changed hash are written to the durable upload
+spool and sent to the Lucene sidecar. Unchanged documents stay in Lucene and
+their previous hash is carried forward into the next manifest. Deleted document
+ids are still calculated from the previous full manifest versus the current
+manifest and are removed by id.
+
+Manifest storage:
+
+- Location: `settings.sync.manifestDirectory`, one JSON file per
+  workspace/source/database.
+- `documentIds`: all currently live document ids for count verification and
+  stale deletion detection.
+- `documentHashes`: SHA-256 hash map keyed by document id for differential
+  upload decisions.
+- Durable spool checkpoint fields: `candidateDocumentCount`,
+  `changedDocumentCount`, `newDocumentCount`, `updatedDocumentCount`,
+  `unchangedDocumentCount`,
+  `candidateObjectTypeCounts`, `changedObjectTypeCounts`, `manifestIds`, and
+  `manifestHashes`.
+
+Run summary fields:
+
+- `candidateDocumentCount`: documents built from metadata touched since the
+  previous successful source sync, or all built documents during a full sync.
+- `newDocumentCount`: uploaded documents whose id was not present in the prior
+  manifest hash map.
+- `updatedDocumentCount`: uploaded documents whose id existed in the prior
+  manifest hash map but whose stable document hash changed.
+- `changedDocumentCount`: total candidate documents uploaded to Lucene
+  (`newDocumentCount + updatedDocumentCount` when prior hashes are available).
+- `unchangedDocumentCount`: candidate documents skipped because the indexed
+  document hash matched the prior manifest.
+- `deletedDocumentCount`: stale manifest ids deleted from Lucene.
+- `manifestDocumentCount`: expected live Lucene documents for the source after
+  upload and deletion complete.
+- `candidateObjectTypeCounts` and `changedObjectTypeCounts`: object-type
+  breakdowns for the candidate set and uploaded changed set.
+
+Operational behavior:
+
+- First sync for a source, missing `lastSuccessfulSyncUtc`, missing manifest, or
+  `-Mode Full` behaves as a full source upload.
+- Incremental runs without previous hashes upload all built candidates once and
+  write hashes for subsequent runs. In that compatibility case the run can
+  report uploaded candidates as changed because the previous hash baseline was
+  unavailable.
+- Resume uses the durable spool and checkpoint hashes; if an old checkpoint has
+  no hashes, the completed manifest is rebuilt from spooled documents and the
+  prior manifest where possible.
+- Lucene count verification still compares the live source count with
+  `manifestDocumentCount`, so skipping unchanged uploads does not hide missing
+  or stale documents.
+
+Operational risk: medium. The hash comparison reduces write load, but it relies
+on the manifest remaining intact. If the manifest is deleted or corrupted, run a
+full rebuild to re-establish the baseline.
+
+Safe test:
+
+1. Run a full sync for a non-production workspace/source and confirm the
+   manifest contains `documentIds` and `documentHashes`.
+2. Run an incremental sync without schema changes and confirm the log reports
+   changed documents near zero, unchanged candidate documents where SQL metadata
+   was touched, and a matching Lucene count.
+3. Alter one object definition, run incremental sync, and confirm only that
+   object's document family is uploaded while unchanged candidates are skipped.
+4. Drop one test object, run incremental sync, and confirm
+   `deletedDocumentCount` increases and Lucene count verification passes.
 
 ## SQL Server Agent jobs
 
@@ -293,9 +464,10 @@ This matters most for child metadata such as columns, indexes, constraints, and 
 2. Validate `GET /api/object-search/health`.
 3. Run one incremental refresh against a low-risk source.
 4. Validate `GET /api/object-search/status`.
-5. Search for one known object by exact name and one by definition text.
-6. Check `GET /api/object-search/recent?limit=8` or reopen the command palette to confirm the recent-object list is coming from the refreshed index.
-7. Only then expand the configured source list or run a full rebuild.
+5. Validate `GET /api/object-search/status?compact=1` returns the same workspace, document count, and source/database names without manifest paths.
+6. Search for one known object by exact name and one by definition text.
+7. Check `GET /api/object-search/recent?limit=8` or reopen the command palette to confirm the recent-object list is coming from the refreshed index.
+8. Only then expand the configured source list or run a full rebuild.
 
 ## Operational risks
 
@@ -304,6 +476,7 @@ This matters most for child metadata such as columns, indexes, constraints, and 
 - the command palette recent-object list is sorted from stored `modifiedDate`; objects without a parseable value appear after dated objects
 - if the Lucene.NET sidecar is down, the command palette falls back to quick links only
 - the Lucene.NET sidecar depends on a local `dotnet` runtime; if it is missing from `PATH`, the workspace health output will show the startup failure and all sync calls will fail until the runtime is installed
+- compact object-search status is read-only and lowers dashboard payload size, but callers that need manifest paths, complete source manifests, or deep sync diagnostics should keep using full `GET /api/object-search/status`
 
 ## Confidence
 

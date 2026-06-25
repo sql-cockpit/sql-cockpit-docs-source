@@ -13,6 +13,7 @@ If you want the structure to feel more like a polished product manual, use the d
 | If you are trying to... | Start here |
 | --- | --- |
 | open the app and use it safely | [User Documentation](user/index.md) |
+| prepare a customer estate for SQL Cockpit | [SQL Cockpit Prerequisite Setup](operations/sql-cockpit-prerequisite-setup.md) |
 | understand the dashboard pages | [User Documentation](user/dashboard-guide.md) |
 | manage instance or connection profiles | [User Documentation](user/connection-and-instance-profiles.md) |
 | create or review sync rows | [User Documentation](user/sync-configuration-workflow.md) |

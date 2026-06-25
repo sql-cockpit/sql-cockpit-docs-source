@@ -92,6 +92,7 @@ nav:
     - Desktop Service Manager: user/desktop-service-manager.md
     - Workspaces: user/workspaces.md
     - Admin Teams: user/admin-teams.md
+    - Permission Explorer: user/permission-explorer.md
     - Connection and Instance Profiles: user/connection-and-instance-profiles.md
     - Sync Configuration Workflow: user/sync-configuration-workflow.md
     - Local Auth and Preferences: user/local-auth-and-preferences.md
@@ -100,6 +101,7 @@ nav:
   - Operations:
     - Common Tasks: operations/common-tasks.md
     - Platform Components: operations/platform-components.md
+    - SQL Cockpit Invocation Framework: operations/sql-cockpit-invocation-framework.md
     - Runbooks: operations/runbooks.md
     - Troubleshooting: operations/troubleshooting.md
     - Windows Service Host: operations/windows-service-host.md
@@ -108,8 +110,15 @@ nav:
     - Connection Manager: operations/connection-manager.md
     - Estate Overview: operations/estate-overview.md
     - Instance Manager: operations/instance-manager.md
-    - SQL Agent Manager: operations/sql-agent-manager.md
+    - Agent Jobs:
+      - SQL Agent Manager: operations/sql-agent-manager.md
+    - Incident Diagnostics: operations/incident-diagnostics.md
     - Visual Server Explorer: operations/visual-server-explorer.md
+    - Database Object Backups: operations/database-object-backups.md
+    - Source Control: operations/source-control.md
+    - View Usages: operations/view-usages.md
+    - SSIS Package Inspector: operations/ssis-inspector.md
+    - SSRS Report Inspector: operations/ssrs-inspector.md
     - Service Manager: operations/service-manager.md
     - Object Search: operations/object-search.md
     - SQL Editor: operations/sql-editor.md
@@ -172,6 +181,7 @@ nav:
   - Integrations:
     - Overview: integrations/overview.md
     - REST API: integrations/rest-api.md
+    - SQL Bridge Hooks: integrations/sql-bridge-hooks.md
     - Object Search: integrations/object-search.md
     - Realtime Notifications: integrations/realtime-notifications.md
     - MCP Server: integrations/mcp-server.md

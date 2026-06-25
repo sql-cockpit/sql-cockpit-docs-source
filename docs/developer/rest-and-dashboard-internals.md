@@ -39,10 +39,11 @@ sequenceDiagram
 | `POST /api/configs/{syncId}/run` | Task Manager `sql-table-sync-run` | Queues one `TaskRun`, then executes `Sync-ConfiguredSqlTable.ps1` for the selected row. |
 | `POST /api/configs/run` | Task Manager `sql-table-sync-run` | Queues one row by `syncId` or `syncName` from the JSON body. |
 | `GET`/`POST /api/servers/explorer` | `getServerExplorer` | Live SQL catalog metadata. |
-| `POST /api/servers/discover` | `discoverSqlServers` | SQL Server discovery from the API host. |
+| `POST /api/servers/discover` | `discoverSqlServers` | SQL Server discovery through the paired SQL Cockpit Agent host. |
 | `POST /api/databases/metadata` | `getDatabaseMetadata` | Full metadata for one database. |
 | `POST /api/sql-agent/jobs` | `getSqlAgentInventory` | Reads `msdb` Agent metadata. |
 | `POST /api/sql-agent/jobs/run` | `startSqlAgentJob` | Calls `msdb.dbo.sp_start_job`. |
+| `POST /api/sql-agent/jobs/stop` | `stopSqlAgentJob` | Calls `msdb.dbo.sp_stop_job`. |
 | `POST /api/sql-estate/overview` | `getSqlEstateOverview` | Reads estate health and capacity metadata. |
 | `GET /api/sql/editor/tabs` | Node host route handler | Loads signed-in user SQL editor tab rows from local sqlite, filtered by optional `workspaceTabKey`. |
 | `POST /api/sql/editor/tabs` | Node host route handler | Upserts signed-in user SQL editor tab rows; active tab scope is cleared only within same `workspaceTabKey`. |
@@ -99,9 +100,49 @@ Current per-user preference keys:
 - `instanceProfiles`
 - `sql editor tab workspace state` is persisted in `data/sql-editor/sql-query-editor.db` (`sql_query_tabs` table), keyed by signed-in user and `workspaceTabKey`
 
-`defaultPage` stores the route opened when the user visits `/`. The default is `/new-tab` (**Welcome Page**). Invalid or missing values fall back to `/new-tab`, and users change the value from the Account page profile settings.
+`defaultPage` stores the route opened when the user visits `/`. The default is `/` (**Welcome Page**). Invalid or missing values fall back to `/`, legacy `/new-tab` values are normalized to `/`, and users change the value from the Account page profile settings.
 
 Legacy browser-local storage keys are still read once during migration when the new local store is empty for that key.
+
+## Dashboard Load Boundaries
+
+Confirmed from `sql-cockpit-api`: the root layout hosts global providers, the route transition indicator, and `components/app-route-shell.js`. The layout wrapper mounts the single `DashboardClient` only for known dashboard routes; standalone pages such as `/login`, `/setup`, and `/db-monitor` render their own clients, and deleted or unknown routes such as `/new-tab` fall through to Next.js 404 handling. Dashboard-owned route files still import `components/dashboard-page.js`, but that file is only the dashboard route marker. Page-specific split points happen inside the tabbed dashboard layer through `components/dashboard/page-dependency-loader.js`, not by replacing dashboard routes with separate route clients.
+
+```mermaid
+flowchart LR
+    Layout["app/layout.js"] --> Children["route children"]
+    Layout --> AppRouteShell["components/app-route-shell.js"]
+    Children --> DashboardPage["dashboard route page.js"]
+    AppRouteShell --> DashboardClient["single tabbed DashboardClient"]
+    DashboardClient --> Loader["page-dependency-loader.js"]
+    Loader --> Welcome["tab chunk: dashboard-welcome-page.js"]
+    Loader --> PageModules["components/dashboard/pages/*.js"]
+    PageModules --> SqlEditor["sql-editor-ide-workspace.js"]
+    PageModules --> RepointerVisuals["view-repointer-visuals.js"]
+    Children --> Standalone["login/setup/db-monitor page clients"]
+```
+
+Performance intent:
+
+- standalone pages such as `/login`, `/setup`, and `/db-monitor` do not mount the dashboard client
+- the Welcome Page widget grid is lazy-loaded from `components/dashboard/dashboard-welcome-page.js`; only its layout preference schema remains in `components/dashboard/dashboard-welcome-layout.js` for startup preference validation
+- large dashboard page render bodies now live under `components/dashboard/pages/*.js` and load through `components/dashboard/page-dependency-loader.js` when a workspace tab is created or directly entered
+- existing tab/page chunks include Welcome, SQL Editor, Query Analyser, Query Audit, Notification Center, Object Explorer, Sync Table, sharing boards, and Procedure Repointer viewers
+- Procedure Repointer SQL viewers, SQL diff rendering, DOT graph rendering, and Object Explorer diagram helpers are owned by `components/dashboard/view-repointer-visuals.js`
+- `components/dashboard/view-repointer-sql-utils.js` keeps the small source-line range helpers available to the main dashboard without importing the full Procedure Repointer visuals chunk
+- shared dashboard SVG icons, inline loading text, workspace selection keys, task status tones, and document-title handling are kept in small modules under `components/dashboard/`
+- graph-heavy dashboard chrome (`ObjectExplorerCanvas`, diagram controls, minimap, and status bar) is imported by the route-specific visuals module instead of being declared in the main dashboard client
+- dashboard browser titles are derived from route metadata as `{Page Title} | SQL Cockpit`; `/login`, `/setup`, and `/db-monitor` also declare explicit standalone titles
+- `components/dashboard-client.js` should remain the single tabbed dashboard app; future extractions should move whole tab/page bodies into feature modules while leaving shared shell, route metadata, workspace tabs, and cross-page state in the dashboard layer
+
+Operational notes:
+
+- storage location: no database storage and no config table changes
+- code paths affected: `sql-cockpit-api/app/layout.js`, `sql-cockpit-api/app/page.js`, `sql-cockpit-api/components/app-route-shell.js`, `sql-cockpit-api/components/dashboard-page.js`, `sql-cockpit-api/components/dashboard-client.js`, `sql-cockpit-api/components/dashboard/page-dependency-loader.js`, `sql-cockpit-api/components/dashboard/pages/*.js`, `sql-cockpit-api/components/dashboard/dashboard-welcome-page.js`, `sql-cockpit-api/components/dashboard/view-repointer-visuals.js`, `sql-cockpit-api/components/dashboard/view-repointer-sql-utils.js`, and `sql-cockpit-api/components/dashboard/dashboard-document-title.js`
+- operational risk: low for SQL safety because the change affects browser chunk loading only; medium for developer workflow if a route accidentally bypasses `DashboardPage`, because the dashboard shell would not mount for that route
+- safe test procedure: with the dev lock listener, call `GET /health`, open `/login` and `/db-monitor` to confirm standalone pages render with specific titles, open `/` and several additional dashboard tabs, confirm `/new-tab` is no longer an app route, then confirm page chunks load as those tabs render; finally open every app `page.js` route in a real browser with an authenticated session and verify status, visible body text, console/page errors, redirects, and browser title
+- page-weight reporting: run `npm run measure:pages -- --wait-ms 3000` from `sql-cockpit-api` while the dev lock listener is running. The script reads `.sql-cockpit-dev-lock.json`, creates a local admin session by default, visits every physical `app/**/page.js` route, omits SEO checks, and writes Markdown, CSV, JSON, and HTML reports under `.tmp/page-performance-reports`. Use `--route /,/sql-editor` for targeted runs, `--no-auth` for unauthenticated login/setup measurements, and `--include-metadata-routes` when validating route metadata entries.
+- confidence: confirmed for the listed code paths; exact byte-size savings should be measured with browser DevTools or a future bundle analyzer pass
 
 ## Error Reporting
 

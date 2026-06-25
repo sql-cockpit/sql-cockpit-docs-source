@@ -112,7 +112,7 @@ If a saved profile is missing, check:
 If a connection test fails, check:
 
 - server name or named instance
-- DNS and firewall path from the API host
+- DNS and firewall path from the SQL Cockpit Agent host
 - SQL Server certificate policy
 - integrated-security account context
 - SQL-auth username and password

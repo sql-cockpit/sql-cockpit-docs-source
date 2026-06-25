@@ -25,7 +25,8 @@ flowchart LR
     Operator[Operator browser] --> ConnectionManager[Connection Manager]
     ConnectionManager --> Profile[(Database connection vault)]
     ConnectionManager --> ExplorerApi[POST /api/servers/explorer]
-    ExplorerApi --> RestRunner[Invoke-SqlTablesSyncRestOperation.ps1]
+    ExplorerApi --> Agent[SQL Cockpit Agent]
+    Agent --> RestRunner[Invoke-SqlTablesSyncRestOperation.ps1]
     RestRunner --> Explorer[Get-StsServerObjectExplorer]
     Explorer --> SqlServer[(Target SQL Server)]
     ConnectionManager --> BulkCreate[Create Profiles For All Databases]
@@ -35,7 +36,7 @@ flowchart LR
     SearchSync --> SearchIndex[(Local object-search index)]
 ```
 
-The browser reads and writes saved profiles from local storage key `sql-cockpit-database-connection-profiles`. When you test a connection, the dashboard sends the selected profile to the local API route `POST /api/servers/explorer`. The Node API invokes PowerShell, and PowerShell queries SQL Server catalog metadata.
+The browser reads and writes saved profile metadata from local storage key `sql-cockpit-database-connection-profiles`. When you test a connection, the dashboard sends the selected profile to the API route `POST /api/servers/explorer`. The API leases the metadata probe to the paired SQL Cockpit Agent, and the agent invokes PowerShell inside the customer network. SQL-auth passwords are resolved from the agent-side credential store. Integrated-auth tests run as the `SqlCockpit.Agent` Windows service identity; see [SQL Cockpit Agent Identity And Windows Authentication](sql-cockpit-agent-identity.md).
 
 Server-wide object-search indexing belongs to Instance Manager because it operates against an instance profile rather than one database connection.
 
@@ -47,9 +48,10 @@ Before using Connection Manager:
 2. Open `Instance Manager`.
 3. Save and test the SQL Server instance that owns the database.
 4. Confirm the local API process is running.
-5. Confirm the SQL Server instance is reachable from the API host.
-6. Prefer integrated security when the workspace process runs as the same Windows account that should access SQL Server.
-7. Use SQL authentication only when it is approved for the environment.
+5. Confirm the SQL Cockpit Agent service is running and paired.
+6. Confirm the SQL Server instance is reachable from the agent host.
+7. Prefer integrated security only when the agent service identity is the Windows account that should access SQL Server.
+8. Use SQL authentication only when it is approved for the environment.
 
 The selected login needs enough metadata visibility to read databases and catalog objects. SQL Server may hide objects from accounts without permission.
 
@@ -187,7 +189,7 @@ Connection Manager no longer shows a separate server, authentication, integrated
 Check:
 
 1. The selected instance profile points at the correct server.
-2. The API host can reach the SQL Server network endpoint.
+2. The SQL Cockpit Agent host can reach the SQL Server network endpoint.
 3. Integrated security is running under the expected Windows account.
 4. SQL-auth credentials are current.
 5. `Trust server certificate` matches your TLS policy.

@@ -36,7 +36,7 @@ flowchart LR
 
 Storage location:
 
-- `C:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`
+- `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`
 
 Repository-root keys:
 

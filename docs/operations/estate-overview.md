@@ -30,6 +30,8 @@ Each instance row has an ellipsis action menu beside the instance name. Use it t
 - `Open in command palette`, which opens the command palette and pre-fills search with the selected `schema.table`.
 - `Migrate to another database`, which opens `Sync Launchpad`, pre-fills the selected source server, database, schema, and table, then shows a confirmation modal that checks for a matching server profile from Instance Manager.
 
+If a saved instance row fails, the row shows `Fix in Instance Manager` under the error and also exposes `Edit instance profile` in the row action menu. Both actions open the existing Instance Manager edit draft for that saved profile so the operator can correct server/authentication settings or re-save an agent-managed SQL password before retrying Estate Overview.
+
 ## How It Works
 
 ```mermaid
@@ -38,8 +40,9 @@ flowchart LR
     EstateOverview --> InstanceVault[(sql-cockpit-instance-profiles)]
     EstateOverview --> Api[POST /api/sql-estate/overview per instance]
     EstateOverview --> MetadataApi[POST /api/databases/metadata]
-    Api --> Runner[Invoke-SqlTablesSyncRestOperation.ps1]
-    MetadataApi --> Runner
+    Api --> Agent[SQL Cockpit Agent]
+    MetadataApi --> Agent
+    Agent --> Runner[Invoke-SqlTablesSyncRestOperation.ps1]
     Runner --> Module[Get-StsSqlEstateOverview]
     Runner --> DatabaseModule[Get-StsDatabaseMetadata]
     Module --> Master[(Target SQL Server master)]
@@ -51,6 +54,12 @@ flowchart LR
 ```
 
 The browser reads saved instance profiles from local storage key `sql-cockpit-instance-profiles`. The dashboard creates one table row per saved profile immediately, then calls `POST /api/sql-estate/overview` separately for each instance profile. As each response returns, the matching row is replaced with live SQL Server metadata and the summary cards are recalculated. This keeps fast instances visible while slower or unreachable instances are still being queried.
+
+The `SQL Agent` column is also per instance. If a row shows `SQL Server Agent jobs unavailable for this instance`, SQL Cockpit connected to that saved instance but the read-only `msdb` job summary failed for that same SQL Server target.
+
+Profiles with `excludeFromEstateOverview = true` are skipped before any Estate Overview request is started. The browser does not create a pending row for them, automatic refresh ignores them, and the API rejects direct Estate Overview calls for excluded profile IDs. This lets operators test one saved instance at a time without deleting or sharing profile state. If every saved instance is excluded, Estate Overview shows an all-excluded message instead of polling the agent.
+
+Estate Overview always runs through the paired SQL Cockpit Agent. The API sends the saved instance profile metadata to the agent and does not connect directly to target SQL Server instances, which keeps hosted/cloud tenants outside the customer's SQL Server network path. SQL-auth profile passwords are not stored in the instance profile payload; when the profile has `hasPassword`/`secretRef` metadata, the agent resolves the password from Windows Credential Manager, runs the normal read-only runtime script locally, and returns the standard operation envelope. Integrated-auth profiles connect as the `SqlCockpit.Agent` Windows service identity, not as the interactive browser or SSMS user. If the agent is offline, the secret is missing, or SQL Server rejects the agent service identity, the row fails closed instead of using a database-stored password. See [SQL Cockpit Agent Identity And Windows Authentication](sql-cockpit-agent-identity.md).
 
 Each instance is evaluated independently. If one instance fails to connect, the response still returns the other instances and marks the failed instance as `Critical`.
 
@@ -217,7 +226,7 @@ Treat the score as a triage guide. Use SQL Server tooling, Agent Manager, and se
   - `Test-RestApiEndpoint.ps1`
 - operational risk:
   - medium for metadata exposure because instance names, database names, table names, approximate row counts, edition, capacity, Agent job counts, local SQL Server addresses, ports, authentication scheme, and encryption state are visible
-  - medium for credential handling when saved instance profiles contain SQL-auth credentials in browser local storage
+  - medium for credential handling when saved instance profiles depend on SQL-auth passwords stored in the paired agent's Windows Credential Manager
   - medium for load during manual or automatic refresh because up to six PowerShell workers and SQL Server connections can run concurrently from the dashboard; short repeat intervals such as `30s` can sustain that read load across the saved estate
   - low for write safety because the route is read-only
 - safe change procedure:
