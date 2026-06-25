@@ -21,6 +21,10 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/health/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/appendix/known-issues/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
@@ -42,6 +46,10 @@
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/blog/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/blog/2026/06/22/how-the-sql-cockpit-security-model-works-locally-and-from-the-cloud/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
@@ -449,6 +457,10 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/integrations/sql-bridge-hooks/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/analyze-run-logs/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
@@ -477,7 +489,15 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/database-object-backups/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/estate-overview/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/incident-diagnostics/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
@@ -505,7 +525,27 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/source-control/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-agent-manager/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-cockpit-agent-identity/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-cockpit-agent-permissions/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-cockpit-invocation-framework/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/sql-cockpit-prerequisite-setup/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
@@ -513,7 +553,19 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/ssis-inspector/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/ssrs-inspector/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/operations/troubleshooting/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/operations/view-usages/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
@@ -593,6 +645,10 @@
          <lastmod>2026-06-25</lastmod>
     </url>
     <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/user/permission-explorer/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/runtime-modes/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
@@ -602,6 +658,22 @@
     </url>
     <url>
          <loc>https://your-domain.github.io/sql-cockpit/latest/user/workspaces/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/blog/archive/2026/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/blog/category/security/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/blog/category/architecture/</loc>
+         <lastmod>2026-06-25</lastmod>
+    </url>
+    <url>
+         <loc>https://your-domain.github.io/sql-cockpit/latest/blog/category/agent/</loc>
          <lastmod>2026-06-25</lastmod>
     </url>
 </urlset>
