@@ -5,9 +5,9 @@ This app is a separate Windows desktop companion for controlling the SQL Cockpit
 It provides:
 
 - tray icon access
-- dedicated service-control UI
+- dedicated service-control UI with a desktop control-centre layout
 - in-app update checks and install prompts using `electron-updater`
-- suite repair entrypoint (`Run Repair (UAC)`) for desktop/service/task reconciliation
+- suite repair entrypoint (`Repair`) for desktop/service/task reconciliation
 
 ```mermaid
 flowchart LR
@@ -30,6 +30,9 @@ The Electron app supports:
 - runtime profile suffix in the badge when available (for example `Runtime: prod`)
 - Windows service status (`SQLCockpitServiceHost`)
 - service start/stop actions
+- native confirmation prompts before stop-all, stop-component, stop-service, and force-kill actions
+- status overview cards for running/stopped/warning component counts
+- diagnostics panel that keeps settings, service, and runtime errors visible instead of hiding failed status calls
 - component snapshot list (`id`, `display`, status, health, PID, restart count, last start, last error)
 - per-component `Start`, `Restart`, `Stop`
 - bulk `Start All`, `Restart All`, `Stop All`
@@ -48,6 +51,29 @@ The Electron app supports:
   - `Check For Updates`
   - `Install Downloaded Update`
 - optional desktop app component (`desktop-app`) that should launch `Start-SqlCockpitDesktopPackaged.ps1` in client mode
+
+## UI behavior
+
+The Service Control renderer is a static Electron surface using local HTML, CSS, and JavaScript. It does not load remote UI code and continues to use the preload IPC bridge for privileged operations.
+
+The current layout is designed as a native desktop control centre:
+
+- left compact navigation rail for overview, components, and logs
+- top command bar for refresh, desktop launch, and repair actions
+- service overview panel with current status, last checked time, and primary service actions
+- component health summary derived from the live runtime component snapshot
+- managed-components table with keyboard-selectable rows
+- selected-component detail/log viewer with copy/open-log actions
+- maintenance panel for update checks and downloaded update installation
+
+Theme behavior:
+
+- CSS uses semantic design tokens for color, spacing, radius, shadow, typography, and status states.
+- Light and dark themes follow the operating system through `prefers-color-scheme`.
+- Native fonts are preferred through the system font stack (`Segoe UI` on Windows, platform system fonts elsewhere).
+- Focus rings remain visible, status badges include text as well as color, and reduced-motion preferences are respected.
+
+No service settings or database-backed flags were added for the redesign. The UI remains driven by the existing app metadata and service-host status responses.
 
 ## Files
 
@@ -221,6 +247,8 @@ Operator instruction for manual elevated launch:
 ## Settings and API auth
 
 The app reads `%ProgramData%\SqlCockpit\sql-cockpit-service.settings.json` by default.
+
+When the app is installed on a non-system drive, it first checks the installed app drive for `\ProgramData\SqlCockpit\sql-cockpit-service.settings.json`. For example, an app installed under `E:\Program Files\SQL Cockpit Service Control` will prefer `E:\ProgramData\SqlCockpit\sql-cockpit-service.settings.json` when that file exists. An explicit `--settings` path still takes precedence.
 
 Used fields:
 
