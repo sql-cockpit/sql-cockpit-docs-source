@@ -96,17 +96,19 @@ The database object search feature uses tracked safe defaults plus a local overr
 - storage location:
   tracked safe settings at `sql-cockpit-object-search/sql-object-search.settings.template.json` and `sql-cockpit-object-search/sql-object-search.settings.json`; operator-local override at `sql-cockpit-object-search/sql-object-search.settings.local.json`
 - valid values:
-  `service.listenUrl` must be a loopback HTTP URL, `service.executablePath` may be blank or a relative or absolute path to a bundled `SqlObjectSearch.Service.exe`, `service.indexRoot` and `sync.*Path` values must resolve to writable local paths, `sync.batchSize` must be a positive integer, and each source row must contain a SQL Server name, database name, and auth mode
+  `service.listenUrl` must be a loopback HTTP URL for local development, `service.executablePath` may be blank or a relative or absolute path to a bundled `SqlObjectSearch.Service.exe`, `service.indexRoot` and `sync.*Path` values must resolve to writable local paths, `service.apiKey` may be set for local JSON-driven operation, `sync.batchSize` must be a positive integer, and each source row must contain a SQL Server name, database name, and auth mode
 - defaults:
   `service.listenUrl = http://127.0.0.1:8094/`, `service.executablePath = ./bin/win-x64/SqlObjectSearch.Service.exe`, `service.maxResults = 40`, `service.snippetLength = 240`, `sync.batchSize = 200`, `sync.manifestDirectory = ./data/object-search/manifests`, `sync.spoolDirectory = ./data/object-search/spool`, `sync.statusPath = ./data/object-search/sync-status.json`, `sync.logPath = ./Logs/ObjectSearch/sync.log`
 - compatibility note:
   `service.snippetLength` is retained for older settings files, but current search result rows do not load definition text or build definition snippets. Definitions are loaded only through the selected-object detail API.
 - code paths affected:
-  `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs`, `sql-cockpit-api/server.js`, and `sql-cockpit-api/components/object-search-palette.js`
+  `Start-SqlObjectSearchService.ps1`, `Publish-SqlObjectSearchService.ps1`, `Sync-SqlObjectSearchIndex.ps1`, `sql-cockpit-object-search/SqlObjectSearch.Service/Program.cs`, `sql-cockpit-api/lib/object-search-service.js`, `sql-cockpit-api/server.js`, and `sql-cockpit-api/components/object-search-palette.js`
+- environment overrides:
+  `SQL_COCKPIT_OBJECT_SEARCH_SETTINGS_PATH` selects the settings file; `SQL_COCKPIT_OBJECT_SEARCH_LISTEN_URL`, `SQL_COCKPIT_OBJECT_SEARCH_INDEX_ROOT`, and `SQL_COCKPIT_OBJECT_SEARCH_API_KEY` override the JSON values in the object-search service; `SQL_COCKPIT_OBJECT_SEARCH_SERVICE_URL` and `SQL_COCKPIT_OBJECT_SEARCH_API_KEY` override the API client's JSON-derived service URL and request key
 - operational risk:
-  medium, because the local index persists SQL object names, definitions, columns, parameters, and dependency names on disk, and a stale or missing bundled executable path can stop the sidecar from starting; high if local credential-bearing settings are committed by mistake
+  medium, because the local index persists SQL object names, definitions, columns, parameters, and dependency names on disk, and a stale or missing bundled executable path can stop the sidecar from starting; high if local credential-bearing settings are committed by mistake or if hosted containers are deployed without matching object-search API keys
 - safe change procedure:
-  keep the service on loopback, copy `sql-object-search.settings.local.json.example` to `sql-object-search.settings.local.json`, run `.\Publish-SqlObjectSearchService.ps1` when updating the bundled sidecar, confirm the workspace or sidecar launcher prefers the local override, run one full bootstrap sync, then run incremental refresh for steady state, validate `GET /api/object-search/status`, and only then expand the scope
+  keep local service bindings on loopback, copy `sql-object-search.settings.local.json.example` to `sql-object-search.settings.local.json`, run `.\Publish-SqlObjectSearchService.ps1` when updating the bundled sidecar, confirm the workspace or sidecar launcher prefers the local override, run one full bootstrap sync, then run incremental refresh for steady state, validate `GET /api/object-search/status`, and only then expand the scope. For hosted deployments, provide the same non-empty `SQL_COCKPIT_OBJECT_SEARCH_API_KEY` to the API and object-search containers; a blank key is allowed only for explicit Development loopback operation, otherwise the sidecar fails startup.
 - confidence:
   confirmed for file locations, defaults, and the loopback service binding; inferred for some edge-case incremental coverage on child objects because SQL Server does not expose a native tombstone stream for columns and indexes
 
@@ -166,4 +168,3 @@ The dashboard still reads older browser-local profile data once during migration
 - Do not edit `Sync.TableState` while a sync is running.
 - For any high-risk change, validate with a single manual run before re-enabling scheduled execution.
 - For `BatchSize` changes, profile the source table first and start with the conservative end of the suggested range.
-
