@@ -34,15 +34,25 @@ Legacy unsuffixed production services remain supported. New side-by-side install
 
 The tenant API rejects cross-lane Agent registration and heartbeat. A `test` agent cannot silently pair with a `prod` tenant.
 
+## Service Control view
+
+Service Control shows an **Environment Services** table with separate `dev`, `test`, and `prod` rows. Each lane is read from `%ProgramData%\SqlCockpit\<lane>\sql-cockpit-service.settings.json` and controlled through that lane's service name and control API URL.
+
+- Service actions affect only the selected lane.
+- Component actions call only the selected lane's Service Host control API.
+- Missing lanes show as `Not Installed`.
+- The original **Managed Components** table remains scoped to the active settings file.
+
 ## Safe tester workflow
 
 1. Build release artifacts from a known commit.
 2. Install the `test` Service Host and `test` Agent.
 3. Confirm Service Control shows `Environment: TEST`.
-4. Verify `GET /api/runtime/environment` returns the expected lane, release, and build SHA.
-5. Pair the local Agent to the local test API or Azure test tenant only.
-6. Run SQL Bridge, SQL Editor, object search, and hosted cloud checks through the Agent boundary.
-7. Promote the same accepted artifact to `prod`.
+4. Confirm the **Environment Services** table shows the `test` lane separately from `dev` and `prod`.
+5. Verify `GET /api/runtime/environment` returns the expected lane, release, and build SHA.
+6. Pair the local Agent to the local test API or Azure test tenant only.
+7. Run SQL Bridge, SQL Editor, object search, and hosted cloud checks through the Agent boundary.
+8. Promote the same accepted artifact to `prod`.
 
 ## Config reference
 
