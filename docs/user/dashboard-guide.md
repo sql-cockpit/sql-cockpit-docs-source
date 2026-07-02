@@ -30,6 +30,10 @@ Each left-navigation item includes a question-mark help icon. Hover or keyboard-
 
 Users with SaaS agent visibility also see an Agent connection indicator in the left navigation. It polls `GET /api/saas/agents` every 30 seconds and shows the active bound agent as `Online`, `Offline`, `Not Paired`, or `Unavailable`. The primary navigation does not show stale historical registration counts; selecting the indicator opens `/admin/agent-details`, and focus mode keeps the same state visible as a compact rail icon with a status dot.
 
+If the agent check confirms `Not Paired`, SQL Cockpit opens an `/agent-required` workspace tab and blocks live dashboard pages until an agent is assigned. `/admin/agent-binding` and `/admin/agent-details` remain reachable so an administrator can create a binding code, pair the local agent for the current environment lane, and retry the original tab. This fails closed because browser and API workflows must not connect directly to customer SQL Server instances.
+
+SQL Cockpit is intended to run as a single page application. Use workspace tabs, dashboard navigation, and tab reload actions instead of the browser refresh button. The dashboard warns before hard refreshes; keyboard refresh shortcuts show SQL Cockpit's warning text, while browser-toolbar refresh uses the browser's native unload confirmation.
+
 On Agent Details, **Refresh** reloads only the connected-agent data inside the current dashboard tab.
 
 Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.
