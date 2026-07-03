@@ -1101,10 +1101,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#agent-ldap-settings" class="md-nav__link">
+  <a href="#environment-plugins" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Agent LDAP settings
+        Environment plugins
       
     </span>
   </a>
@@ -4518,10 +4518,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#agent-ldap-settings" class="md-nav__link">
+  <a href="#environment-plugins" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Agent LDAP settings
+        Environment plugins
       
     </span>
   </a>
@@ -4757,9 +4757,10 @@
 <li>Click <code>Stop File Log</code> before sharing or deleting the capture.</li>
 </ol>
 <p>Operational risk: captured files can contain exception text, server names, profile identifiers, and local path details. Do not store long-running captures by default, and delete temporary captures after diagnosis unless your incident process requires retention.</p>
-<h2 id="agent-ldap-settings"><a class="headerlink" href="#agent-ldap-settings" title="Permanent link">¶</a>Agent LDAP settings</h2>
+<h2 id="environment-plugins"><a class="headerlink" href="#environment-plugins" title="Permanent link">¶</a>Environment plugins</h2>
+<p>Service Control exposes environment-scoped Agent plugins from the lane group in <strong>Managed components</strong>. The first plugin is <strong>LDAP Authentication</strong>.</p>
 <p>Service Control owns the local agent LDAP connection settings for each environment lane. The hosted dashboard should enable LDAP provider policy and <strong>Route LDAP through paired Agent</strong>, but the LDAP server, search base, bind DN, and bind password stay on the machine running the agent.</p>
-<p>Use <strong>Managed components &gt; environment lane &gt; LDAP Settings</strong> to update the selected lane's installed agent <code>appsettings.json</code>.</p>
+<p>Use <strong>Managed components &gt; environment lane &gt; Plugins &gt; LDAP Authentication</strong> to update the selected lane's installed agent <code>appsettings.json</code>.</p>
 <p>Stored settings:</p>
 <table>
 <thead>
