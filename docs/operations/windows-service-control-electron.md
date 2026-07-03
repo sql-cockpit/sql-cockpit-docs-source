@@ -78,11 +78,13 @@ File capture is operator-driven:
 
 Operational risk: captured files can contain exception text, server names, profile identifiers, and local path details. Do not store long-running captures by default, and delete temporary captures after diagnosis unless your incident process requires retention.
 
-## Agent LDAP settings
+## Environment plugins
+
+Service Control exposes environment-scoped Agent plugins from the lane group in **Managed components**. The first plugin is **LDAP Authentication**.
 
 Service Control owns the local agent LDAP connection settings for each environment lane. The hosted dashboard should enable LDAP provider policy and **Route LDAP through paired Agent**, but the LDAP server, search base, bind DN, and bind password stay on the machine running the agent.
 
-Use **Managed components > environment lane > LDAP Settings** to update the selected lane's installed agent `appsettings.json`.
+Use **Managed components > environment lane > Plugins > LDAP Authentication** to update the selected lane's installed agent `appsettings.json`.
 
 Stored settings:
 
