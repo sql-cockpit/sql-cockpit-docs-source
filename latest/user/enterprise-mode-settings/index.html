@@ -4788,6 +4788,16 @@
 <td>Confirmed</td>
 </tr>
 <tr>
+<td><code>SQL_COCKPIT_AUTH_ALLOW_EMAIL_MATCH_FOR_LINKING</code></td>
+<td><code>SQL_COCKPIT_AUTH_ALLOW_EMAIL_MATCH_FOR_LINKING</code> env var or Terraform tenant setting <code>allow_email_match_for_linking</code></td>
+<td>Boolean: <code>true</code> or <code>false</code></td>
+<td><code>false</code></td>
+<td>Hosted Azure SQL auth store external-session creation after LDAP/OIDC authentication</td>
+<td>If enabled, a verified external provider email can link to an existing local SQL Cockpit account with the same email. This should only be enabled when the external provider email attribute is trusted.</td>
+<td>Enable per tenant, validate one known existing local account can sign in through LDAP, then review linked identities and audit logs.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
 <td><code>SQL_COCKPIT_RBAC_PERMISSIONS</code></td>
 <td><code>SQL_COCKPIT_RBAC_PERMISSIONS</code> env var (optional CLI <code>--rbacPermissions</code>)</td>
 <td>Comma-separated permissions, supports exact, wildcard (<code>*</code>), and prefix wildcard (<code>prefix.*</code>) checks</td>
@@ -4884,6 +4894,7 @@
 <li>check hosted API logs for <code>HOSTED_AUTH_STORE_METHOD_NOT_IMPLEMENTED</code> or Azure SQL auth-store errors.</li>
 <li>confirm <code>SQL_COCKPIT_LDAP_VIA_AGENT=true</code> and the paired Agent is online with <code>identity.ldap.authenticate</code>.</li>
 <li>confirm auto-provisioning/allow-list policy permits the LDAP subject, username, or email.</li>
+<li>if logs say the LDAP email matched an existing SQL Cockpit user, enable <code>SQL_COCKPIT_AUTH_ALLOW_EMAIL_MATCH_FOR_LINKING=true</code> only when LDAP email is trusted.</li>
 <li>No OTLP audit data:</li>
 <li>ensure all three are set correctly: <code>SQL_COCKPIT_AUDIT_LOG_SINK=otlp</code>, <code>SQL_COCKPIT_OTEL_ENABLED=true</code>, <code>SQL_COCKPIT_OTEL_ENDPOINT=&lt;collector&gt;</code>.</li>
 <li><code>/metrics</code> returns <code>metrics disabled</code>:</li>
