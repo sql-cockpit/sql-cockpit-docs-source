@@ -4601,6 +4601,7 @@
 </ol>
 <p>LDAP sign-in binds as the submitted user and then reads standard Active Directory attributes for the local SQL Cockpit profile. New LDAP users are provisioned with <code>sAMAccountName</code> as the local username, <code>mail</code> as email when present, and a human display name from <code>displayName</code>, or <code>givenName</code> + <code>sn</code> when <code>displayName</code> is missing or email-shaped. If <code>mail</code> is empty, an email-shaped UPN is used as the email fallback.</p>
 <p>Admins can tighten new external account creation from <code>/admin/signup-allow-list</code>. The default is <code>externalSignupAllowListEnabled=false</code>, which allows all users who can authenticate through enabled external providers to sign up when auto-provisioning is enabled. Enabling the allow list permits only listed LDAP/OIDC subjects, usernames, or emails to create a new local account; existing linked identities can still sign in.</p>
+<p>Hosted tenants may set <code>SQL_COCKPIT_LDAP_VIA_AGENT=true</code> so LDAP credentials are never sent from the cloud API directly to the customer directory. In that mode, the hosted API leases <code>identity.ldap.authenticate</code> work to the paired Agent, then the Azure SQL auth store creates or links the SQL Cockpit user/session from the returned LDAP claims. A hosted LDAP sign-in needs all three parts: LDAP enabled in provider settings, an online paired Agent with <code>identity.ldap.authenticate</code>, and Agent-side LDAP connection settings configured from Service Control.</p>
 <h2 id="auth-mode-flow"><a class="headerlink" href="#auth-mode-flow" title="Permanent link">¶</a>Auth-mode flow</h2>
 <pre class="mermaid"><code>flowchart TD
     A[SQL_COCKPIT_EDITION] --&gt; B{enterprise or rbac alias?}
@@ -4767,6 +4768,26 @@
 <td>Confirmed</td>
 </tr>
 <tr>
+<td><code>SQL_COCKPIT_LDAP_VIA_AGENT</code></td>
+<td><code>SQL_COCKPIT_LDAP_VIA_AGENT</code> env var, Terraform tenant setting <code>ldap_via_agent</code>, or persisted LDAP provider setting when env is unset</td>
+<td>Boolean: <code>true</code> or <code>false</code></td>
+<td><code>false</code> unless set by tenant Terraform/provider settings</td>
+<td><code>server.js</code> LDAP login route; when true, <code>/api/auth/login</code> creates an Agent RPC for <code>identity.ldap.authenticate</code> and the hosted auth store creates/links the SQL Cockpit session from verified claims</td>
+<td>Login fails closed if no paired Agent is online, the Agent lacks LDAP settings, or hosted auth/RBAC state cannot create the external session.</td>
+<td>Enable in test first, configure the lane Agent LDAP plugin in Service Control, confirm dashboard Agent capabilities include <code>identity.ldap.authenticate</code>, then test one allowed LDAP user.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_AGENT_LDAP_TIMEOUT_MS</code></td>
+<td><code>SQL_COCKPIT_AGENT_LDAP_TIMEOUT_MS</code> env var or Terraform tenant setting <code>agent_ldap_timeout_ms</code></td>
+<td>Integer milliseconds, clamped from 1000 to 60000</td>
+<td><code>20000</code></td>
+<td><code>server.js</code> agent-backed LDAP RPC wait timeout</td>
+<td>Too low causes false timeouts on slow directory searches; too high keeps login requests open longer.</td>
+<td>Start with 20000, inspect Agent and hosted API logs for timeout events, then tune per tenant.</td>
+<td>Confirmed</td>
+</tr>
+<tr>
 <td><code>SQL_COCKPIT_RBAC_PERMISSIONS</code></td>
 <td><code>SQL_COCKPIT_RBAC_PERMISSIONS</code> env var (optional CLI <code>--rbacPermissions</code>)</td>
 <td>Comma-separated permissions, supports exact, wildcard (<code>*</code>), and prefix wildcard (<code>prefix.*</code>) checks</td>
@@ -4859,6 +4880,10 @@
 <li>invalid credentials show a friendly browser message asking the user to check username, password, and domain.</li>
 <li>validate <code>SQL_COCKPIT_LDAP_URL</code> protocol/host/port and username suffix/domain mapping.</li>
 <li>check trusted audit output for the underlying <code>authn-ldap-bind</code> provider error when support needs more detail.</li>
+<li>Hosted LDAP login returns <code>LDAP sign-in failed</code> after the Agent authenticates:</li>
+<li>check hosted API logs for <code>HOSTED_AUTH_STORE_METHOD_NOT_IMPLEMENTED</code> or Azure SQL auth-store errors.</li>
+<li>confirm <code>SQL_COCKPIT_LDAP_VIA_AGENT=true</code> and the paired Agent is online with <code>identity.ldap.authenticate</code>.</li>
+<li>confirm auto-provisioning/allow-list policy permits the LDAP subject, username, or email.</li>
 <li>No OTLP audit data:</li>
 <li>ensure all three are set correctly: <code>SQL_COCKPIT_AUDIT_LOG_SINK=otlp</code>, <code>SQL_COCKPIT_OTEL_ENABLED=true</code>, <code>SQL_COCKPIT_OTEL_ENDPOINT=&lt;collector&gt;</code>.</li>
 <li><code>/metrics</code> returns <code>metrics disabled</code>:</li>
