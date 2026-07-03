@@ -78,6 +78,36 @@ File capture is operator-driven:
 
 Operational risk: captured files can contain exception text, server names, profile identifiers, and local path details. Do not store long-running captures by default, and delete temporary captures after diagnosis unless your incident process requires retention.
 
+## Agent LDAP settings
+
+Service Control owns the local agent LDAP connection settings for each environment lane. The hosted dashboard should enable LDAP provider policy and **Route LDAP through paired Agent**, but the LDAP server, search base, bind DN, and bind password stay on the machine running the agent.
+
+Use **Managed components > environment lane > LDAP Settings** to update the selected lane's installed agent `appsettings.json`.
+
+Stored settings:
+
+| Setting | Storage | Valid values | Default | Operational notes |
+| --- | --- | --- | --- | --- |
+| `Agent:Ldap:Server` | Lane agent `appsettings.json` | Hostname or IP reachable from the agent host | Empty | Required before agent-backed LDAP can work. |
+| `Agent:Ldap:Port` | Lane agent `appsettings.json` | `1` to `65535` | `389` | Use `636` with LDAPS. |
+| `Agent:Ldap:UseSsl` | Lane agent `appsettings.json` | `true`, `false` | `false` | Prefer LDAPS in production. |
+| `Agent:Ldap:IgnoreCertificateErrors` | Lane agent `appsettings.json` | `true`, `false` | `false` | Temporary diagnosis only; weakens TLS validation. |
+| `Agent:Ldap:BaseDn` | Lane agent `appsettings.json` | LDAP distinguished name | Empty | Required search root, for example `DC=example,DC=local`. |
+| `Agent:Ldap:BindDn` | Lane agent `appsettings.json` | DN or UPN | Empty | Use a least-privileged directory-read service account when searches need one. |
+| `Agent:Ldap:BindPassword` | Lane agent `appsettings.json` | Secret string | Empty | Service Control never displays this value; leaving the password field blank preserves the existing secret. |
+| `Agent:Ldap:UserFilter` | Lane agent `appsettings.json` | LDAP filter containing `{0}` | `(|(sAMAccountName={0})(userPrincipalName={0})(mail={0})(cn={0}))` | The agent escapes the username before substitution. |
+| `Agent:Ldap:TimeoutSeconds` | Lane agent `appsettings.json` | `1` to `120` | `10` | Local LDAP connection/search timeout. |
+| `Agent:Ldap:GroupAttribute` | Lane agent `appsettings.json` | LDAP attribute name | `memberOf` | Returned group claims are bounded. |
+| `Agent:Ldap:MaxGroups` | Lane agent `appsettings.json` | `0` to `500` | `50` | Prevents oversized login results. |
+
+Safe test procedure:
+
+1. Configure the non-production lane Agent first.
+2. Keep **Restart this lane's Agent after save** selected so the new settings are loaded.
+3. Confirm the hosted or local dashboard shows the agent online with `identity.ldap.*` capabilities.
+4. In the dashboard, enable LDAP and **Route LDAP through paired Agent**.
+5. Run the LDAP test or search for one exact username before asking users to log in.
+
 ## UI behavior
 
 The Service Control renderer is a static Electron surface using local HTML, CSS, and JavaScript. It does not load remote UI code and continues to use the preload IPC bridge for privileged operations.
