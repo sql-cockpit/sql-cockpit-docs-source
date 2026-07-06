@@ -43,10 +43,12 @@ The running card is driven by the persisted `DatabaseObjectBackupRun` row. SQL C
 | `DELETE /api/database-object-backups/profiles/{id}` | `databaseBackups.manage` | none | `{ ok: true }` | Low: deletes local config only; archives remain. | Delete a test profile and confirm runs remain listed. |
 | `POST /api/database-object-backups/preview` | `databaseBackups.create` | `{ "profileId": "..." }` or inline profile-shaped selection | object counts, matching items, warnings/errors, manifest preview | Medium: runs read-only catalog queries and may reveal object names. | Preview a small non-production database. |
 | `POST /api/database-object-backups/extract` | `databaseBackups.create` | `{ "profileId": "..." }` or inline profile-shaped selection | archive metadata plus `run` | High: writes local archive containing object definitions and permissions. | Extract from non-production, inspect warning/error counts, download and review zip. |
-| `GET /api/database-object-backups/runs` | `databaseBackups.view` | optional `limit` | recent `runs[]` | Medium: archive filenames and counts may reveal operational context. | Confirm only active-workspace runs appear. |
+| `GET /api/database-object-backups/runs` | `databaseBackups.view` | optional `limit` | recent `runs[]`; if the backing state table is unavailable, HTTP 200 with `runs: []`, `featureUnavailable: true`, and `warning` | Medium: archive filenames and counts may reveal operational context. A degraded response can hide the widget until state-provider health is fixed, but create/extract actions still fail explicitly. | Confirm only active-workspace runs appear; temporarily misconfigure a non-production state provider and confirm dashboard polling does not emit repeated 500s. |
 | `GET /api/database-object-backups/runs/{id}/download` | `databaseBackups.view` | none | `application/zip` stream | High: archive can contain sensitive SQL definitions and permissions. | Download only a succeeded non-production run; confirm cross-workspace IDs return 404/403. |
 
 The API resolves `instanceProfileId` server-side from the signed-in user's active workspace. Clients cannot supply a workspace key. Passwords from saved profiles are passed only to the local PowerShell process and are not stored in backup run rows or manifests.
+
+Hosted Azure SQL state uses bounded key columns for the workspace indexes behind profiles and runs. On startup, SQL Cockpit repairs older `DatabaseObjectBackupProfile` and `DatabaseObjectBackupRun` tables that were created with index-invalid wide key columns by trimming `workspace_key` to 260 characters and timestamp keys to 40 characters before creating the workspace indexes.
 
 ## Local Storage
 
