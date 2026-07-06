@@ -4568,9 +4568,9 @@
 <td><code>GET /api/database-object-backups/runs</code></td>
 <td><code>databaseBackups.view</code></td>
 <td>optional <code>limit</code></td>
-<td>recent <code>runs[]</code></td>
-<td>Medium: archive filenames and counts may reveal operational context.</td>
-<td>Confirm only active-workspace runs appear.</td>
+<td>recent <code>runs[]</code>; if the backing state table is unavailable, HTTP 200 with <code>runs: []</code>, <code>featureUnavailable: true</code>, and <code>warning</code></td>
+<td>Medium: archive filenames and counts may reveal operational context. A degraded response can hide the widget until state-provider health is fixed, but create/extract actions still fail explicitly.</td>
+<td>Confirm only active-workspace runs appear; temporarily misconfigure a non-production state provider and confirm dashboard polling does not emit repeated 500s.</td>
 </tr>
 <tr>
 <td><code>GET /api/database-object-backups/runs/{id}/download</code></td>
@@ -4583,6 +4583,7 @@
 </tbody>
 </table>
 <p>The API resolves <code>instanceProfileId</code> server-side from the signed-in user's active workspace. Clients cannot supply a workspace key. Passwords from saved profiles are passed only to the local PowerShell process and are not stored in backup run rows or manifests.</p>
+<p>Hosted Azure SQL state uses bounded key columns for the workspace indexes behind profiles and runs. On startup, SQL Cockpit repairs older <code>DatabaseObjectBackupProfile</code> and <code>DatabaseObjectBackupRun</code> tables that were created with index-invalid wide key columns by trimming <code>workspace_key</code> to 260 characters and timestamp keys to 40 characters before creating the workspace indexes.</p>
 <h2 id="local-storage"><a class="headerlink" href="#local-storage" title="Permanent link">¶</a>Local Storage</h2>
 <table>
 <thead>

@@ -4488,30 +4488,30 @@
 <tr>
 <td><code>GET</code></td>
 <td><code>/api/sql-bridge/invocations</code></td>
-<td><code>tasks.view</code> or local admin</td>
-<td>List recent SQL bridge invocations, or use <code>view=procedureRuns</code> to page by stored procedure run with nested syncs and trace/log events.</td>
+<td><code>sqlBridge.invocations.view</code></td>
+<td>List recent SQL bridge invocations, or use <code>view=procedureRuns</code> to page by stored procedure run with nested syncs and trace/log events. Hosted tenants route the bounded read through the paired local Agent.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
 <td><code>/api/sql-bridge/invocations/{id}</code></td>
-<td><code>tasks.view</code> or local admin</td>
-<td>Read one invocation, up to 500 output rows, redacted payloads, and an equivalent reconstructed <code>Cockpit.Invoke</code> SQL batch.</td>
+<td><code>sqlBridge.invocations.view</code></td>
+<td>Read one invocation, up to 500 output rows, redacted payloads, and an equivalent reconstructed <code>Cockpit.Invoke</code> SQL batch. Hosted tenants route the bounded read through the paired local Agent.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
 <td><code>/api/sql-bridge/locks</code></td>
-<td><code>tasks.view</code> or local admin</td>
-<td>List active SQL Cockpit <code>FetchRemote</code> app locks with session owner, source/destination context, active request details, and bridge refresh state.</td>
+<td><code>sqlBridge.locks.view</code></td>
+<td>List active SQL Cockpit <code>FetchRemote</code> app locks with session owner, source/destination context, active request details, and bridge refresh state. Hosted tenants route the bounded read through the paired local Agent.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
 <td><code>/api/sql-bridge/locks/kill</code></td>
-<td>local admin only</td>
-<td>Kill a confirmed stale SQL Server session that owns a SQL Cockpit <code>FetchRemote</code> lock through <code>Cockpit.KillBridgeLockSession</code>.</td>
+<td><code>sqlBridge.locks.kill</code></td>
+<td>Kill a confirmed stale SQL Server session that owns a SQL Cockpit <code>FetchRemote</code> lock through <code>Cockpit.KillBridgeLockSession</code>. Hosted tenants route the write through the paired local Agent.</td>
 </tr>
 </tbody>
 </table>
-<p>The invocation and lock-list endpoints read the bridge control database and SQL Server lock/session DMVs only. They do not run PowerShell, start <code>xp_cmdshell</code>, execute <code>Cockpit.Invoke</code>, or change command defaults. The kill endpoint is destructive and intentionally local-admin only; it refuses to kill the current session, requires the target to hold a SQL Cockpit <code>FetchRemote</code> lock, and refuses active SQL requests unless <code>allowRunning</code> is explicitly passed. The dashboard kill button uses a confirmation prompt and does not set <code>allowRunning</code>.</p>
+<p>The invocation and lock-list endpoints read the bridge control database and SQL Server lock/session DMVs only. In hosted/cloud mode, the API sends the bounded SQL through the paired Agent using the <code>sql.database.execute</code> capability with <code>purpose = sql-bridge</code>; the cloud API must not connect directly to the customer SQL Server. Local direct SQL mode is available only when explicitly enabled in the runtime. The kill endpoint is destructive; it refuses to kill the current session, requires the target to hold a SQL Cockpit <code>FetchRemote</code> lock, and refuses active SQL requests unless <code>allowRunning</code> is explicitly passed. The dashboard kill button uses a confirmation prompt and does not set <code>allowRunning</code>.</p>
 <p>The history and profiler pages default to <code>GET /api/sql-bridge/invocations?view=procedureRuns</code>. Each table row is one stored procedure run keyed by <code>metadata.caller.runId</code> / trace run id. Expanding a row shows the sync invocations and <code>Cockpit.TraceEventLog</code> entries for that run. The profiler uses the same response and converts ordered trace events into timed blocks: <code>SqlStatementStart</code> events become query-source blocks, bridge start/end milestones become bridge blocks, and each duration is measured to the next recorded event or the run end. Profiler colours are duration-first: green is under 10 seconds, cyan is 10 seconds to 1 minute, blue is 1-5 minutes, amber is 5-15 minutes, orange is 15-30 minutes, and red is 30 minutes or longer. The slowest relative blocks in shorter runs can also be promoted into warmer bands so refactor candidates stand out. This requires generated debug tracing or explicit <code>Cockpit.TraceEvent</code> calls; runs without statement trace events still appear, but the profiler has no query blocks to draw. A generated procedure run remains <code>Started</code> while its trace session is open on a procedure activity event such as <code>SqlStatementStart</code> or bridge sync start/end, even when the latest bridge invocation has already completed, because the stored procedure may still be executing ordinary SQL between trace events. The expanded procedure timeline defaults to newest-first ordering so active runs show the latest signal immediately; operators can switch an individual expanded run to oldest-first when they need to read the execution from the start. New procedure-run rows, sync rows, and trace/log rows briefly fade in after refresh so operators can spot newly arrived activity. Older rows without run metadata are shown as standalone bridge calls instead of being guessed into a shared procedure group.</p>
 <p>The detail endpoint includes <code>payload</code>, <code>originalPayload</code> when <code>Cockpit.Invoke</code> recorded a pre-defaults caller payload, <code>apiCall</code>, <code>sourceQuery</code>, and <code>invocationSql.sql</code>. The SQL is reconstructed from the stored JSON payload after password/token/key-like values are redacted. SQL Server does not record the caller's exact wrapper batch text or the <code>FetchRemote</code> metadata-resolved column list, so invocations originally made with wrappers such as <code>Cockpit.FetchRemote</code> are displayed as equivalent low-level <code>Cockpit.Invoke</code> calls plus a representative source <code>SELECT</code>. Omitting <code>view=procedureRuns</code> from the list endpoint keeps the legacy flat <code>invocations[]</code> response for API consumers.</p>
 <p>Current limitation: the SQL bridge writes <code>Cockpit.InvocationOutput</code> after the blocking <code>xp_cmdshell</code> call finishes, so stdout is not streamable for running calls. The dashboard still shows <code>Started</code> rows and recalculates elapsed time from the recorded <code>StartedAt</code> value once per second while running rows are visible; final output and row counts appear when the invocation completes.</p>
@@ -4571,9 +4571,9 @@
 <tr>
 <td>SQL Bridge lock dashboard</td>
 <td><code>/sql-bridge/locks</code>; <code>GET /api/sql-bridge/locks</code>; <code>POST /api/sql-bridge/locks/kill</code></td>
-<td>Read requires <code>tasks.view</code> or local admin; kill requires local admin; kill body accepts <code>sessionId</code>, optional <code>lockResource</code>, optional <code>reason</code>, optional <code>allowRunning</code></td>
-<td>Disabled kill button for non-admins; kill refuses running sessions by default</td>
-<td>Lets operators see blocked destination refresh locks and lets admins release stale SQL sessions without manually querying DMVs.</td>
+<td>Read requires <code>sqlBridge.locks.view</code>; kill requires <code>sqlBridge.locks.kill</code>; kill body accepts <code>sessionId</code>, optional <code>lockResource</code>, optional <code>reason</code>, optional <code>allowRunning</code></td>
+<td>Disabled kill button for users without kill permission; kill refuses running sessions by default</td>
+<td>Lets operators see blocked destination refresh locks and lets approved admins release stale SQL sessions without manually querying DMVs. Hosted mode uses the paired Agent.</td>
 <td>High for kill: SQL Server rolls back the target session and releases all locks it owns.</td>
 <td>Match failed invocation lock resource, session id, host/login/program, and idle status before killing. Refresh the lock page before restarting the blocked job.</td>
 </tr>
@@ -4679,13 +4679,21 @@
 <h2 id="safe-test-procedure"><a class="headerlink" href="#safe-test-procedure" title="Permanent link">¶</a>Safe Test Procedure</h2>
 <ol>
 <li>Confirm the SQL Cockpit web process can connect to the bridge control database with Windows authentication.</li>
-<li>Sign in as a local admin or a user with <code>tasks.view</code>.</li>
+<li>Sign in as a local admin or a user with <code>sqlBridge.invocations.view</code> and <code>sqlBridge.locks.view</code>.</li>
 <li>Open <code>/sql-bridge</code> and verify recent invocations appear.</li>
 <li>Expand a completed invocation and compare <code>RowsAffected</code> plus the generated invocation SQL with <code>Cockpit.InvocationLog</code>.</li>
 <li>Open <code>/sql-bridge/profiler</code>, select a procedure run with <code>SqlStatementStart</code> trace events, and confirm query-source timing blocks render.</li>
 <li>Open <code>/sql-bridge/locks</code> and confirm active locks are listed, or the empty state appears when no <code>FetchRemote</code> lock is held.</li>
 <li>Open <code>/api-docs</code> and confirm the <code>SQL Bridge</code> tag lists invocation, lock-list, and lock-kill endpoints.</li>
 </ol>
+<p>Before using live profiles, run the checked-in sandbox script against local non-live tables:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">sqlcmd</span> <span class="n">-S</span> <span class="n">localhost</span> <span class="n">-E</span> <span class="n">-C</span> <span class="n">-b</span> <span class="p">`</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>  <span class="n">-i</span> <span class="n">sql-server-bridge</span><span class="p">\</span><span class="n">sql</span><span class="p">\</span><span class="n">tests</span><span class="p">\</span><span class="n">agent_bridge_sandbox_test</span><span class="p">.</span><span class="n">sql</span> <span class="p">`</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>  <span class="n">-v</span> <span class="n">SandboxDb</span><span class="p">=</span><span class="s2">"SqlCockpitBridgeSandbox"</span> <span class="n">AgentLogin</span><span class="p">=</span><span class="s2">"DOMAIN\sqlcockpit-agent"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Expected result: <code>FullDestinationRows = 5</code>, <code>IncrementalDestinationRows = 4</code>, and three <code>Cockpit.AgentBridgeQueue</code> rows with <code>QueueStatus = Succeeded</code>, <code>InvocationStatus = Succeeded</code>, <code>AttemptCount = 1</code>, and a non-empty Agent <code>LeaseOwner</code>.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>

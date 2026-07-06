@@ -4680,7 +4680,7 @@
 <p>Users with SaaS agent visibility also see an Agent connection indicator in the left navigation. It polls <code>GET /api/saas/agents</code> every 30 seconds and shows the active bound agent as <code>Online</code>, <code>Offline</code>, <code>Not Paired</code>, or <code>Unavailable</code>. The primary navigation does not show stale historical registration counts; selecting the indicator opens <code>/admin/agent-details</code>, and focus mode keeps the same state visible as a compact rail icon with a status dot.</p>
 <p>If the agent check confirms <code>Not Paired</code>, SQL Cockpit opens an <code>/agent-required</code> workspace tab and blocks live dashboard pages until an agent is assigned. <code>/admin/agent-binding</code> and <code>/admin/agent-details</code> remain reachable so an administrator can create a binding code, pair the local agent for the current environment lane, and retry the original tab. This fails closed because browser and API workflows must not connect directly to customer SQL Server instances.</p>
 <p>SQL Cockpit is intended to run as a single page application. Use workspace tabs, dashboard navigation, and tab reload actions instead of the browser refresh button. The dashboard warns before hard refreshes; keyboard refresh shortcuts show SQL Cockpit's warning text, while browser-toolbar refresh uses the browser's native unload confirmation.</p>
-<p>On Agent Details, <strong>Refresh</strong> reloads only the connected-agent data inside the current dashboard tab.</p>
+<p>On Agent Details, <strong>Refresh</strong> reloads only the connected-agent data inside the current dashboard tab. Admins with Agent control permission can also run <strong>SQL Bridge Diagnostics</strong>, which asks the paired local Agent to report bridge worker, queue, executor, and latest-invocation health without the hosted API connecting directly to customer SQL Server.</p>
 <p>Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.</p>
 <p>Dashboard tables use a shared row hover state so operators can track the active row while scanning dense sync, estate, Agent, admin, and SQL Editor grids. On mobile, table rows become compact cards with header labels copied into each cell, so common pages avoid excessive horizontal swiping while keeping row context readable.</p>
 <p>On touch/mobile browsers, pulling down from the top of the dashboard refreshes only the active workspace tab. A database icon fills as the pull gets closer to the release threshold. The dashboard shell, open tabs, account state, and other mounted tab panels stay in place; the gesture uses the same tab reload path as the workspace tab context menu.</p>
@@ -4852,6 +4852,15 @@
 <li>Team workspace:</li>
 <li>You search metadata indexed for that team workspace and shared by team members.</li>
 </ul>
+<p>Object-search dashboard APIs are protected by explicit RBAC permissions:</p>
+<ul>
+<li><code>objectSearch.view</code>: health, status, sync-log, and summary widgets.</li>
+<li><code>objectSearch.search</code>: command palette search, recent objects, analytics, and object details.</li>
+<li><code>objectSearch.sync</code>: syncing one saved instance profile into the active workspace.</li>
+<li><code>objectSearch.manage</code>: broad rebuild/refresh cache administration.</li>
+</ul>
+<p>The built-in <code>standard_user</code> role includes <code>objectSearch.view</code>, <code>objectSearch.search</code>, and <code>objectSearch.sync</code> so normal signed-in users can use the command palette and workspace sync flow. It does not include <code>objectSearch.manage</code>.</p>
+<p>If a migrated account has a stale active workspace selection, object-search reads fall back to the signed-in user's personal workspace instead of repeatedly failing with workspace authorization errors.</p>
 <p>If one team member syncs a database into object search while in the team workspace, other members can search that metadata without re-syncing it under their own accounts.</p>
 <p>Sync concurrency behavior:</p>
 <ul>
