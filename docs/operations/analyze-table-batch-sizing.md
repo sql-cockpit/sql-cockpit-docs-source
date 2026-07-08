@@ -9,6 +9,8 @@ These scripts are read-only. They inspect `Sync.TableConfig` and live SQL metada
 
 If you want the trade-offs explained in operator terms, read [Batch Size Caveats](batch-size-caveats.md) alongside this page.
 
+If you are preparing a SQL Bridge full refresh or bootstrap for a huge table, start with [SQL Bridge Huge Tables Getting Started](sql-bridge-huge-tables-getting-started.md).
+
 ## Why `BatchSize` needs analysis
 
 `BatchSize` is not driven by row count alone.
