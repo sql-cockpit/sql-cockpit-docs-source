@@ -35,7 +35,9 @@ The Electron app supports:
 - component snapshot list (`id`, `display`, status, health, PID, restart count, last start, last error)
 - per-component `Start`, `Restart`, `Stop`
 - bulk `Start All`, `Restart All`, `Stop All`
-- auto-refresh every 15 seconds
+- configurable auto-refresh interval, status refresh timeout, and environment discovery timeout from `Config > App Settings`
+- core managed-components group for shared services such as `lane-proxy`; components with `scope: core` are shown outside the environment lanes but still route start/stop/restart through their owning Service Host
+- Service Host runtime snapshots return the latest background health-loop state immediately; they do not synchronously recheck every component on each UI refresh
 - quick action button to open Docs in the default browser (uses docs component URL from service settings, falls back to `http://127.0.0.1:8000/`)
 - health-first component adoption: if a configured `healthUrl` or `alternateHealthUrls` endpoint answers successfully, Service Control shows the component as running even when the process was started by the local-dev stack instead of `SQLCockpitServiceHost`
 - automatic managed API bootstrap on app start:
@@ -110,6 +112,24 @@ Safe test procedure:
 4. In the dashboard, enable LDAP and **Route LDAP through paired Agent**.
 5. Run the LDAP test or search for one exact username before asking users to log in.
 
+## Saved Profile Secrets
+
+The `View > Instances`, `View > Remote Sources`, `View > Connections`, and `View > Remote Connections` windows are lane-scoped profile editors. They read and write profile metadata in the selected lane profile store, but SQL passwords are not stored in that SQLite-backed metadata store.
+
+For SQL-auth profiles, Service Control stores only a `secretRef` in the lane profile metadata and writes the actual password to Windows Credential Manager for the selected lane's Agent identity:
+
+| Agent service | Default secret owner | Example `secretRef` namespace |
+| --- | --- | --- |
+| `SqlCockpit.Agent` | configured prod Agent service account | `SqlCockpit.Agent.prod/...` |
+| `SqlCockpit.Agent.Test` | `LocalSystem` unless changed | `SqlCockpit.Agent.test/...` |
+| `SqlCockpit.Agent.Dev` | `LocalSystem` unless changed | `SqlCockpit.Agent.dev/...` |
+
+When the Agent runs as `LocalSystem`, Service Control writes or clears the secret through a short-lived elevated scheduled task so the credential is created in the same Windows credential vault the Agent can read. When the Agent runs as the same interactive Windows user as Service Control, Service Control writes directly to that user's Windows credential vault. If the Agent runs as a different domain or service account, Service Control fails closed instead of writing the password to SQLite; use the paired web portal Agent secret flow or run Service Control under the Agent service identity.
+
+Current Agents expose a local named pipe for this operation. `Agent:LocalControlPipeName` defaults from the live log pipe name, for example `SqlCockpit.Agent.Test.LocalControl`. Service Control sends only `sql.profile-secret.write` and `sql.profile-secret.delete` requests to this pipe and the Agent writes/deletes the Windows credential inside its own process identity. Older Agents that do not expose the pipe still use the same-identity fallback above; they cannot safely update secrets for a different service account.
+
+Operational risk: copying a lane SQLite database copies profile metadata and `secretRef` values, but not the Windows Credential Manager secrets. After cloning or promoting lane state, re-save or migrate the SQL-auth passwords for that lane before testing SQL Bridge or database-profile features.
+
 ## UI behavior
 
 The Service Control renderer is a static Electron surface using local HTML, CSS, and JavaScript. It does not load remote UI code and continues to use the preload IPC bridge for privileged operations.
@@ -131,7 +151,17 @@ Theme behavior:
 - Native fonts are preferred through the system font stack (`Segoe UI` on Windows, platform system fonts elsewhere).
 - Focus rings remain visible, status badges include text as well as color, and reduced-motion preferences are respected.
 
-No service settings or database-backed flags were added for the redesign. The UI remains driven by the existing app metadata and service-host status responses.
+The UI remains driven by the existing app metadata and service-host status responses.
+
+## App Settings
+
+Open **Config > App Settings** to tune local Service Control UI polling. These values are stored in the Electron app profile for the current Windows user and do not change lane service settings.
+
+| Setting | Storage location | Valid values | Default | Code paths affected | Operational risk | Safe change procedure |
+| --- | --- | --- | --- | --- | --- | --- |
+| Status refresh timeout | Electron local storage key `sqlCockpit.serviceControl.appSettings.v1`, field `statusRefreshTimeoutMs` | `3000` to `120000` milliseconds | `12000` | Main Service Host status call used by the managed-components refresh | Too low can show false timeout warnings; too high can leave the UI waiting longer for a broken service. | Increase in small steps, refresh Service Control, and confirm the status bar no longer reports false timeouts. |
+| Environment discovery timeout | Electron local storage key `sqlCockpit.serviceControl.appSettings.v1`, field `environmentDiscoveryTimeoutMs` | `3000` to `120000` milliseconds | `30000` | Lane discovery and per-lane runtime checks behind the managed-components environment groups | Too low can hide slow lane results; too high can delay startup feedback when a lane is badly broken. | Set to `30000` or higher on machines with several lanes, refresh, then inspect each environment group. |
+| Auto-refresh interval | Electron local storage key `sqlCockpit.serviceControl.appSettings.v1`, field `autoRefreshIntervalMs` | `5000` to `300000` milliseconds | `15000` | Background managed-components refresh loop | Too low can create unnecessary control API traffic; too high can make service state feel stale. | Keep the default unless the control machine is slow or remote, then increase and use manual Refresh for immediate checks. |
 
 ## Files
 

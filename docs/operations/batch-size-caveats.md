@@ -2,6 +2,8 @@
 
 Use this page when you need to explain why `BatchSize` is not just a performance knob.
 
+If you are starting a SQL Bridge copy for a huge table, begin with [SQL Bridge Huge Tables Getting Started](sql-bridge-huge-tables-getting-started.md), then return here for the deeper `BatchSize` trade-offs.
+
 In this repo, `BatchSize` affects both:
 
 - source reads through `SELECT TOP (BatchSize)`
