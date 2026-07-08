@@ -1112,10 +1112,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#saved-profile-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved Profile Secrets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ui-behavior" class="md-nav__link">
     <span class="md-ellipsis">
       
         UI behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#app-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App Settings
       
     </span>
   </a>
@@ -4529,10 +4551,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#saved-profile-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved Profile Secrets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ui-behavior" class="md-nav__link">
     <span class="md-ellipsis">
       
         UI behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#app-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App Settings
       
     </span>
   </a>
@@ -4717,7 +4761,9 @@
 <li>component snapshot list (<code>id</code>, <code>display</code>, status, health, PID, restart count, last start, last error)</li>
 <li>per-component <code>Start</code>, <code>Restart</code>, <code>Stop</code></li>
 <li>bulk <code>Start All</code>, <code>Restart All</code>, <code>Stop All</code></li>
-<li>auto-refresh every 15 seconds</li>
+<li>configurable auto-refresh interval, status refresh timeout, and environment discovery timeout from <code>Config &gt; App Settings</code></li>
+<li>core managed-components group for shared services such as <code>lane-proxy</code>; components with <code>scope: core</code> are shown outside the environment lanes but still route start/stop/restart through their owning Service Host</li>
+<li>Service Host runtime snapshots return the latest background health-loop state immediately; they do not synchronously recheck every component on each UI refresh</li>
 <li>quick action button to open Docs in the default browser (uses docs component URL from service settings, falls back to <code>http://127.0.0.1:8000/</code>)</li>
 <li>health-first component adoption: if a configured <code>healthUrl</code> or <code>alternateHealthUrls</code> endpoint answers successfully, Service Control shows the component as running even when the process was started by the local-dev stack instead of <code>SQLCockpitServiceHost</code></li>
 <li>automatic managed API bootstrap on app start:</li>
@@ -4860,6 +4906,38 @@
 <li>In the dashboard, enable LDAP and <strong>Route LDAP through paired Agent</strong>.</li>
 <li>Run the LDAP test or search for one exact username before asking users to log in.</li>
 </ol>
+<h2 id="saved-profile-secrets"><a class="headerlink" href="#saved-profile-secrets" title="Permanent link">¶</a>Saved Profile Secrets</h2>
+<p>The <code>View &gt; Instances</code>, <code>View &gt; Remote Sources</code>, <code>View &gt; Connections</code>, and <code>View &gt; Remote Connections</code> windows are lane-scoped profile editors. They read and write profile metadata in the selected lane profile store, but SQL passwords are not stored in that SQLite-backed metadata store.</p>
+<p>For SQL-auth profiles, Service Control stores only a <code>secretRef</code> in the lane profile metadata and writes the actual password to Windows Credential Manager for the selected lane's Agent identity:</p>
+<table>
+<thead>
+<tr>
+<th>Agent service</th>
+<th>Default secret owner</th>
+<th>Example <code>secretRef</code> namespace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SqlCockpit.Agent</code></td>
+<td>configured prod Agent service account</td>
+<td><code>SqlCockpit.Agent.prod/...</code></td>
+</tr>
+<tr>
+<td><code>SqlCockpit.Agent.Test</code></td>
+<td><code>LocalSystem</code> unless changed</td>
+<td><code>SqlCockpit.Agent.test/...</code></td>
+</tr>
+<tr>
+<td><code>SqlCockpit.Agent.Dev</code></td>
+<td><code>LocalSystem</code> unless changed</td>
+<td><code>SqlCockpit.Agent.dev/...</code></td>
+</tr>
+</tbody>
+</table>
+<p>When the Agent runs as <code>LocalSystem</code>, Service Control writes or clears the secret through a short-lived elevated scheduled task so the credential is created in the same Windows credential vault the Agent can read. When the Agent runs as the same interactive Windows user as Service Control, Service Control writes directly to that user's Windows credential vault. If the Agent runs as a different domain or service account, Service Control fails closed instead of writing the password to SQLite; use the paired web portal Agent secret flow or run Service Control under the Agent service identity.</p>
+<p>Current Agents expose a local named pipe for this operation. <code>Agent:LocalControlPipeName</code> defaults from the live log pipe name, for example <code>SqlCockpit.Agent.Test.LocalControl</code>. Service Control sends only <code>sql.profile-secret.write</code> and <code>sql.profile-secret.delete</code> requests to this pipe and the Agent writes/deletes the Windows credential inside its own process identity. Older Agents that do not expose the pipe still use the same-identity fallback above; they cannot safely update secrets for a different service account.</p>
+<p>Operational risk: copying a lane SQLite database copies profile metadata and <code>secretRef</code> values, but not the Windows Credential Manager secrets. After cloning or promoting lane state, re-save or migrate the SQL-auth passwords for that lane before testing SQL Bridge or database-profile features.</p>
 <h2 id="ui-behavior"><a class="headerlink" href="#ui-behavior" title="Permanent link">¶</a>UI behavior</h2>
 <p>The Service Control renderer is a static Electron surface using local HTML, CSS, and JavaScript. It does not load remote UI code and continues to use the preload IPC bridge for privileged operations.</p>
 <p>The current layout is designed as a native desktop control centre:</p>
@@ -4879,7 +4957,51 @@
 <li>Native fonts are preferred through the system font stack (<code>Segoe UI</code> on Windows, platform system fonts elsewhere).</li>
 <li>Focus rings remain visible, status badges include text as well as color, and reduced-motion preferences are respected.</li>
 </ul>
-<p>No service settings or database-backed flags were added for the redesign. The UI remains driven by the existing app metadata and service-host status responses.</p>
+<p>The UI remains driven by the existing app metadata and service-host status responses.</p>
+<h2 id="app-settings"><a class="headerlink" href="#app-settings" title="Permanent link">¶</a>App Settings</h2>
+<p>Open <strong>Config &gt; App Settings</strong> to tune local Service Control UI polling. These values are stored in the Electron app profile for the current Windows user and do not change lane service settings.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Storage location</th>
+<th>Valid values</th>
+<th>Default</th>
+<th>Code paths affected</th>
+<th>Operational risk</th>
+<th>Safe change procedure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status refresh timeout</td>
+<td>Electron local storage key <code>sqlCockpit.serviceControl.appSettings.v1</code>, field <code>statusRefreshTimeoutMs</code></td>
+<td><code>3000</code> to <code>120000</code> milliseconds</td>
+<td><code>12000</code></td>
+<td>Main Service Host status call used by the managed-components refresh</td>
+<td>Too low can show false timeout warnings; too high can leave the UI waiting longer for a broken service.</td>
+<td>Increase in small steps, refresh Service Control, and confirm the status bar no longer reports false timeouts.</td>
+</tr>
+<tr>
+<td>Environment discovery timeout</td>
+<td>Electron local storage key <code>sqlCockpit.serviceControl.appSettings.v1</code>, field <code>environmentDiscoveryTimeoutMs</code></td>
+<td><code>3000</code> to <code>120000</code> milliseconds</td>
+<td><code>30000</code></td>
+<td>Lane discovery and per-lane runtime checks behind the managed-components environment groups</td>
+<td>Too low can hide slow lane results; too high can delay startup feedback when a lane is badly broken.</td>
+<td>Set to <code>30000</code> or higher on machines with several lanes, refresh, then inspect each environment group.</td>
+</tr>
+<tr>
+<td>Auto-refresh interval</td>
+<td>Electron local storage key <code>sqlCockpit.serviceControl.appSettings.v1</code>, field <code>autoRefreshIntervalMs</code></td>
+<td><code>5000</code> to <code>300000</code> milliseconds</td>
+<td><code>15000</code></td>
+<td>Background managed-components refresh loop</td>
+<td>Too low can create unnecessary control API traffic; too high can make service state feel stale.</td>
+<td>Keep the default unless the control machine is slow or remote, then increase and use manual Refresh for immediate checks.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="files"><a class="headerlink" href="#files" title="Permanent link">¶</a>Files</h2>
 <ul>
 <li>app directory: <code>service/windows/SqlCockpit.ServiceControl.Electron</code></li>

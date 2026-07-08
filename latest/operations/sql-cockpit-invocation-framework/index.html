@@ -967,10 +967,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
+  <a href="#lane-control-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lane Control Databases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-sql-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational SQL API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helper-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helper Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dashboard-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
         Dashboard Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saved-profile-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved Profile Secrets
       
     </span>
   </a>
@@ -4380,10 +4424,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
+  <a href="#lane-control-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lane Control Databases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-sql-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational SQL API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helper-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helper Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dashboard-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
         Dashboard Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saved-profile-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved Profile Secrets
       
     </span>
   </a>
@@ -4464,7 +4552,169 @@
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="o">@</span><span class="n">JsonPayload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">Payload</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
 </span></code></pre></div></td></tr></tbody></table></div>
-<p>The bridge installs into a dedicated control database, normally <code>[SqlCockpit]</code>, and stores audit rows in <code>Cockpit.InvocationLog</code> plus captured command output in <code>Cockpit.InvocationOutput</code>. Application databases should call the bridge by three-part name rather than hosting bridge objects locally.</p>
+<p>The bridge installs into a dedicated control database, normally <code>[SqlCockpit]</code>, and stores audit rows in <code>Cockpit.InvocationLog</code>, captured command output in <code>Cockpit.InvocationOutput</code>, and Agent work in <code>Cockpit.AgentBridgeQueue</code>. Application databases should call the bridge by three-part name rather than hosting bridge objects locally.</p>
+<p>For large table bootstrap and tuning guidance, including lane-safe starter SQL and <code>@BatchSize</code> advice, see <a href="../sql-bridge-huge-tables-getting-started/">SQL Bridge Huge Tables Getting Started</a>.</p>
+<h2 id="lane-control-databases"><a class="headerlink" href="#lane-control-databases" title="Permanent link">¶</a>Lane Control Databases</h2>
+<p>Local dev/test/prod lanes must not share one SQL Bridge control database because <code>Cockpit.AgentBridgeQueue</code> lives inside that database. If two lane Agents poll the same database, the wrong Agent can lease and execute a bridge call.</p>
+<p>Use this local mapping:</p>
+<table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>Agent service</th>
+<th>Bridge control database</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prod</code></td>
+<td><code>SqlCockpit.Agent</code></td>
+<td><code>SqlCockpit</code></td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td><code>SqlCockpit.Agent.Test</code></td>
+<td><code>SqlCockpit_Test</code></td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td><code>SqlCockpit.Agent.Dev</code></td>
+<td><code>SqlCockpit_Dev</code></td>
+</tr>
+</tbody>
+</table>
+<p>Run T-SQL bridge calls from the lane database. For example, tester SQL should use <code>USE [SqlCockpit_Test]</code>; <code>USE [SqlCockpit]</code> is a production-lane invocation.</p>
+<p>Provision or repair a lane with:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span>
+<span class="normal"><a href="#__codelineno-1-8">8</a></span>
+<span class="normal"><a href="#__codelineno-1-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="p">`</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>  <span class="o">-File</span> <span class="s2">"E:\Scripts\SQL Tables Sync\scripts\runtime\Set-SqlCockpitLaneBridgeDatabase.ps1"</span> <span class="p">`</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>  <span class="n">-EnvironmentId</span> <span class="n">test</span> <span class="p">`</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>  <span class="n">-SqlServer</span> <span class="n">localhost</span> <span class="p">`</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a>  <span class="n">-BridgeDatabase</span> <span class="n">SqlCockpit_Test</span> <span class="p">`</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a>  <span class="n">-AgentAppSettingsPath</span> <span class="s2">"E:\Program Files\SqlCockpit\test\Agent\app\appsettings.json"</span> <span class="p">`</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>  <span class="n">-BridgeInstallPath</span> <span class="s2">"E:\Program Files\SqlCockpit\test"</span> <span class="p">`</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a>  <span class="n">-SqlCockpitRepoRoot</span> <span class="s2">"E:\Scripts\SQL Tables Sync"</span> <span class="p">`</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a>  <span class="n">-AgentDatabasePrincipal</span> <span class="s2">"NT AUTHORITY\SYSTEM"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>To install or update bridge objects across all local lane databases in one operation, use:</p>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="p">`</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>  <span class="o">-File</span> <span class="s2">"E:\Scripts\SQL Tables Sync\scripts\runtime\Install-SqlCockpitBridgeLaneDatabases.ps1"</span> <span class="p">`</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>  <span class="n">-EnvironmentIds</span> <span class="n">prod</span><span class="p">,</span><span class="n">test</span><span class="p">,</span><span class="n">dev</span> <span class="p">`</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>  <span class="n">-SqlServer</span> <span class="n">localhost</span> <span class="p">`</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>  <span class="n">-SqlCockpitRepoRoot</span> <span class="s2">"E:\Scripts\SQL Tables Sync"</span> <span class="p">`</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>  <span class="n">-AgentDatabasePrincipal</span> <span class="s2">"NT AUTHORITY\SYSTEM"</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This wrapper calls <code>Set-SqlCockpitLaneBridgeDatabase.ps1</code> for <code>SqlCockpit</code>, <code>SqlCockpit_Test</code>, and <code>SqlCockpit_Dev</code>. Use it after SQL Bridge schema/procedure changes so every lane receives the same operational API surface.</p>
+<h2 id="operational-sql-api"><a class="headerlink" href="#operational-sql-api" title="Permanent link">¶</a>Operational SQL API</h2>
+<p>SQL Server Management Studio can cancel the caller session, but that does not automatically cancel Agent work that has already been leased. Use the SQL Bridge operational procedures to find and cancel Agent-backed invocations.</p>
+<p>List active bridge invocations:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">ListBridgeInvocations</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">    </span><span class="o">@</span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Running'</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="o">@</span><span class="n">SinceMinutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">240</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Show one invocation and include the output tail:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">GetBridgeInvocation</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'8517B075-310A-469B-8542-FAECFFAD098A'</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="o">@</span><span class="n">IncludeOutputTail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="o">@</span><span class="n">OutputTailLines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Live copy progress is written to <code>Cockpit.AgentBridgeProgress</code> while <code>FetchRemote</code> is bulk-copying rows. The list/detail procedures include <code>RowsCopiedSoFar</code>, <code>RowsCopiedSoFarWords</code>, <code>SourceRowCount</code>, <code>SourceRowCountWords</code>, <code>BatchesCopied</code>, <code>ProgressBatchSize</code>, <code>PercentComplete</code>, <code>ApproxRowsPerSecond</code>, <code>EstimatedCompletionAt</code>, and <code>LastProgressAt</code>.</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">ListBridgeInvocations</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="o">@</span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Running'</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="o">@</span><span class="n">SinceMinutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">240</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Use the word columns as a human-readable check for large counts, and the numeric columns as the exact operational values.</p>
+<p>Request cancellation:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span>
+<span class="normal"><a href="#__codelineno-6-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">CancelBridgeInvocation</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'8517B075-310A-469B-8542-FAECFFAD098A'</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="o">@</span><span class="n">Reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Cancelled from SSMS by operator'</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p><code>Cockpit.CancelBridgeInvocation</code> behaves differently depending on the current queue state:</p>
+<table>
+<thead>
+<tr>
+<th>Current state</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pending</code></td>
+<td>Marks the invocation <code>Cancelled</code> immediately before the Agent leases it.</td>
+</tr>
+<tr>
+<td><code>Leased</code> or <code>Running</code></td>
+<td>Marks the queue row <code>CancelRequested</code>; the Agent notices this, kills the bridge executor process tree, and records the invocation as <code>Cancelled</code>. The procedure also finds the matching <code>FetchRemote</code> application lock through <code>Cockpit.BridgeRefreshState</code> and kills the owning SQL session so the wrapper lock is released.</td>
+</tr>
+<tr>
+<td><code>Succeeded</code>, <code>Failed</code>, <code>Expired</code>, or <code>Cancelled</code></td>
+<td>Leaves the terminal invocation unchanged.</td>
+</tr>
+</tbody>
+</table>
+<p><code>Cockpit.ListBridgeInvocations</code> and <code>Cockpit.GetBridgeInvocation</code> are granted to <code>CockpitInvoker</code>. <code>Cockpit.CancelBridgeInvocation</code> is granted to <code>CockpitAdministrator</code> because it can terminate active data movement.</p>
+<p>The result set includes <code>KilledLockSessions</code> when the procedure released one or more SQL sessions that were holding matching bridge application locks. A <code>NULL</code> value means no matching lock session was found or the lock had already gone.</p>
+<p>When <code>@ThrowOnError = 1</code>, a cancelled <code>Cockpit.Invoke</code> raises SQL error <code>51011</code> with the invocation id and cancellation message. <code>Cockpit.FetchRemote</code> and <code>Cockpit.FetchRemoteIncremental</code> use this behavior by default.</p>
+<h2 id="helper-functions"><a class="headerlink" href="#helper-functions" title="Permanent link">¶</a>Helper Functions</h2>
+<p>Use <code>Cockpit.NumberToWords</code> when reading large bridge row counts in SSMS.</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">SELECT</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">    </span><span class="mi">131472975</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">RowsCopied</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">NumberToWords</span><span class="p">(</span><span class="mi">131472975</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">RowsCopiedWords</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Example result:</p>
+<div class="language-text highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a>one hundred and thirty-one million four hundred and seventy-two thousand nine hundred and seventy-five
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>This is useful with live destination row estimates:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-9-10">10</a></span>
+<span class="normal"><a href="#__codelineno-9-11">11</a></span>
+<span class="normal"><a href="#__codelineno-9-12">12</a></span>
+<span class="normal"><a href="#__codelineno-9-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">USE</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">];</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="k">GO</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="k">DECLARE</span><span class="w"> </span><span class="o">@</span><span class="n">ApproxRowsLoaded</span><span class="w"> </span><span class="nb">bigint</span><span class="p">;</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">@</span><span class="n">ApproxRowsLoaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="k">row_count</span><span class="p">)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">sys</span><span class="p">.</span><span class="n">dm_db_partition_stats</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">object_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OBJECT_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'[Tests].[ib_inventory_total]'</span><span class="p">)</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">index_id</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="k">SELECT</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">    </span><span class="o">@</span><span class="n">ApproxRowsLoaded</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ApproxRowsLoaded</span><span class="p">,</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">    </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">NumberToWords</span><span class="p">(</span><span class="o">@</span><span class="n">ApproxRowsLoaded</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ApproxRowsLoadedWords</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p><code>Cockpit.NumberToWords</code> accepts a <code>bigint</code>, returns <code>NULL</code> for <code>NULL</code>, supports negative values with a <code>minus</code> prefix, and supports values up to the SQL Server <code>bigint</code> range.</p>
 <h2 id="dashboard-monitoring"><a class="headerlink" href="#dashboard-monitoring" title="Permanent link">¶</a>Dashboard Monitoring</h2>
 <p>Open <code>/sql-bridge</code> in the SQL Cockpit dashboard to inspect bridge calls. The SQL Bridge dashboard is split into focused read-only pages:</p>
 <ul>
@@ -4514,6 +4764,9 @@
 <p>The invocation and lock-list endpoints read the bridge control database and SQL Server lock/session DMVs only. In hosted/cloud mode, the API sends the bounded SQL through the paired Agent using the <code>sql.database.execute</code> capability with <code>purpose = sql-bridge</code>; the cloud API must not connect directly to the customer SQL Server. Local direct SQL mode is available only when explicitly enabled in the runtime. The kill endpoint is destructive; it refuses to kill the current session, requires the target to hold a SQL Cockpit <code>FetchRemote</code> lock, and refuses active SQL requests unless <code>allowRunning</code> is explicitly passed. The dashboard kill button uses a confirmation prompt and does not set <code>allowRunning</code>.</p>
 <p>The history and profiler pages default to <code>GET /api/sql-bridge/invocations?view=procedureRuns</code>. Each table row is one stored procedure run keyed by <code>metadata.caller.runId</code> / trace run id. Expanding a row shows the sync invocations and <code>Cockpit.TraceEventLog</code> entries for that run. The profiler uses the same response and converts ordered trace events into timed blocks: <code>SqlStatementStart</code> events become query-source blocks, bridge start/end milestones become bridge blocks, and each duration is measured to the next recorded event or the run end. Profiler colours are duration-first: green is under 10 seconds, cyan is 10 seconds to 1 minute, blue is 1-5 minutes, amber is 5-15 minutes, orange is 15-30 minutes, and red is 30 minutes or longer. The slowest relative blocks in shorter runs can also be promoted into warmer bands so refactor candidates stand out. This requires generated debug tracing or explicit <code>Cockpit.TraceEvent</code> calls; runs without statement trace events still appear, but the profiler has no query blocks to draw. A generated procedure run remains <code>Started</code> while its trace session is open on a procedure activity event such as <code>SqlStatementStart</code> or bridge sync start/end, even when the latest bridge invocation has already completed, because the stored procedure may still be executing ordinary SQL between trace events. The expanded procedure timeline defaults to newest-first ordering so active runs show the latest signal immediately; operators can switch an individual expanded run to oldest-first when they need to read the execution from the start. New procedure-run rows, sync rows, and trace/log rows briefly fade in after refresh so operators can spot newly arrived activity. Older rows without run metadata are shown as standalone bridge calls instead of being guessed into a shared procedure group.</p>
 <p>The detail endpoint includes <code>payload</code>, <code>originalPayload</code> when <code>Cockpit.Invoke</code> recorded a pre-defaults caller payload, <code>apiCall</code>, <code>sourceQuery</code>, and <code>invocationSql.sql</code>. The SQL is reconstructed from the stored JSON payload after password/token/key-like values are redacted. SQL Server does not record the caller's exact wrapper batch text or the <code>FetchRemote</code> metadata-resolved column list, so invocations originally made with wrappers such as <code>Cockpit.FetchRemote</code> are displayed as equivalent low-level <code>Cockpit.Invoke</code> calls plus a representative source <code>SELECT</code>. Omitting <code>view=procedureRuns</code> from the list endpoint keeps the legacy flat <code>invocations[]</code> response for API consumers.</p>
+<h2 id="saved-profile-secrets"><a class="headerlink" href="#saved-profile-secrets" title="Permanent link">¶</a>Saved Profile Secrets</h2>
+<p>Saved profile metadata can live in the lane profile store, but SQL passwords must not be stored there. SQL-auth profiles store display/server/database/user metadata plus a <code>secretRef</code>. The local SQL Cockpit Agent resolves that <code>secretRef</code> from Windows Credential Manager under the Agent service identity before SQL Bridge opens the source or destination SQL connection.</p>
+<p>Service Control and the web portal should create, rotate, or clear profile passwords through Agent-owned secret flows. If a SQL-auth profile has no plaintext password and no readable <code>secretRef</code>, SQL Bridge fails closed with a profile-secret error instead of silently falling back to local SQLite.</p>
 <p>Current limitation: the SQL bridge writes <code>Cockpit.InvocationOutput</code> after the blocking <code>xp_cmdshell</code> call finishes, so stdout is not streamable for running calls. The dashboard still shows <code>Started</code> rows and recalculates elapsed time from the recorded <code>StartedAt</code> value once per second while running rows are visible; final output and row counts appear when the invocation completes.</p>
 <p>For failed calls, the dashboard should treat <code>Cockpit.InvocationLog.ErrorMessage</code> as the canonical full error text. The PowerShell executor writes the full single-line exception there through its local SQL connection when possible; if that is unavailable, it emits compact <code>ERROR</code> detail chunks that <code>Cockpit.Invoke</code> stitches back together. <code>Cockpit.InvocationOutput</code> remains the captured stdout stream and its first structured <code>ERROR</code> row is intentionally compact because it passes through <code>xp_cmdshell</code>.</p>
 <p>The dashboard refresh control defaults to 30 seconds, can be changed to 10 seconds, 1 minute, 2 minutes, 5 minutes, or <code>Off</code>, and shows a countdown to the next poll. Auto-refresh only runs while running invocations are visible or the status filter is <code>Started</code>. When polling adds newer rows to the history view, those rows briefly fade in with a left-edge highlight so operators can spot fresh invocations.</p>
@@ -4557,7 +4810,7 @@
 <td>Installed <code>cockpitDatabase</code>, then <code>SqlCockpit</code></td>
 <td><code>/sql-bridge</code>, <code>/api/sql-bridge/invocations*</code></td>
 <td>Wrong database hides or exposes the wrong invocation history.</td>
-<td>Set with the server value, restart, and verify the returned <code>bridge.database</code>.</td>
+<td>Set with the server value, restart, and verify the returned <code>bridge.database</code>. Local lanes should use <code>SqlCockpit</code>, <code>SqlCockpit_Test</code>, and <code>SqlCockpit_Dev</code> respectively.</td>
 </tr>
 <tr>
 <td>SQL Bridge dashboard refresh interval</td>
@@ -4635,46 +4888,46 @@
 </table>
 <h2 id="fetchremoteincremental"><a class="headerlink" href="#fetchremoteincremental" title="Permanent link">¶</a>FetchRemoteIncremental</h2>
 <p><code>Cockpit.FetchRemoteIncremental</code> is the wrapper for key/watermark chunked table copies. It uses saved profiles and <code>SqlBulkCopy</code> like <code>Cockpit.FetchRemote</code>, but stores progress in <code>Cockpit.IncrementalState</code> and advances the checkpoint only after a chunk has copied successfully.</p>
-<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-1-10">10</a></span>
-<span class="normal"><a href="#__codelineno-1-11">11</a></span>
-<span class="normal"><a href="#__codelineno-1-12">12</a></span>
-<span class="normal"><a href="#__codelineno-1-13">13</a></span>
-<span class="normal"><a href="#__codelineno-1-14">14</a></span>
-<span class="normal"><a href="#__codelineno-1-15">15</a></span>
-<span class="normal"><a href="#__codelineno-1-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">DECLARE</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="nb">bigint</span><span class="p">;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">DECLARE</span><span class="w"> </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="nb">int</span><span class="p">;</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">FetchRemoteIncremental</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span><span class="o">@</span><span class="n">DefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'erpmdb_cloud_sku_incremental'</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="o">@</span><span class="n">CommandDefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'IncrementalLocalTableCopy'</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'me_pc_01'</span><span class="p">,</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku'</span><span class="p">,</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="o">@</span><span class="n">KeyColumn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku_id'</span><span class="p">,</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="o">@</span><span class="n">WatermarkColumn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'updated_at'</span><span class="p">,</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">    </span><span class="o">@</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="o">@</span><span class="n">MaxChunks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationProfileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'nascar / EPC_Imports_PCK'</span><span class="p">,</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku'</span><span class="p">,</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">,</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">    </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span>
+<span class="normal"><a href="#__codelineno-10-11">11</a></span>
+<span class="normal"><a href="#__codelineno-10-12">12</a></span>
+<span class="normal"><a href="#__codelineno-10-13">13</a></span>
+<span class="normal"><a href="#__codelineno-10-14">14</a></span>
+<span class="normal"><a href="#__codelineno-10-15">15</a></span>
+<span class="normal"><a href="#__codelineno-10-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">DECLARE</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="nb">bigint</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="k">DECLARE</span><span class="w"> </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="nb">int</span><span class="p">;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">FetchRemoteIncremental</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">    </span><span class="o">@</span><span class="n">DefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'erpmdb_cloud_sku_incremental'</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">    </span><span class="o">@</span><span class="n">CommandDefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'IncrementalLocalTableCopy'</span><span class="p">,</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku'</span><span class="p">,</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="o">@</span><span class="n">KeyColumn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku_id'</span><span class="p">,</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">    </span><span class="o">@</span><span class="n">WatermarkColumn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'updated_at'</span><span class="p">,</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w">    </span><span class="o">@</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w">    </span><span class="o">@</span><span class="n">MaxChunks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationProfileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'nascar / EPC_Imports_PCK'</span><span class="p">,</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'sku'</span><span class="p">,</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">,</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="w">    </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">ChunksCopied</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <p><code>@MaxChunks = 1</code> is the default for controlled job-style polling. <code>@MaxChunks = 0</code> keeps copying until no rows remain and should be reserved for approved catch-up windows.</p>
 <h2 id="troubleshooting"><a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a>Troubleshooting</h2>
 <p>If SQL Server raises <code>Msg 1934</code> about incorrect SET options such as <code>QUOTED_IDENTIFIER</code>, redeploy <code>sql-server-bridge/sql/003_create_procedures.sql</code>. The bridge log tables use filtered indexes, so <code>Cockpit.Invoke</code> must be created with <code>QUOTED_IDENTIFIER ON</code> and runtime indexed-view-compatible SET options.</p>
-<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">SELECT</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="n">OBJECTPROPERTYEX</span><span class="p">(</span><span class="n">OBJECT_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Cockpit.Invoke'</span><span class="p">),</span><span class="w"> </span><span class="n">N</span><span class="s1">'ExecIsQuotedIdentOn'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">InvokeQuotedIdentifierOn</span><span class="p">,</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="n">OBJECTPROPERTYEX</span><span class="p">(</span><span class="n">OBJECT_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Cockpit.FetchRemote'</span><span class="p">),</span><span class="w"> </span><span class="n">N</span><span class="s1">'ExecIsQuotedIdentOn'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">FetchRemoteQuotedIdentifierOn</span><span class="p">;</span>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span>
+<span class="normal"><a href="#__codelineno-11-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">SELECT</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">    </span><span class="n">OBJECTPROPERTYEX</span><span class="p">(</span><span class="n">OBJECT_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Cockpit.Invoke'</span><span class="p">),</span><span class="w"> </span><span class="n">N</span><span class="s1">'ExecIsQuotedIdentOn'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">InvokeQuotedIdentifierOn</span><span class="p">,</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">    </span><span class="n">OBJECTPROPERTYEX</span><span class="p">(</span><span class="n">OBJECT_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Cockpit.FetchRemote'</span><span class="p">),</span><span class="w"> </span><span class="n">N</span><span class="s1">'ExecIsQuotedIdentOn'</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">FetchRemoteQuotedIdentifierOn</span><span class="p">;</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <h2 id="safe-test-procedure"><a class="headerlink" href="#safe-test-procedure" title="Permanent link">¶</a>Safe Test Procedure</h2>
 <ol>
@@ -4687,11 +4940,11 @@
 <li>Open <code>/api-docs</code> and confirm the <code>SQL Bridge</code> tag lists invocation, lock-list, and lock-kill endpoints.</li>
 </ol>
 <p>Before using live profiles, run the checked-in sandbox script against local non-live tables:</p>
-<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
-<span class="normal"><a href="#__codelineno-3-2">2</a></span>
-<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">sqlcmd</span> <span class="n">-S</span> <span class="n">localhost</span> <span class="n">-E</span> <span class="n">-C</span> <span class="n">-b</span> <span class="p">`</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>  <span class="n">-i</span> <span class="n">sql-server-bridge</span><span class="p">\</span><span class="n">sql</span><span class="p">\</span><span class="n">tests</span><span class="p">\</span><span class="n">agent_bridge_sandbox_test</span><span class="p">.</span><span class="n">sql</span> <span class="p">`</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>  <span class="n">-v</span> <span class="n">SandboxDb</span><span class="p">=</span><span class="s2">"SqlCockpitBridgeSandbox"</span> <span class="n">AgentLogin</span><span class="p">=</span><span class="s2">"DOMAIN\sqlcockpit-agent"</span>
+<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">sqlcmd</span> <span class="n">-S</span> <span class="n">localhost</span> <span class="n">-E</span> <span class="n">-C</span> <span class="n">-b</span> <span class="p">`</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a>  <span class="n">-i</span> <span class="n">sql-server-bridge</span><span class="p">\</span><span class="n">sql</span><span class="p">\</span><span class="n">tests</span><span class="p">\</span><span class="n">agent_bridge_sandbox_test</span><span class="p">.</span><span class="n">sql</span> <span class="p">`</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a>  <span class="n">-v</span> <span class="n">SandboxDb</span><span class="p">=</span><span class="s2">"SqlCockpitBridgeSandbox"</span> <span class="n">AgentLogin</span><span class="p">=</span><span class="s2">"DOMAIN\sqlcockpit-agent"</span>
 </span></code></pre></div></td></tr></tbody></table></div>
 <p>Expected result: <code>FullDestinationRows = 5</code>, <code>IncrementalDestinationRows = 4</code>, and three <code>Cockpit.AgentBridgeQueue</code> rows with <code>QueueStatus = Succeeded</code>, <code>InvocationStatus = Succeeded</code>, <code>AttemptCount = 1</code>, and a non-empty Agent <code>LeaseOwner</code>.</p>
 <!-- Common footer content -->

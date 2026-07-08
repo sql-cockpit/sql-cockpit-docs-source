@@ -4484,6 +4484,7 @@
 </ul>
 <p>These scripts are read-only. They inspect <code>Sync.TableConfig</code> and live SQL metadata, but they do not update control tables or change runtime state.</p>
 <p>If you want the trade-offs explained in operator terms, read <a href="../batch-size-caveats/">Batch Size Caveats</a> alongside this page.</p>
+<p>If you are preparing a SQL Bridge full refresh or bootstrap for a huge table, start with <a href="../sql-bridge-huge-tables-getting-started/">SQL Bridge Huge Tables Getting Started</a>.</p>
 <h2 id="why-batchsize-needs-analysis"><a class="headerlink" href="#why-batchsize-needs-analysis" title="Permanent link">¶</a>Why <code>BatchSize</code> needs analysis</h2>
 <p><code>BatchSize</code> is not driven by row count alone.</p>
 <p>In the current engine, the same value affects:</p>

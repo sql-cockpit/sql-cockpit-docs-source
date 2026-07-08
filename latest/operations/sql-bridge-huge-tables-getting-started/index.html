@@ -9,13 +9,9 @@
         <meta name="author" content="SQL Cockpit Team">
       
       
-        <link rel="canonical" href="https://your-domain.github.io/sql-cockpit/latest/operations/analyze-table-batch-sizing/">
+        <link rel="canonical" href="https://your-domain.github.io/sql-cockpit/latest/operations/sql-bridge-huge-tables-getting-started/">
       
       
-        <link rel="prev" href="../query-analyser/">
-      
-      
-        <link rel="next" href="../batch-size-caveats/">
       
       
         
@@ -28,7 +24,7 @@
     
     
       
-        <title>Analyze Table Batch Sizing - SQL Cockpit Docs</title>
+        <title>Sql bridge huge tables getting started - SQL Cockpit Docs</title>
       
     
     
@@ -61,17 +57,17 @@
     
   
 <meta property="og:type" content="website">
-<meta property="og:title" content="Analyze Table Batch Sizing - SQL Cockpit Docs">
+<meta property="og:title" content="Sql bridge huge tables getting started - SQL Cockpit Docs">
 <meta property="og:description" content="Documentation for SQL Cockpit - PowerShell-based SQL tooling suite">
-<meta property="og:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/analyze-table-batch-sizing.png">
+<meta property="og:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/sql-bridge-huge-tables-getting-started.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="https://your-domain.github.io/sql-cockpit/latest/operations/analyze-table-batch-sizing/">
+<meta property="og:url" content="https://your-domain.github.io/sql-cockpit/latest/operations/sql-bridge-huge-tables-getting-started/">
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="Analyze Table Batch Sizing - SQL Cockpit Docs">
+<meta property="twitter:title" content="Sql bridge huge tables getting started - SQL Cockpit Docs">
 <meta property="twitter:description" content="Documentation for SQL Cockpit - PowerShell-based SQL tooling suite">
-<meta property="twitter:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/analyze-table-batch-sizing.png">
+<meta property="twitter:image" content="https://your-domain.github.io/sql-cockpit/latest/assets/images/social/operations/sql-bridge-huge-tables-getting-started.png">
 <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
@@ -94,7 +90,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#analyze-tables-and-batch-sizing" class="md-skip">
+        <a href="#sql-bridge-huge-tables-getting-started" class="md-skip">
           Skip to content
         </a>
       
@@ -134,7 +130,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Analyze Table Batch Sizing
+              Sql bridge huge tables getting started
             
           </span>
         </div>
@@ -799,20 +795,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -833,7 +827,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1631,37 +1625,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Analyze Table Batch Sizing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../analyze-table-batch-sizing/" class="md-nav__link">
         
   
   
@@ -1677,92 +1644,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-      
-        <li class="md-nav__item">
-  <a href="#why-batchsize-needs-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why BatchSize needs analysis
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#script-1-find-matching-sync-rows" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Script 1: find matching sync rows
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#script-2-profile-one-live-table-directly" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Script 2: profile one live table directly
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#safe-change-procedure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Safe change procedure
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reading-the-recommendation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading the recommendation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#confidence-and-limitations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Confidence and limitations
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4391,10 +4272,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#why-batchsize-needs-analysis" class="md-nav__link">
+  <a href="#first-decision-full-refresh-or-incremental" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why BatchSize needs analysis
+        First Decision: Full Refresh Or Incremental
       
     </span>
   </a>
@@ -4402,10 +4283,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#script-1-find-matching-sync-rows" class="md-nav__link">
+  <a href="#lane-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Script 1: find matching sync rows
+        Lane Safety
       
     </span>
   </a>
@@ -4413,10 +4294,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#script-2-profile-one-live-table-directly" class="md-nav__link">
+  <a href="#what-batchsize-actually-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Script 2: profile one live table directly
+        What BatchSize Actually Does
       
     </span>
   </a>
@@ -4424,10 +4305,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#safe-change-procedure" class="md-nav__link">
+  <a href="#starting-values" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Safe change procedure
+        Starting Values
       
     </span>
   </a>
@@ -4435,10 +4316,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reading-the-recommendation" class="md-nav__link">
+  <a href="#why-a-huge-table-can-look-bursty" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reading the recommendation
+        Why A Huge Table Can Look Bursty
       
     </span>
   </a>
@@ -4446,10 +4327,170 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#confidence-and-limitations" class="md-nav__link">
+  <a href="#preflight-checklist" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Confidence and limitations
+        Preflight Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safe-first-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safe First Test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-refresh-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Refresh Template
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate-behavior-and-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Truncate Behavior And Staging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Truncate Behavior And Staging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-direct-truncate-only-when-the-table-is-replaceable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Direct Truncate Only When The Table Is Replaceable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safer-pattern-load-into-a-staging-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safer Pattern: Load Into A Staging Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout-is-separate-from-truncate-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeout Is Separate From Truncate Safety
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#incremental-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incremental Direction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-during-the-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring During The Run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#live-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Progress
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tuning-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tuning Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting Quick Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Docs
       
     </span>
   </a>
@@ -4476,143 +4517,702 @@
   
 
 
-<h1 id="analyze-tables-and-batch-sizing"><a class="headerlink" href="#analyze-tables-and-batch-sizing" title="Permanent link">¶</a>Analyze Tables And Batch Sizing</h1>
-<p>Use these scripts when you want to answer two operational questions:</p>
+<h1 id="sql-bridge-huge-tables-getting-started"><a class="headerlink" href="#sql-bridge-huge-tables-getting-started" title="Permanent link">¶</a>SQL Bridge Huge Tables Getting Started</h1>
+<p>Use this guide when copying very large SQL Server tables through SQL Bridge, especially tables with tens or hundreds of millions of rows.</p>
+<p>The goal is not to make every copy run as fast as possible on the first attempt. The goal is to make the first run safe, observable, repeatable, and easy to tune.</p>
+<h2 id="first-decision-full-refresh-or-incremental"><a class="headerlink" href="#first-decision-full-refresh-or-incremental" title="Permanent link">¶</a>First Decision: Full Refresh Or Incremental</h2>
+<p>Before choosing <code>@BatchSize</code>, decide whether a full-table refresh is appropriate.</p>
+<p>Use <code>Cockpit.FetchRemote</code> full refresh when:</p>
 <ul>
-<li>Which sync rows target a given server or table name?</li>
-<li>What <code>BatchSize</code> range is reasonable for a specific source table?</li>
+<li>this is a first bootstrap copy</li>
+<li>the table is small enough to recopy within the maintenance window</li>
+<li>the destination can be safely truncated/replaced</li>
+<li>source data does not have a reliable key/watermark for incremental loading</li>
+<li>the copy is a one-off validation or migration step</li>
 </ul>
-<p>These scripts are read-only. They inspect <code>Sync.TableConfig</code> and live SQL metadata, but they do not update control tables or change runtime state.</p>
-<p>If you want the trade-offs explained in operator terms, read <a href="../batch-size-caveats/">Batch Size Caveats</a> alongside this page.</p>
-<p>If you are preparing a SQL Bridge full refresh or bootstrap for a huge table, start with <a href="../sql-bridge-huge-tables-getting-started/">SQL Bridge Huge Tables Getting Started</a>.</p>
-<h2 id="why-batchsize-needs-analysis"><a class="headerlink" href="#why-batchsize-needs-analysis" title="Permanent link">¶</a>Why <code>BatchSize</code> needs analysis</h2>
-<p><code>BatchSize</code> is not driven by row count alone.</p>
-<p>In the current engine, the same value affects:</p>
+<p>Prefer <code>Cockpit.FetchRemoteIncremental</code> when:</p>
 <ul>
-<li><code>SELECT TOP (BatchSize)</code> when reading each source batch</li>
-<li><code>SqlBulkCopy.BatchSize</code> when writing the stage table</li>
+<li>the table has tens or hundreds of millions of rows</li>
+<li>only a small percentage changes between runs</li>
+<li>the source has a stable key column or watermark column</li>
+<li>the destination must stay available during repeated refreshes</li>
+<li>full refresh puts too much pressure on the network, SQL Server log, memory, or destination locks</li>
 </ul>
-<p>That means the safe range depends on:</p>
-<ul>
-<li>average row width</li>
-<li>whether the table contains <code>varchar(max)</code>, <code>nvarchar(max)</code>, <code>varbinary(max)</code>, <code>xml</code>, <code>text</code>, <code>ntext</code>, or <code>image</code></li>
-<li>network and source-query latency</li>
-<li>destination log and tempdb throughput</li>
-<li>whether the run is incremental or full refresh</li>
-</ul>
-<p>The recommendation scripts therefore provide advisory ranges, not guaranteed-optimal values.</p>
-<p>For a visual explainer of why small, balanced, and large batches behave differently, see <a href="../batch-size-caveats/">Batch Size Caveats</a>.</p>
-<h2 id="script-1-find-matching-sync-rows"><a class="headerlink" href="#script-1-find-matching-sync-rows" title="Permanent link">¶</a>Script 1: find matching sync rows</h2>
-<p>Use <code>Find-TableSyncConfig.ps1</code> to search <code>Sync.TableConfig</code> by source or destination endpoint.</p>
-<p>Example: find sync rows by source server and table name</p>
-<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span>
-<span class="normal"><a href="#__codelineno-0-3">3</a></span>
-<span class="normal"><a href="#__codelineno-0-4">4</a></span>
-<span class="normal"><a href="#__codelineno-0-5">5</a></span>
-<span class="normal"><a href="#__codelineno-0-6">6</a></span>
-<span class="normal"><a href="#__codelineno-0-7">7</a></span>
-<span class="normal"><a href="#__codelineno-0-8">8</a></span>
-<span class="normal"><a href="#__codelineno-0-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Find-TableSyncConfig</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>  <span class="n">-MatchOn</span> <span class="n">Source</span> <span class="p">`</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>  <span class="n">-ServerPattern</span> <span class="s2">"APTOS*"</span> <span class="p">`</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>  <span class="n">-TablePattern</span> <span class="s2">"hierarchy_group"</span>
+<p>For a table like <code>ib_inventory_total</code> with more than 100 million rows, a full refresh can be valid for a controlled bootstrap, but steady-state production should usually move toward an incremental pattern if a safe key/watermark exists.</p>
+<h2 id="lane-safety"><a class="headerlink" href="#lane-safety" title="Permanent link">¶</a>Lane Safety</h2>
+<p>Always keep the bridge control database and destination database in the same lane unless you are deliberately crossing environments.</p>
+<table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>Bridge database</th>
+<th>Typical destination for lane-local tests</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prod</code></td>
+<td><code>SqlCockpit</code></td>
+<td><code>SqlCockpit</code></td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td><code>SqlCockpit_Test</code></td>
+<td><code>SqlCockpit_Test</code></td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td><code>SqlCockpit_Dev</code></td>
+<td><code>SqlCockpit_Dev</code></td>
+</tr>
+</tbody>
+</table>
+<p>For test lane SQL, use:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">USE</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">];</span>
 </span></code></pre></div></td></tr></tbody></table></div>
-<p>Example: include a source-table <code>BatchSize</code> recommendation for each matched row</p>
-<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span>
-<span class="normal"><a href="#__codelineno-1-4">4</a></span>
-<span class="normal"><a href="#__codelineno-1-5">5</a></span>
-<span class="normal"><a href="#__codelineno-1-6">6</a></span>
-<span class="normal"><a href="#__codelineno-1-7">7</a></span>
-<span class="normal"><a href="#__codelineno-1-8">8</a></span>
-<span class="normal"><a href="#__codelineno-1-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Find-TableSyncConfig</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>  <span class="n">-ConfigServer</span> <span class="s2">"YOUR_SQL_SERVER"</span> <span class="p">`</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>  <span class="n">-ConfigDatabase</span> <span class="s2">"YOUR_CONFIG_DATABASE"</span> <span class="p">`</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>  <span class="n">-ConfigSchema</span> <span class="s2">"Sync"</span> <span class="p">`</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a>  <span class="n">-ConfigIntegratedSecurity</span> <span class="p">`</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a>  <span class="n">-TrustServerCertificate</span> <span class="p">`</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>  <span class="n">-MatchOn</span> <span class="n">Source</span> <span class="p">`</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a>  <span class="n">-TablePattern</span> <span class="s2">"hierarchy_group"</span> <span class="p">`</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a>  <span class="n">-IncludeBatchRecommendation</span>
+<p>and:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="o">@</span><span class="n">DestinationDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'SqlCockpit_Test'</span>
 </span></code></pre></div></td></tr></tbody></table></div>
-<p>What it returns:</p>
+<p>Do not run from <code>SqlCockpit_Test</code> while writing to <code>SqlCockpit</code> unless the intention is to write into the production bridge database. That mixes lanes and makes validation confusing.</p>
+<h2 id="what-batchsize-actually-does"><a class="headerlink" href="#what-batchsize-actually-does" title="Permanent link">¶</a>What BatchSize Actually Does</h2>
+<p>For SQL Bridge <code>Cockpit.FetchRemote</code>, <code>@BatchSize</code> becomes <code>options.batchSize</code>, and the PowerShell executor applies it to <code>SqlBulkCopy.BatchSize</code>.</p>
+<p>That means <code>@BatchSize</code> controls the destination bulk-copy commit rhythm. It does not set the TCP packet size.</p>
+<p>In practice, changing <code>@BatchSize</code> changes:</p>
 <ul>
-<li>matching <code>SyncId</code> and <code>SyncName</code></li>
-<li>source and destination endpoints</li>
-<li>current <code>BatchSize</code></li>
-<li>latest status summary from <code>Sync.TableState</code></li>
-<li>optional advisory <code>BatchSize</code> range based on the live source table</li>
+<li>how many rows are pushed in each bulk-copy burst</li>
+<li>how much memory the bridge process can need while streaming rows</li>
+<li>how long one write burst can run</li>
+<li>how often the destination receives bulk-copy batches</li>
+<li>how spiky the network and transaction log activity can look</li>
 </ul>
-<h2 id="script-2-profile-one-live-table-directly"><a class="headerlink" href="#script-2-profile-one-live-table-directly" title="Permanent link">¶</a>Script 2: profile one live table directly</h2>
-<p>Use <code>Get-TableBatchSizeRecommendation.ps1</code> when you already know the SQL table you want to inspect.</p>
-<p>Example:</p>
-<div class="language-powershell highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">PowerShell</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span>
-<span class="normal"><a href="#__codelineno-2-4">4</a></span>
-<span class="normal"><a href="#__codelineno-2-5">5</a></span>
-<span class="normal"><a href="#__codelineno-2-6">6</a></span>
-<span class="normal"><a href="#__codelineno-2-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="p">.\</span><span class="nb">Get-TableBatchSizeRecommendation</span><span class="p">.</span><span class="n">ps1</span> <span class="p">`</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>  <span class="n">-Server</span> <span class="s2">"APTOSSQL01"</span> <span class="p">`</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>  <span class="n">-Database</span> <span class="s2">"Remote_Reporting_PEA"</span> <span class="p">`</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>  <span class="n">-Schema</span> <span class="s2">"dbo"</span> <span class="p">`</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>  <span class="n">-Table</span> <span class="s2">"hierarchy_group"</span> <span class="p">`</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>  <span class="n">-IntegratedSecurity</span> <span class="p">`</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>  <span class="n">-TrustServerCertificate</span>
-</span></code></pre></div></td></tr></tbody></table></div>
-<p>What it inspects:</p>
+<p>A saw-tooth or spike pattern in Task Manager network throughput is normal for large bridge copies. The bridge reads from the source and writes to the destination in bursts. Larger batches usually mean fewer, larger bursts. Smaller batches usually mean more, smaller bursts.</p>
+<h2 id="starting-values"><a class="headerlink" href="#starting-values" title="Permanent link">¶</a>Starting Values</h2>
+<p>Use these as starting points, not fixed rules.</p>
+<table>
+<thead>
+<tr>
+<th>Table shape / environment</th>
+<th>Suggested starting <code>@BatchSize</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unknown table shape, first safe test</td>
+<td><code>5000</code> or <code>10000</code></td>
+</tr>
+<tr>
+<td>Large narrow table, healthy memory/log/disk</td>
+<td><code>25000</code></td>
+</tr>
+<tr>
+<td>Very large narrow table after successful testing</td>
+<td><code>50000</code></td>
+</tr>
+<tr>
+<td>Wide table or table with LOB columns</td>
+<td><code>5000</code> to <code>10000</code></td>
+</tr>
+<tr>
+<td>Fragile source, slow WAN, or busy destination</td>
+<td><code>5000</code></td>
+</tr>
+<tr>
+<td>Proven stable high-throughput maintenance window</td>
+<td>test <code>50000</code>, then consider <code>100000</code> only with evidence</td>
+</tr>
+</tbody>
+</table>
+<p>Avoid starting at <code>100000</code> or higher for a huge table unless you have already measured row width, destination log behavior, and memory pressure.</p>
+<p><code>Cockpit.FetchRemote</code> validates <code>batchSize</code> between <code>1</code> and <code>1000000000</code>, but valid does not mean safe.</p>
+<h2 id="why-a-huge-table-can-look-bursty"><a class="headerlink" href="#why-a-huge-table-can-look-bursty" title="Permanent link">¶</a>Why A Huge Table Can Look Bursty</h2>
+<p>During a large copy, a typical pattern is:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Source as Source SQL Server
+    participant Agent as Local SQL Cockpit Agent
+    participant Dest as Destination SQL Server
+    participant Log as Destination log/data files
+
+    Agent-&gt;&gt;Source: Open reader for selected rows
+    Source--&gt;&gt;Agent: Stream rows
+    Agent-&gt;&gt;Dest: SqlBulkCopy batch
+    Dest-&gt;&gt;Log: Write data/log pages
+    Agent-&gt;&gt;Source: Continue streaming
+    Source--&gt;&gt;Agent: Stream next rows
+    Agent-&gt;&gt;Dest: Next SqlBulkCopy batch</code></pre>
+<p>Task Manager often renders this as repeated network spikes rather than a flat line. That is not automatically bad. It becomes a concern when spikes are paired with:</p>
 <ul>
-<li>row count from SQL Server DMVs</li>
-<li>base-table and total storage footprint</li>
-<li>primary key presence</li>
-<li>non-clustered index count</li>
-<li>average row width</li>
-<li>presence of large-value columns</li>
+<li>memory near exhaustion</li>
+<li>destination transaction log growth or autogrowth</li>
+<li>long periods with no row progress</li>
+<li>blocking on the destination table</li>
+<li>CPU saturation on the Agent host</li>
+<li>repeated SQL-side timeouts</li>
 </ul>
-<p>What it recommends:</p>
-<ul>
-<li>a balanced <code>Recommended BatchSize</code></li>
-<li>a conservative lower bound</li>
-<li>an aggressive upper bound</li>
-<li>confidence level and caveats</li>
-</ul>
-<h2 id="safe-change-procedure"><a class="headerlink" href="#safe-change-procedure" title="Permanent link">¶</a>Safe change procedure</h2>
+<h2 id="preflight-checklist"><a class="headerlink" href="#preflight-checklist" title="Permanent link">¶</a>Preflight Checklist</h2>
+<p>Before running a huge-table copy:</p>
 <ol>
-<li>Locate the target sync row with <code>Find-TableSyncConfig.ps1</code>.</li>
-<li>Profile the source table with <code>Get-TableBatchSizeRecommendation.ps1</code> or use <code>-IncludeBatchRecommendation</code>.</li>
-<li>If rows are wide or LOB columns exist, start near the conservative end of the suggested range.</li>
-<li>Change only <code>BatchSize</code> for that sync row.</li>
-<li>Run one controlled execution.</li>
-<li>Review <code>Sync.RunLog</code>, <code>Sync.RunActionLog</code>, duration, row counts, and memory/log pressure before increasing further.</li>
+<li>Confirm you are in the intended lane.</li>
+<li>Confirm the Agent for that lane is running and bound.</li>
+<li>Confirm the source profile resolves through the Agent.</li>
+<li>Confirm the destination database is correct for the lane.</li>
+<li>Run <code>Cockpit.ListDatabases</code> or a small <code>@Top</code> copy first.</li>
+<li>Decide whether this is full refresh or incremental.</li>
+<li>Check whether the destination table can be truncated or replaced.</li>
+<li>Check free disk and transaction log headroom on the destination.</li>
+<li>Start with a conservative <code>@BatchSize</code>.</li>
+<li>Monitor memory, network, destination log growth, and bridge history.</li>
 </ol>
-<h2 id="reading-the-recommendation"><a class="headerlink" href="#reading-the-recommendation" title="Permanent link">¶</a>Reading the recommendation</h2>
+<h2 id="safe-first-test"><a class="headerlink" href="#safe-first-test" title="Permanent link">¶</a>Safe First Test</h2>
+<p>Run a small test before a full copy:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span>
+<span class="normal"><a href="#__codelineno-2-17">17</a></span>
+<span class="normal"><a href="#__codelineno-2-18">18</a></span>
+<span class="normal"><a href="#__codelineno-2-19">19</a></span>
+<span class="normal"><a href="#__codelineno-2-20">20</a></span>
+<span class="normal"><a href="#__codelineno-2-21">21</a></span>
+<span class="normal"><a href="#__codelineno-2-22">22</a></span>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span>
+<span class="normal"><a href="#__codelineno-2-24">24</a></span>
+<span class="normal"><a href="#__codelineno-2-25">25</a></span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span>
+<span class="normal"><a href="#__codelineno-2-27">27</a></span>
+<span class="normal"><a href="#__codelineno-2-28">28</a></span>
+<span class="normal"><a href="#__codelineno-2-29">29</a></span>
+<span class="normal"><a href="#__codelineno-2-30">30</a></span>
+<span class="normal"><a href="#__codelineno-2-31">31</a></span>
+<span class="normal"><a href="#__codelineno-2-32">32</a></span>
+<span class="normal"><a href="#__codelineno-2-33">33</a></span>
+<span class="normal"><a href="#__codelineno-2-34">34</a></span>
+<span class="normal"><a href="#__codelineno-2-35">35</a></span>
+<span class="normal"><a href="#__codelineno-2-36">36</a></span>
+<span class="normal"><a href="#__codelineno-2-37">37</a></span>
+<span class="normal"><a href="#__codelineno-2-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">USE</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">];</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">GO</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">SET</span><span class="w"> </span><span class="n">NOCOUNT</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">IF</span><span class="w"> </span><span class="n">SCHEMA_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Tests'</span><span class="p">)</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">BEGIN</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="k">EXEC</span><span class="p">(</span><span class="n">N</span><span class="s1">'CREATE SCHEMA [Tests]'</span><span class="p">);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="k">GO</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="k">DECLARE</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="n">uniqueidentifier</span><span class="p">,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="nb">bigint</span><span class="p">;</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">FetchRemote</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="o">@</span><span class="n">DefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'test_aptos_cloud_ib_inventory_total_top1000'</span><span class="p">,</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileKind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'connection'</span><span class="p">,</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Aptos_Cloud / me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'dbo'</span><span class="p">,</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">    </span><span class="o">@</span><span class="n">Top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'LocalTable'</span><span class="p">,</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'SqlCockpit_Test'</span><span class="p">,</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Tests'</span><span class="p">,</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total_probe'</span><span class="p">,</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">    </span><span class="o">@</span><span class="n">TruncateDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">    </span><span class="o">@</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Wait'</span><span class="p">,</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockTimeoutSeconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">,</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34"></a>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">InvocationId</span><span class="p">,</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">RowsCopied</span><span class="p">;</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36"></a>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">COUNT_BIG</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">DestinationRows</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="k">FROM</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">].[</span><span class="n">Tests</span><span class="p">].[</span><span class="n">ib_inventory_total_probe</span><span class="p">];</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Only move to the full copy after the small test proves:</p>
 <ul>
-<li><code>within-range</code>: current <code>BatchSize</code> already sits between conservative and aggressive guidance.</li>
-<li><code>below-range</code>: current <code>BatchSize</code> is smaller than the conservative guidance. This may be fine if you are protecting a fragile source or destination.</li>
-<li><code>above-range</code>: current <code>BatchSize</code> is larger than the aggressive guidance. Review memory usage, long-running batch windows, and log growth risk before keeping it there.</li>
+<li>the profile name is correct</li>
+<li>the password/secret is available to the Agent</li>
+<li>the destination table can be created/truncated</li>
+<li>the row count is plausible</li>
+<li>SQL Bridge history shows a clean success</li>
 </ul>
-<h2 id="confidence-and-limitations"><a class="headerlink" href="#confidence-and-limitations" title="Permanent link">¶</a>Confidence and limitations</h2>
-<p>Confirmed:</p>
+<h2 id="full-refresh-template"><a class="headerlink" href="#full-refresh-template" title="Permanent link">¶</a>Full Refresh Template</h2>
+<p>After the probe succeeds, run the full copy with a conservative batch size:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span>
+<span class="normal"><a href="#__codelineno-3-26">26</a></span>
+<span class="normal"><a href="#__codelineno-3-27">27</a></span>
+<span class="normal"><a href="#__codelineno-3-28">28</a></span>
+<span class="normal"><a href="#__codelineno-3-29">29</a></span>
+<span class="normal"><a href="#__codelineno-3-30">30</a></span>
+<span class="normal"><a href="#__codelineno-3-31">31</a></span>
+<span class="normal"><a href="#__codelineno-3-32">32</a></span>
+<span class="normal"><a href="#__codelineno-3-33">33</a></span>
+<span class="normal"><a href="#__codelineno-3-34">34</a></span>
+<span class="normal"><a href="#__codelineno-3-35">35</a></span>
+<span class="normal"><a href="#__codelineno-3-36">36</a></span>
+<span class="normal"><a href="#__codelineno-3-37">37</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">USE</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">];</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">GO</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">SET</span><span class="w"> </span><span class="n">NOCOUNT</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">IF</span><span class="w"> </span><span class="n">SCHEMA_ID</span><span class="p">(</span><span class="n">N</span><span class="s1">'Tests'</span><span class="p">)</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="k">BEGIN</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="k">EXEC</span><span class="p">(</span><span class="n">N</span><span class="s1">'CREATE SCHEMA [Tests]'</span><span class="p">);</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="k">GO</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="k">DECLARE</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="n">uniqueidentifier</span><span class="p">,</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="nb">bigint</span><span class="p">;</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">FetchRemote</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="o">@</span><span class="n">DefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'test_aptos_cloud_ib_inventory_total_full'</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileKind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'connection'</span><span class="p">,</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Aptos_Cloud / me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'dbo'</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'LocalTable'</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'SqlCockpit_Test'</span><span class="p">,</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Tests'</span><span class="p">,</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">    </span><span class="o">@</span><span class="n">TruncateDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">    </span><span class="o">@</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25000</span><span class="p">,</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Wait'</span><span class="p">,</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockTimeoutSeconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">,</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33"></a>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">InvocationId</span><span class="p">,</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">RowsCopied</span><span class="p">;</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35"></a>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">COUNT_BIG</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">DestinationRows</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="k">FROM</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">].[</span><span class="n">Tests</span><span class="p">].[</span><span class="n">ib_inventory_total</span><span class="p">];</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>If the run is stable and the machine has headroom, test <code>@BatchSize = 50000</code> on the next run. If memory or log pressure is high, test <code>@BatchSize = 10000</code>.</p>
+<h2 id="truncate-behavior-and-staging"><a class="headerlink" href="#truncate-behavior-and-staging" title="Permanent link">¶</a>Truncate Behavior And Staging</h2>
+<p>When <code>@TruncateDestination = 1</code>, SQL Bridge clears the destination table before loading the replacement rows.</p>
+<p>For example, this destination:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="o">@</span><span class="n">DestinationDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'SqlCockpit_test'</span><span class="p">,</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="o">@</span><span class="n">DestinationSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Tests'</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="o">@</span><span class="n">TruncateDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>means the bridge will truncate:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">[</span><span class="n">SqlCockpit_test</span><span class="p">].[</span><span class="n">Tests</span><span class="p">].[</span><span class="n">ib_inventory_total</span><span class="p">]</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>before loading the new rows.</p>
+<p>For an Agent-backed <code>Cockpit.FetchRemote</code> call, the sequence is:</p>
+<ol>
+<li>SQL Server enqueues the bridge invocation.</li>
+<li>The lane Agent picks up the queue item.</li>
+<li>The Agent connects to the source and destination.</li>
+<li>The Agent creates or validates the destination table.</li>
+<li>The Agent runs <code>TRUNCATE TABLE [Tests].[ib_inventory_total]</code> against the destination table.</li>
+<li>The Agent starts <code>SqlBulkCopy</code> and writes rows in batches.</li>
+</ol>
+<p>The truncate does not happen at the exact instant the T-SQL wrapper is called, but it happens early in the Agent worker phase. If the source read, destination write, network, credential lookup, timeout, or Agent process fails after that point, the destination table can be left empty or partially loaded.</p>
+<p>That behavior is acceptable for disposable test tables and controlled bootstrap loads. It is risky for tables that users, reports, jobs, or downstream systems read while the copy is running.</p>
+<h3 id="use-direct-truncate-only-when-the-table-is-replaceable"><a class="headerlink" href="#use-direct-truncate-only-when-the-table-is-replaceable" title="Permanent link">¶</a>Use Direct Truncate Only When The Table Is Replaceable</h3>
+<p>Direct truncate is reasonable when:</p>
 <ul>
-<li><code>BatchSize</code> is used by both the source paging query and <code>SqlBulkCopy.BatchSize</code>.</li>
-<li>the new scripts inspect live SQL metadata and control-table rows without writing changes</li>
+<li>the destination table is a scratch, test, or staging table</li>
+<li>the table is not being read by production users</li>
+<li>an empty or partial destination is acceptable after a failed run</li>
+<li>the run is part of a maintenance window</li>
+<li>the source can be recopied safely</li>
 </ul>
-<p>Inferred:</p>
+<p>Avoid direct truncate when:</p>
 <ul>
-<li>the recommendation model uses average row width and LOB detection as a proxy for memory and throughput pressure</li>
-<li>the balanced value is a safe starting point, not an exact optimum for every environment</li>
+<li>the destination is used by production reports or jobs</li>
+<li>readers must always see a complete previous copy</li>
+<li>the source table is huge and the copy can run for many minutes or hours</li>
+<li>the table has downstream dependencies that react badly to empty data</li>
+<li>rollback/retry needs to be predictable</li>
 </ul>
-<p>Operational risk:</p>
+<h3 id="safer-pattern-load-into-a-staging-table"><a class="headerlink" href="#safer-pattern-load-into-a-staging-table" title="Permanent link">¶</a>Safer Pattern: Load Into A Staging Table</h3>
+<p>For important large tables, copy into a staging table first:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span>
+<span class="normal"><a href="#__codelineno-6-14">14</a></span>
+<span class="normal"><a href="#__codelineno-6-15">15</a></span>
+<span class="normal"><a href="#__codelineno-6-16">16</a></span>
+<span class="normal"><a href="#__codelineno-6-17">17</a></span>
+<span class="normal"><a href="#__codelineno-6-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">FetchRemote</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">    </span><span class="o">@</span><span class="n">DefaultName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'test_aptos_cloud_ib_inventory_total_stage'</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileKind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'connection'</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceProfileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Aptos_Cloud / me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'me_pc_01'</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'dbo'</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="o">@</span><span class="n">SourceTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'LocalTable'</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationDatabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'SqlCockpit_Test'</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Tests_Staging'</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="o">@</span><span class="n">DestinationTable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'ib_inventory_total'</span><span class="p">,</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">    </span><span class="o">@</span><span class="n">TruncateDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">    </span><span class="o">@</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50000</span><span class="p">,</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">    </span><span class="o">@</span><span class="n">TimeoutSeconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Wait'</span><span class="p">,</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="o">@</span><span class="n">BridgeLockTimeoutSeconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">InvocationId</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">,</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w">    </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">RowsAffected</span><span class="w"> </span><span class="k">OUTPUT</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>After the staging copy succeeds, validate it before replacing the active table:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">COUNT_BIG</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">StagingRows</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">FROM</span><span class="w"> </span><span class="p">[</span><span class="n">SqlCockpit_Test</span><span class="p">].[</span><span class="n">Tests_Staging</span><span class="p">].[</span><span class="n">ib_inventory_total</span><span class="p">];</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Then promote the staged data during a short controlled change window. The exact promotion pattern depends on indexes, constraints, permissions, and readers. Common options are:</p>
 <ul>
-<li>low runtime risk from the scripts themselves because they are read-only</li>
-<li>medium change risk if operators treat the recommendation as absolute and skip a controlled validation run</li>
+<li>rename/swap tables</li>
+<li>truncate the active table and insert from staging</li>
+<li>rebuild the active table from staging</li>
+<li>switch partitions when the table design supports it</li>
+</ul>
+<p>The key principle is that the long remote fetch should not be the same operation that destroys the last good active copy.</p>
+<h3 id="timeout-is-separate-from-truncate-safety"><a class="headerlink" href="#timeout-is-separate-from-truncate-safety" title="Permanent link">¶</a>Timeout Is Separate From Truncate Safety</h3>
+<p><code>@TimeoutSeconds</code> controls how long the SQL caller waits for the Agent-backed bridge invocation to complete. The default for <code>Cockpit.FetchRemote</code> is <code>900</code> seconds, or 15 minutes.</p>
+<p>Increasing <code>@TimeoutSeconds</code> can prevent the SQL-side wait from timing out during a legitimate long copy, but it does not make direct truncate safer. If the destination is important, use a staging table even when the timeout is long enough.</p>
+<h2 id="incremental-direction"><a class="headerlink" href="#incremental-direction" title="Permanent link">¶</a>Incremental Direction</h2>
+<p>For repeated production use, prefer incremental loading when the source has a stable key or watermark.</p>
+<p>Use <code>Cockpit.FetchRemoteIncremental</code> when you can define:</p>
+<ul>
+<li>a key column that orders rows consistently</li>
+<li>optionally a watermark column such as an update timestamp, sequence, or rowversion-like value</li>
+<li>a destination table strategy that can accept appended or chunked rows safely</li>
+</ul>
+<p>Start with:</p>
+<ul>
+<li><code>@ChunkSize = 5000</code> or <code>10000</code></li>
+<li><code>@MaxChunks = 1</code></li>
+<li>a dedicated <code>@StateName</code></li>
+<li>a non-production destination</li>
+</ul>
+<p>Then increase chunk count or chunk size only after you verify checkpoint movement and destination row counts.</p>
+<h2 id="monitoring-during-the-run"><a class="headerlink" href="#monitoring-during-the-run" title="Permanent link">¶</a>Monitoring During The Run</h2>
+<p>Watch these signals while the bridge is running:</p>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Healthy</th>
+<th>Warning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent host memory</td>
+<td>Stable with headroom</td>
+<td>Memory above 90-95 percent for long periods</td>
+</tr>
+<tr>
+<td>Network graph</td>
+<td>Repeated bursts with progress</td>
+<td>Bursts stop and no rows complete</td>
+</tr>
+<tr>
+<td>Destination log</td>
+<td>Predictable growth</td>
+<td>Frequent autogrowth or disk pressure</td>
+</tr>
+<tr>
+<td>Destination CPU/disk</td>
+<td>Busy but responsive</td>
+<td>Sustained saturation</td>
+</tr>
+<tr>
+<td>SQL Bridge history</td>
+<td>Running row updates then succeeds</td>
+<td>Long-running row with expired lease or timeout</td>
+</tr>
+<tr>
+<td>Locks page</td>
+<td>Expected destination lock only</td>
+<td>Stale locks after failure/cancel</td>
+</tr>
+</tbody>
+</table>
+<p>For very large runs, keep SQL Bridge history open with a moderate refresh interval, for example 30 or 60 seconds. Avoid very short dashboard polling while the database is already under pressure.</p>
+<h2 id="live-progress"><a class="headerlink" href="#live-progress" title="Permanent link">¶</a>Live Progress</h2>
+<p>Agent-backed <code>FetchRemote</code> copies write live progress while <code>SqlBulkCopy</code> is running. The progress is emitted at least every smaller batch, and for very large batches the executor still reports approximately every 100,000 copied rows so the dashboard is not silent for long stretches.</p>
+<div class="language-sql highlight"><table class="highlighttable"><tbody><tr><th colspan="2" class="filename"><span class="filename">SQL</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">EXEC</span><span class="w"> </span><span class="n">Cockpit</span><span class="p">.</span><span class="n">ListBridgeInvocations</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">    </span><span class="o">@</span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="s1">'Running'</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">    </span><span class="o">@</span><span class="n">SinceMinutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">240</span><span class="p">;</span>
+</span></code></pre></div></td></tr></tbody></table></div>
+<p>Key columns include <code>RowsCopiedSoFar</code>, <code>RowsCopiedSoFarWords</code>, <code>SourceRowCount</code>, <code>SourceRowCountWords</code>, <code>PercentComplete</code>, <code>BatchesCopied</code>, <code>ApproxRowsPerSecond</code>, <code>EstimatedCompletionAt</code>, and <code>LastProgressAt</code>.</p>
+<p>The word columns are not a replacement for exact numeric values. They reduce operator mistakes when reading very large counts during live support.</p>
+<h2 id="tuning-pattern"><a class="headerlink" href="#tuning-pattern" title="Permanent link">¶</a>Tuning Pattern</h2>
+<p>Change only one thing at a time.</p>
+<ol>
+<li>Run with <code>@BatchSize = 10000</code> or <code>25000</code>.</li>
+<li>Record duration, rows copied, memory peak, log growth, and any errors.</li>
+<li>Increase to <code>50000</code> only if the first run is healthy.</li>
+<li>Decrease to <code>5000</code> or <code>10000</code> if memory/log/network behavior is unstable.</li>
+<li>Move to incremental if full refresh remains too heavy.</li>
+</ol>
+<p>Good tuning evidence is:</p>
+<ul>
+<li>total runtime improves</li>
+<li>memory remains stable</li>
+<li>destination log growth is manageable</li>
+<li>no lock timeouts occur</li>
+<li>the final row count is correct</li>
+</ul>
+<p>Bad tuning evidence is:</p>
+<ul>
+<li>larger batches do not improve runtime</li>
+<li>the Agent host reaches memory pressure</li>
+<li>destination log autogrowth dominates the run</li>
+<li>operators cannot tell whether the run is making progress</li>
+<li>the source or destination becomes unreliable for other workloads</li>
+</ul>
+<h2 id="common-mistakes"><a class="headerlink" href="#common-mistakes" title="Permanent link">¶</a>Common Mistakes</h2>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Why it hurts</th>
+<th>Safer alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Writing test lane output into <code>SqlCockpit</code></td>
+<td>Mixes test and prod state</td>
+<td>Use <code>SqlCockpit_Test</code> for test</td>
+</tr>
+<tr>
+<td>Starting huge full refresh at <code>@BatchSize = 100000</code></td>
+<td>Large first blast radius</td>
+<td>Start at <code>10000</code> or <code>25000</code></td>
+</tr>
+<tr>
+<td>Treating <code>BatchSize</code> as network packet size</td>
+<td>Misreads the graph</td>
+<td>Treat it as bulk-copy batch rhythm</td>
+</tr>
+<tr>
+<td>Using direct truncate on an active table</td>
+<td>Failed copy can leave readers with empty or partial data</td>
+<td>Load into staging, validate, then promote</td>
+</tr>
+<tr>
+<td>Raising <code>@TimeoutSeconds</code> as the only safety measure</td>
+<td>Prevents caller timeout but does not protect the active table</td>
+<td>Combine realistic timeout with staging for important data</td>
+</tr>
+<tr>
+<td>Ignoring memory pressure</td>
+<td>Can destabilize the Agent host</td>
+<td>Lower batch size or move to incremental</td>
+</tr>
+<tr>
+<td>Re-running full refresh for regular changes</td>
+<td>Expensive and slow</td>
+<td>Use incremental when possible</td>
+</tr>
+<tr>
+<td>Cancelling from SSMS without checking locks</td>
+<td>May leave work unwinding</td>
+<td>Inspect SQL Bridge history and locks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting-quick-reference"><a class="headerlink" href="#troubleshooting-quick-reference" title="Permanent link">¶</a>Troubleshooting Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>First action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spiky Ethernet graph</td>
+<td>Normal bulk-copy burst rhythm</td>
+<td>Check rows and memory before changing anything</td>
+</tr>
+<tr>
+<td>High memory during copy</td>
+<td>Batch too large, rows wide, or LOB columns</td>
+<td>Lower <code>@BatchSize</code></td>
+</tr>
+<tr>
+<td>SQL-side timeout but Agent still running</td>
+<td>SQL wait timed out before child work ended</td>
+<td>Check <code>Cockpit.AgentBridgeQueue</code> and Agent child process</td>
+</tr>
+<tr>
+<td>SSMS cancel but Agent still running</td>
+<td>SSMS stopped waiting but did not cancel leased Agent work</td>
+<td>Use <code>Cockpit.ListBridgeInvocations</code>, then <code>Cockpit.CancelBridgeInvocation</code></td>
+</tr>
+<tr>
+<td><code>profile secret missing</code></td>
+<td>Password not in Agent credential store</td>
+<td>Re-save the profile password through Service Control or web portal</td>
+</tr>
+<tr>
+<td><code>Login failed</code></td>
+<td>Wrong secret, user, or source profile</td>
+<td>Test <code>Cockpit.ListDatabases</code> for that profile</td>
+</tr>
+<tr>
+<td><code>attempt to write a readonly database</code></td>
+<td>Agent account cannot write local profile SQLite or destination</td>
+<td>Check Agent service identity and ACLs</td>
+</tr>
+<tr>
+<td>Destination row count differs</td>
+<td>Filter, source changes during copy, or failed run</td>
+<td>Compare invocation output and rerun controlled test</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration-reference"><a class="headerlink" href="#configuration-reference" title="Permanent link">¶</a>Configuration Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Storage location</th>
+<th>Valid values</th>
+<th>Default / observed default</th>
+<th>Runtime usage</th>
+<th>Operational risk</th>
+<th>Safe change procedure</th>
+<th>Confidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cockpit.FetchRemote @BatchSize</code></td>
+<td>T-SQL wrapper parameter, converted to <code>JsonPayload $.options.batchSize</code></td>
+<td>Integer <code>1</code> to <code>1000000000</code></td>
+<td><code>5000</code> when omitted in the PowerShell executor</td>
+<td>Sets <code>SqlBulkCopy.BatchSize</code> for LocalTable copies</td>
+<td>High on huge tables: larger values can increase memory pressure, destination log bursts, and long write windows</td>
+<td>Start conservatively, test one lane-local run, compare duration/memory/log growth, then adjust gradually</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @TruncateDestination</code></td>
+<td>T-SQL wrapper parameter, converted to <code>JsonPayload $.options.truncateDestination</code></td>
+<td><code>0</code>, <code>1</code>, or omitted</td>
+<td>Omitted means do not force truncate unless supplied by defaults</td>
+<td>Runs <code>TRUNCATE TABLE</code> before bulk-copying rows into the destination LocalTable</td>
+<td>High for active tables: a failed run after truncate can leave an empty or partial destination</td>
+<td>Use only for replaceable test/staging tables, or load into staging first and promote after validation</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @TimeoutSeconds</code></td>
+<td>T-SQL wrapper parameter and Agent queue wait deadline</td>
+<td>Integer <code>1</code> to <code>86400</code></td>
+<td><code>900</code> seconds on <code>Cockpit.FetchRemote</code></td>
+<td>Controls how long SQL waits for the Agent-backed bridge invocation to complete</td>
+<td>Medium: too low can report timeout during valid long copies; too high can keep callers waiting for failed work</td>
+<td>Use realistic values such as <code>3600</code> for huge full copies, then inspect bridge history on timeout before rerunning</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @Top</code></td>
+<td>T-SQL wrapper parameter, converted to <code>JsonPayload $.options.top</code></td>
+<td>Positive integer or omitted</td>
+<td>Omitted means full selected source table</td>
+<td>Limits source rows for probe runs</td>
+<td>Low when used for testing; high if mistaken for a production filter</td>
+<td>Use for first validation only, remove intentionally for full copy</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @DestinationDatabase</code></td>
+<td>T-SQL wrapper parameter, converted to <code>JsonPayload $.options.destinationDatabase</code></td>
+<td>SQL Server database name</td>
+<td>Required for LocalTable mode unless destination profile supplies a database</td>
+<td>Controls where copied rows land</td>
+<td>High if it points to the wrong lane or production database</td>
+<td>Match <code>USE</code> lane and destination lane before running</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @BridgeLockMode</code></td>
+<td>T-SQL wrapper parameter, logged in bridge metadata and used by destination lock logic</td>
+<td><code>Wait</code>, <code>SkipIfRunning</code>, <code>FailIfRunning</code>, <code>SkipIfFresh</code></td>
+<td><code>Wait</code></td>
+<td>Serializes overlapping copies to the same destination</td>
+<td>Medium to high depending on mode; wrong setting can skip data or block longer than expected</td>
+<td>Use <code>Wait</code> for first tests; change only after defining overlap policy</td>
+<td>Confirmed</td>
+</tr>
+<tr>
+<td><code>Cockpit.FetchRemote @BridgeLockTimeoutSeconds</code></td>
+<td>T-SQL wrapper parameter and lock wait setting</td>
+<td>Integer <code>&gt;= 0</code> or omitted</td>
+<td>Bridge config default, commonly <code>60</code></td>
+<td>Bounds wait time for destination refresh lock</td>
+<td>Medium: too low can fail normal overlap; too high can tie up callers</td>
+<td>Start at <code>60</code>, inspect locks on timeout, then tune per workload</td>
+<td>Confirmed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related-docs"><a class="headerlink" href="#related-docs" title="Permanent link">¶</a>Related Docs</h2>
+<ul>
+<li><a href="../sql-cockpit-invocation-framework/">SQL Cockpit Invocation Framework</a></li>
+<li><a href="../analyze-table-batch-sizing/">Analyze Tables And Batch Sizing</a></li>
+<li><a href="../batch-size-caveats/">Batch Size Caveats</a></li>
 </ul>
 <!-- Common footer content -->
 <hr>
