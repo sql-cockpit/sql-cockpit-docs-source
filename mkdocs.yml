@@ -126,6 +126,7 @@ nav:
     - Object Search: operations/object-search.md
     - SQL Editor: operations/sql-editor.md
     - Query Analyser: operations/query-analyser.md
+    - Migration Dependency Planner: operations/migration-dependency-planner.md
     - Analyze Table Batch Sizing: operations/analyze-table-batch-sizing.md
     - Batch Size Caveats: operations/batch-size-caveats.md
     - Analyze Run Logs: operations/analyze-run-logs.md
@@ -395,4 +396,3 @@ watch:
 #   pwa:
 #     installable: true
 #     sw_file: sw.js
-

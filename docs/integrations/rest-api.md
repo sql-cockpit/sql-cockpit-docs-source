@@ -287,7 +287,7 @@ Request:
 
 Storage and scope:
 
-- storage location: `data/sql-editor/sql-query-editor.db` (`sql_query_tabs`)
+- storage location: `data/sql-cockpit/sql-cockpit-local.sqlite` (`sql_query_tabs`)
 - valid values: `workspaceTabKey` is an alphanumeric window key up to 160 chars; when omitted, backend uses `""`
 - defaults: if omitted, `workspaceTabKey` defaults to `""`; `POST` can also read workspace key from query `?workspaceTabKey=...`
 - code paths affected:
@@ -638,7 +638,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/configs/import-cs
 
 ## Server Explorer endpoint
 
-`GET /api/servers/explorer?...` and `POST /api/servers/explorer` return the live object graph used by the dashboard page and the standalone `Get-ServerObjects.ps1` script. Dashboard calls normally use saved Instance Manager or Remote Sources profile ids. The Instance Manager edit form may send an `instanceProfileDraft` payload, and the Remote Sources form may send a `remoteInstanceDraft` payload, for a test-only metadata probe before the profile has been saved.
+`GET /api/servers/explorer?...` and `POST /api/servers/explorer` return the live object graph used by the dashboard page and the standalone `Get-ServerObjects.ps1` script. Dashboard calls normally use saved Instance Manager or Remote Sources profile ids. The Instance Manager edit form may send an `instanceProfileDraft` payload, the Remote Sources form may send a `remoteInstanceDraft` payload, and Connection Manager may send a `connectionProfileDraft` payload for a test-only metadata probe before the profile has been saved.
 
 Interface notes:
 
@@ -648,17 +648,19 @@ Interface notes:
   - `remoteInstanceProfileId`: saved Remote Sources profile id for linked-server-style source checks
   - `instanceProfileDraft`: optional object for Instance Manager test flows; accepts the current `serverName`, `authMode`, `integratedSecurity`, `username`, `password`, `trustServerCertificate`, and `encryptConnection` form fields and is not persisted by this endpoint
   - `remoteInstanceDraft`: optional object for Remote Sources test flows; accepts the current `serverName`, `authMode`, `integratedSecurity`, `username`, `password`, `trustServerCertificate`, `encryptConnection`, and `readOnly` form fields and is not persisted by this endpoint
+  - `connectionProfileDraft`: optional object for Connection Manager test flows; accepts the current `serverName`, `databaseName`, `authMode`, `integratedSecurity`, `username`, `password`, `trustServerCertificate`, and `encryptConnection` form fields and is not persisted by this endpoint
   - `workspace`: optional object with `type`, `workspaceId`, or `teamId`; when supplied, the API resolves the profile from that workspace instead of relying only on the signed-in user's active workspace preference
   - `databaseName`: any accessible database name on that profile; repeat the query-string key to select multiple databases in `GET` requests
   - `databaseNames`: zero, one, or many accessible database names in `POST` requests; when omitted or empty, the endpoint returns the whole accessible server inventory
   - `allowEmptyDatabaseInventory`: optional boolean for connection-test flows; when `true`, a successful SQL connection with no listable online user databases returns a success response with `InventoryStatus = NoListableDatabases` and `Warnings` instead of throwing a connection failure
 - defaults:
-  - the `POST` endpoint rejects requests without `instanceProfileId`, `remoteInstanceProfileId`, `instanceProfileDraft`, or `remoteInstanceDraft`
+  - the `POST` endpoint rejects requests without `instanceProfileId`, `remoteInstanceProfileId`, `instanceProfileDraft`, `remoteInstanceDraft`, or `connectionProfileDraft`
   - the API resolves server/auth/certificate settings from the saved workspace profile
   - the dashboard Server Explorer page loads from saved Instance Manager profiles instead of a free-text server picker
   - `allowEmptyDatabaseInventory` defaults to `false`; the Remote Sources and Connection Manager test flow sets it to `true`
   - the Instance Manager edit flow sends the current form as `instanceProfileDraft`, so unsaved server/authentication/certificate/password changes can be tested before `Update Instance` saves them
   - the Remote Sources test flow sends the current form as `remoteInstanceDraft`, so new or edited profiles can be tested before the workspace profile save has completed
+  - the Connection Manager test flow sends the current form as `connectionProfileDraft` when no Instance Manager profile is selected, so explicit database-level credentials can be tested before saving
   - when the dashboard only has a selected instance profile, it loads the available database list first and leaves the multi-select empty until the operator narrows the browse scope
 - code paths affected:
   - `SqlTablesSync.Tools.psm1`
@@ -670,7 +672,7 @@ Interface notes:
 - operational risk:
   - medium, because the endpoint now exposes live database names, schema inventory, and recently modified objects from the requested SQL Server
   - low for write safety, because the implementation uses read-only catalog queries only and does not persist a server registry
-  - medium for credential handling when `instanceProfileDraft` or `remoteInstanceDraft` uses SQL authentication, because typed credentials transit the authenticated same-origin API request for the immediate metadata probe; save the profile first and test by id when avoiding draft credential transit is operationally required
+  - medium for credential handling when `instanceProfileDraft`, `remoteInstanceDraft`, or `connectionProfileDraft` uses SQL authentication, because typed credentials transit the authenticated same-origin API request for the immediate metadata probe; save the profile first and test by id when avoiding draft credential transit is operationally required
 - safe change procedure:
   - save and test a low-risk Instance Manager profile first so the available-database list matches operator expectations
   - narrow to one or more low-risk databases before sharing screenshots or copied payloads outside the trusted operations context
@@ -703,7 +705,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8080/api/servers/explorer"
 
 Troubleshooting:
 
-- if `POST /api/servers/explorer` returns HTTP `400` with `{"error":"Connection validation failed."}`, include `instanceProfileId`, `remoteInstanceProfileId`, an Instance Manager test-only `instanceProfileDraft`, or a Remote Sources test-only `remoteInstanceDraft`
+- if `POST /api/servers/explorer` returns HTTP `400` with `{"error":"Connection validation failed."}`, include `instanceProfileId`, `remoteInstanceProfileId`, an Instance Manager test-only `instanceProfileDraft`, a Remote Sources test-only `remoteInstanceDraft`, or a Connection Manager test-only `connectionProfileDraft`
 - if `POST /api/servers/explorer` says a requested remote source profile was not found, confirm the profile was saved in the selected workspace and include the matching `workspace` object in the request body, or test the current `/remote-sources/new` form so the dashboard sends `remoteInstanceDraft`
 - if `POST /api/servers/explorer` returns success with `InventoryStatus = NoListableDatabases`, the SQL connection worked but the login could not list any online user databases through the catalog query; verify metadata visibility or test with an explicit database in the feature that needs the remote source
 - if `POST /api/servers/explorer` returns `{"error":"Argument types do not match"}`, restart the local API after updating to the version that flattens PowerShell `DataRow` values into local scalars before building the explorer response object
@@ -925,5 +927,3 @@ flowchart LR
     D --> H[Generated migration SQL]
     D --> I[Table profile + BatchSize advice]
 ```
-
-
