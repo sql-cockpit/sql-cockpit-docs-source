@@ -4998,6 +4998,10 @@ manifest and are removed by id.</p>
 <li>Resume uses the durable spool and checkpoint hashes; if an old checkpoint has
   no hashes, the completed manifest is rebuilt from spooled documents and the
   prior manifest where possible.</li>
+<li>Resume is source-local. A new operation does not skip a completed database
+  merely because an older manifest/status row exists. The manifest is a catalog
+  baseline, not proof that its documents still exist in Lucene; every source is
+  therefore revalidated after an admin cache clear.</li>
 <li>Lucene count verification still compares the live source count with
   <code>manifestDocumentCount</code>, so skipping unchanged uploads does not hide missing
   or stale documents.</li>
@@ -5276,6 +5280,7 @@ full rebuild to re-establish the baseline.</p>
 <li>after documents are built, the sync writes <code>documents.json</code> and <code>checkpoint.json</code> under <code>sync.spoolDirectory</code>; rerunning the same source/mode can reload that spool and continue from the saved <code>uploadedThrough</code> or <code>deletedThrough</code> offsets</li>
 <li>resumed <code>documents.json</code> files are expanded back into individual documents before upload batching; a resume log should show the original document count, not <code>Loaded 1 spooled documents</code>, for a large database</li>
 <li>completed source syncs remove their spool directory after the manifest file is written</li>
+<li>a later operation reprocesses completed sources instead of trusting their old status row; only the currently incomplete source can resume from its durable spool checkpoint</li>
 <li>if a spool is no longer wanted, stop the sync and delete the matching source directory under <code>sql-cockpit-object-search/data/object-search/spool</code>; the next run will rebuild from SQL Server</li>
 <li>upload batches are adaptively split on <code>400 Bad Request</code>; if the failing unit is a single document, the sync log records the document id, object type, qualified name, and parent before the run fails</li>
 <li>a failed stale-delete or manifest-write step can still fail the run, but this happens after the fresh documents have been uploaded</li>
