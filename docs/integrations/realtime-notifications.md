@@ -2,6 +2,8 @@
 
 `Start-SqlTablesSyncNotificationsServer.ps1` launches a standalone local notification service for SQL Cockpit. Long-running PowerShell jobs, Node scripts, and other local tools can post custom events into this service, and the web frontend listens continuously over WebSocket so the header bell updates without a manual refresh.
 
+Authenticated dashboard sessions keep this WebSocket feed connected on every dashboard page. Producers can scope a notification with `metadata.recipientUserIds`; the client hides it unless the signed-in user is listed. Object Search team sync resolves all active team members server-side, including with asynchronous hosted state providers, and its terminal lifecycle notifications raise deduplicated in-app toasts as well as bell notifications.
+
 Task Manager also publishes `task-run` notifications when a run is queued,
 dispatched, started, or completed. The Task Manager page consumes those
 WebSocket frames directly to show socket health, recent scheduler activity, live

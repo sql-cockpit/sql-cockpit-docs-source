@@ -43,6 +43,27 @@ flowchart LR
 14. Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open. Confirm the streamed sync log uses the larger modal space, auto-scrolls by default, preserves the current scroll position when **Auto-scroll** is unchecked, and appends new lines without replacing the whole panel.
 15. Open `/` and confirm Welcome Page status-backed widgets call `GET /api/object-search/status?compact=1`; use full `GET /api/object-search/status` for manifest or sync-diagnostic work.
 
+## Team lifecycle notifications
+
+Object Search sync publishes one authoritative lifecycle notification at the API/Agent boundary for `Started`, `Complete`, `Failed`, or `Locked`. Personal-workspace notifications target the initiating user. Team-workspace notifications resolve every active team member and place those user ids in `metadata.recipientUserIds`. Terminal notifications also raise a deduplicated in-app toast for each signed-in recipient with an open dashboard session.
+
+```mermaid
+sequenceDiagram
+    participant User as Initiating user
+    participant API as SQL Cockpit API
+    participant Agent as Paired SQL Cockpit Agent
+    participant Notify as Notifications service
+    participant Team as Active team members
+    User->>API: Start Object Search sync
+    API->>Notify: Started (recipient user ids)
+    API->>Agent: sql.object-search.sync RPC
+    Agent-->>API: Success or failure
+    API->>Notify: Complete / Failed / Locked
+    Notify-->>Team: Bell notification + terminal toast
+```
+
+Publishing is best effort and does not change the sync result. Recent lifecycle records are in memory and are cleared when the notifications service restarts. Failure messages are operational text returned by the Agent; Agent errors must not contain passwords, tokens, or full connection strings.
+
 ## Sync Log Streaming
 
 `GET /api/object-search/sync-log` is read-only and authenticated. Use `operationId=<id>` to scope to one sync operation, `limit` for the maximum returned line count, and `after=<nextCursor>` to continue from a previous response. The API reads bounded chunks from `Logs/ObjectSearch/sync.log`; it does not load the whole file into memory for each dashboard poll.
