@@ -1643,6 +1643,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#team-lifecycle-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Team lifecycle notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sync-log-streaming" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4523,6 +4534,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#team-lifecycle-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Team lifecycle notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sync-log-streaming" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4713,6 +4735,21 @@
 <li>Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open. Confirm the streamed sync log uses the larger modal space, auto-scrolls by default, preserves the current scroll position when <strong>Auto-scroll</strong> is unchecked, and appends new lines without replacing the whole panel.</li>
 <li>Open <code>/</code> and confirm Welcome Page status-backed widgets call <code>GET /api/object-search/status?compact=1</code>; use full <code>GET /api/object-search/status</code> for manifest or sync-diagnostic work.</li>
 </ol>
+<h2 id="team-lifecycle-notifications"><a class="headerlink" href="#team-lifecycle-notifications" title="Permanent link">¶</a>Team lifecycle notifications</h2>
+<p>Object Search sync publishes one authoritative lifecycle notification at the API/Agent boundary for <code>Started</code>, <code>Complete</code>, <code>Failed</code>, or <code>Locked</code>. Personal-workspace notifications target the initiating user. Team-workspace notifications resolve every active team member and place those user ids in <code>metadata.recipientUserIds</code>. Terminal notifications also raise a deduplicated in-app toast for each signed-in recipient with an open dashboard session.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant User as Initiating user
+    participant API as SQL Cockpit API
+    participant Agent as Paired SQL Cockpit Agent
+    participant Notify as Notifications service
+    participant Team as Active team members
+    User-&gt;&gt;API: Start Object Search sync
+    API-&gt;&gt;Notify: Started (recipient user ids)
+    API-&gt;&gt;Agent: sql.object-search.sync RPC
+    Agent--&gt;&gt;API: Success or failure
+    API-&gt;&gt;Notify: Complete / Failed / Locked
+    Notify--&gt;&gt;Team: Bell notification + terminal toast</code></pre>
+<p>Publishing is best effort and does not change the sync result. Recent lifecycle records are in memory and are cleared when the notifications service restarts. Failure messages are operational text returned by the Agent; Agent errors must not contain passwords, tokens, or full connection strings.</p>
 <h2 id="sync-log-streaming"><a class="headerlink" href="#sync-log-streaming" title="Permanent link">¶</a>Sync Log Streaming</h2>
 <p><code>GET /api/object-search/sync-log</code> is read-only and authenticated. Use <code>operationId=&lt;id&gt;</code> to scope to one sync operation, <code>limit</code> for the maximum returned line count, and <code>after=&lt;nextCursor&gt;</code> to continue from a previous response. The API reads bounded chunks from <code>Logs/ObjectSearch/sync.log</code>; it does not load the whole file into memory for each dashboard poll.</p>
 <p>Response fields include <code>lines</code>, <code>nextCursor</code>, <code>fileSize</code>, <code>bytesRead</code>, <code>truncated</code>, <code>hasMore</code>, and <code>reset</code>. When <code>reset</code> is true, replace the visible buffer because the log file was rotated or the cursor became stale. Operational risk is low; the main tradeoff is that very old operation lines may no longer be visible if they fall outside the bounded tail window.</p>
