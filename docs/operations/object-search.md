@@ -15,6 +15,8 @@ No endorsement by the Apache Software Foundation or the Lucene.NET project is im
 
 The API `GET /health` response is generated in-process and does not start PowerShell or contact a SQL Server. This keeps the Service Host liveness probe responsive while a long Object Search Agent operation is running. The response retains the existing `status`, `listenPrefix`, and `configDatabase` fields. Detailed Object Search readiness remains available from authenticated `GET /api/object-search/health` and sync progress from `GET /api/object-search/status`.
 
+After a sync is accepted, the dashboard retains its optimistic running state if the first status poll still contains a different operation's terminal result. Polling continues until the Agent writes the accepted operation id, preventing an earlier success or failure from suppressing the current operation's terminal toast.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
