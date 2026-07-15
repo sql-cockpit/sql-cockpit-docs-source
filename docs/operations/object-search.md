@@ -17,6 +17,8 @@ The API `GET /health` response is generated in-process and does not start PowerS
 
 After a sync is accepted, the dashboard retains its optimistic running state if the first status poll still contains a different operation's terminal result. Polling continues until the Agent writes the accepted operation id, preventing an earlier success or failure from suppressing the current operation's terminal toast.
 
+Completed progress is operation-scoped: the modal uses the run's `totalSources`, `uploadedDocumentCount`, and `deletedDocumentCount`. Historical manifests remain available for per-instance “last sync” summaries but do not inflate the completed run totals.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
