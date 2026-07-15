@@ -51,7 +51,7 @@ frames.
   - Slack setup uses `PUT /api/integrations/slack` and `POST /api/integrations/slack/test`
   - PagerDuty setup uses `PUT /api/integrations/pagerduty` and `POST /api/integrations/pagerduty/test`
   - the dashboard loads recent items from `GET /api/notifications/recent`
-  - the dashboard subscribes to `ws://127.0.0.1:8090/ws` or the `wss://` equivalent for continuous updates
+  - server-side publishing and health checks use the loopback listener, while the dashboard receives same-origin public URLs from runtime discovery; for example, `wss://sqlcockpit-prod.peacocks.co.uk/ws` and `https://sqlcockpit-prod.peacocks.co.uk/api/notifications/recent`
   - when the operator enables browser alerts and grants site permission, newly arriving realtime events can also raise native browser notifications through a service-worker-backed browser notification path, with an in-page Notification API fallback
 - retention model: in-memory ring buffer only, capped at 250 recent notifications; restarting the service clears that buffer
 - code paths affected:
