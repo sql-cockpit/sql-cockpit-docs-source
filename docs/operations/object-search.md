@@ -316,6 +316,10 @@ Operational behavior:
 - Resume uses the durable spool and checkpoint hashes; if an old checkpoint has
   no hashes, the completed manifest is rebuilt from spooled documents and the
   prior manifest where possible.
+- Resume is source-local. A new operation does not skip a completed database
+  merely because an older manifest/status row exists. The manifest is a catalog
+  baseline, not proof that its documents still exist in Lucene; every source is
+  therefore revalidated after an admin cache clear.
 - Lucene count verification still compares the live source count with
   `manifestDocumentCount`, so skipping unchanged uploads does not hide missing
   or stale documents.
@@ -454,6 +458,7 @@ Robustness note:
 - after documents are built, the sync writes `documents.json` and `checkpoint.json` under `sync.spoolDirectory`; rerunning the same source/mode can reload that spool and continue from the saved `uploadedThrough` or `deletedThrough` offsets
 - resumed `documents.json` files are expanded back into individual documents before upload batching; a resume log should show the original document count, not `Loaded 1 spooled documents`, for a large database
 - completed source syncs remove their spool directory after the manifest file is written
+- a later operation reprocesses completed sources instead of trusting their old status row; only the currently incomplete source can resume from its durable spool checkpoint
 - if a spool is no longer wanted, stop the sync and delete the matching source directory under `sql-cockpit-object-search/data/object-search/spool`; the next run will rebuild from SQL Server
 - upload batches are adaptively split on `400 Bad Request`; if the failing unit is a single document, the sync log records the document id, object type, qualified name, and parent before the run fails
 - a failed stale-delete or manifest-write step can still fail the run, but this happens after the fresh documents have been uploaded
