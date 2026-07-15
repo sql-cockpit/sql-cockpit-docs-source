@@ -13,6 +13,8 @@ No endorsement by the Apache Software Foundation or the Lucene.NET project is im
 
 ## Local-only cache model
 
+The API `GET /health` response is generated in-process and does not start PowerShell or contact a SQL Server. This keeps the Service Host liveness probe responsive while a long Object Search Agent operation is running. The response retains the existing `status`, `listenPrefix`, and `configDatabase` fields. Detailed Object Search readiness remains available from authenticated `GET /api/object-search/health` and sync progress from `GET /api/object-search/status`.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
