@@ -4707,6 +4707,7 @@
 </ul>
 <p>No endorsement by the Apache Software Foundation or the Lucene.NET project is implied.</p>
 <h2 id="local-only-cache-model"><a class="headerlink" href="#local-only-cache-model" title="Permanent link">¶</a>Local-only cache model</h2>
+<p>The API <code>GET /health</code> response is generated in-process and does not start PowerShell or contact a SQL Server. This keeps the Service Host liveness probe responsive while a long Object Search Agent operation is running. The response retains the existing <code>status</code>, <code>listenPrefix</code>, and <code>configDatabase</code> fields. Detailed Object Search readiness remains available from authenticated <code>GET /api/object-search/health</code> and sync progress from <code>GET /api/object-search/status</code>.</p>
 <pre class="mermaid"><code>flowchart LR
     A[Tracked Code and Templates] --&gt; B[Local settings.local.json]
     B --&gt; C[Full Sync Bootstrap]
