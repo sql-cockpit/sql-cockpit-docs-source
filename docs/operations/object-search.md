@@ -66,6 +66,8 @@ Publishing is best effort and does not change the sync result. Recent lifecycle 
 
 The HTTPS lane proxy gives `POST /api/object-search/index/*` requests 31 minutes, slightly longer than the Agent's 30-minute Object Search RPC deadline. Other HTTP requests retain the two-minute proxy timeout. This prevents the initiating browser from receiving a false `502` while a healthy full sync is still running. Every new operation also clears the status file's `lastError` before progress begins, so a previous failed server cannot contaminate the next run's status.
 
+The start endpoints return `202 Accepted` immediately with `{ "status": "accepted", "operationId": "..." }`; they do not wait for SQL extraction or indexing to finish. The API continues the Agent RPC in the background, while Instance Manager follows the persisted status and realtime notification stream. Treat the terminal `Complete`, `Failed`, or `Locked` notification for that operation id as the authoritative result.
+
 ## Sync Log Streaming
 
 `GET /api/object-search/sync-log` is read-only and authenticated. Use `operationId=<id>` to scope to one sync operation, `limit` for the maximum returned line count, and `after=<nextCursor>` to continue from a previous response. The API reads bounded chunks from `Logs/ObjectSearch/sync.log`; it does not load the whole file into memory for each dashboard poll.
