@@ -4521,6 +4521,11 @@ If the persistent ledger cannot be written, ingest fails closed with <code>503 U
 <td>Store in the server secret manager and configure the same value for API and sidecar. Never expose to an Agent.</td>
 </tr>
 <tr>
+<td><code>writeTokenSigningKeyPath</code></td>
+<td style="text-align: right;">none</td>
+<td>Preferred server-local secret-file path. Test/Prod lane publishing creates and preserves a 48-byte random key outside the artifact and restricts it to SYSTEM/local Administrators.</td>
+</tr>
+<tr>
 <td><code>writeTokenLifetimeSeconds</code></td>
 <td style="text-align: right;">3600; API accepts 60-3600</td>
 <td>Keep close to the longest supported sync.</td>
@@ -4597,7 +4602,8 @@ If the persistent ledger cannot be written, ingest fails closed with <code>503 U
 </tr>
 </tbody>
 </table>
-<p>Environment overrides are available for <code>SQL_COCKPIT_OBJECT_SEARCH_REQUIRE_WRITE_CAPABILITY</code>, <code>SQL_COCKPIT_OBJECT_SEARCH_WRITE_TOKEN_SIGNING_KEY</code>, <code>SQL_COCKPIT_OBJECT_SEARCH_USAGE_LEDGER_PATH</code>, plus the existing listen URL, index root, and API key variables.</p>
+<p>Environment overrides are available for <code>SQL_COCKPIT_OBJECT_SEARCH_REQUIRE_WRITE_CAPABILITY</code>, <code>SQL_COCKPIT_OBJECT_SEARCH_WRITE_TOKEN_SIGNING_KEY</code>, <code>SQL_COCKPIT_OBJECT_SEARCH_USAGE_LEDGER_PATH</code>, plus the existing listen URL, index root, and API key variables.
+<code>SQL_COCKPIT_OBJECT_SEARCH_WRITE_TOKEN_SIGNING_KEY_PATH</code> selects the external secret file. If the Service Host uses a custom identity, grant it read access without granting the customer Agent identity access.</p>
 <h2 id="administrative-usage-api"><a class="headerlink" href="#administrative-usage-api" title="Permanent link">¶</a>Administrative usage API</h2>
 <p><code>GET /api/admin/settings/cache/lucene/usage</code> requires an authenticated same-origin session and <code>admin.settings.edit</code>. It returns limits, current estimated workspace storage, accepted/rejected UTC-day counters, recent operation meters, and aggregate unauthorized attempts. It never returns secrets/capabilities.</p>
 <h2 id="test-and-rollout"><a class="headerlink" href="#test-and-rollout" title="Permanent link">¶</a>Test and rollout</h2>
