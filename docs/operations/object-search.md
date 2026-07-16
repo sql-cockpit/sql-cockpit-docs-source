@@ -21,6 +21,49 @@ Completed progress is operation-scoped: the modal uses the run's `totalSources`,
 
 Instance Manager loads Object Search history alongside the active workspace's saved profiles. Rows are not allowed to interpret an outstanding history request as “Never”; they show a compact loading state until the response is available. If the active workspace changes while a status request is in flight, the dashboard immediately issues a replacement request for the new workspace instead of waiting for the 60-second background interval.
 
+## Instance Manager sync modes
+
+The **Sync** control on each saved instance row is a dropdown. **Incremental sync** is the normal, compute-efficient default; **Full sync** is an explicit bootstrap and repair operation. Both choices use the paired SQL Cockpit Agent and the authenticated `POST /api/object-search/index/sync-connection` route. The request requires `instanceProfileId`, accepts `mode=Incremental|Full`, and returns `202 Accepted` with an operation id. The route requires `objectSearch.sync`. No browser or API-host customer SQL connection is opened.
+
+### Incremental workflow
+
+```mermaid
+flowchart LR
+    U[User selects Incremental sync] --> API[API validates profile and workspace]
+    API --> A[Paired Agent]
+    A --> D[Enumerate visible databases]
+    D --> W{Previous successful watermark?}
+    W -- No --> F[Promote source to full sync]
+    W -- Yes --> Q[Read metadata modified since watermark]
+    Q --> M[Read current catalog manifest]
+    M --> C[Upload changed documents]
+    C --> X[Delete stale document IDs]
+    X --> S[Write manifest and success watermark]
+```
+
+Incremental mode still connects to every visible database and reads its current object-id manifest. This lower-cost catalog pass is necessary to identify dropped objects because SQL Server does not provide a single reliable tombstone stream for every indexed child-object type.
+
+### Full workflow
+
+```mermaid
+flowchart LR
+    U[User selects Full sync] --> API[API validates profile and workspace]
+    API --> A[Paired Agent]
+    A --> D[Enumerate visible databases]
+    D --> Q[Read all supported SQL metadata]
+    Q --> B[Build all searchable documents]
+    B --> C[Upload complete document set]
+    C --> X[Delete IDs absent from rebuilt manifest]
+    X --> S[Write new manifest and success watermark]
+```
+
+| Mode | Use | SQL catalog work | Lucene writes | Operational cost |
+| --- | --- | --- | --- | --- |
+| Incremental | Routine refresh | Changed-object extraction plus full ID manifest | Changed/new documents and stale deletes | Lower; depends on modification dates and the previous successful watermark |
+| Full | First population, cleared cache, corrupt/missing manifest, suspected drift | All supported metadata | Complete document set and stale deletes | Highest SQL, Agent CPU, memory, network, and local indexing cost |
+
+Safe test: run a full sync in a non-production lane, then run incremental with no schema changes and confirm minimal uploads. Alter one test object and confirm the next incremental run refreshes it. Drop that object and confirm the next incremental run deletes its stale search document. No database flag, settings-table value, or schema migration controls the dropdown.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
