@@ -124,6 +124,7 @@ nav:
     - SSRS Report Inspector: operations/ssrs-inspector.md
     - Service Manager: operations/service-manager.md
     - Object Search: operations/object-search.md
+    - Object Search Ingest Guardrails: operations/object-search-ingest-guardrails.md
     - SQL Editor: operations/sql-editor.md
     - Query Analyser: operations/query-analyser.md
     - Analyze Table Batch Sizing: operations/analyze-table-batch-sizing.md
@@ -395,4 +396,3 @@ watch:
 #   pwa:
 #     installable: true
 #     sw_file: sw.js
-
