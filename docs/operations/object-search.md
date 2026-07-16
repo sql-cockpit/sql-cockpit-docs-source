@@ -19,6 +19,8 @@ After a sync is accepted, the dashboard retains its optimistic running state if 
 
 Completed progress is operation-scoped: the modal uses the run's `totalSources`, `uploadedDocumentCount`, and `deletedDocumentCount`. Historical manifests remain available for per-instance “last sync” summaries but do not inflate the completed run totals.
 
+Instance Manager loads Object Search history alongside the active workspace's saved profiles. Rows are not allowed to interpret an outstanding history request as “Never”; they show a compact loading state until the response is available. If the active workspace changes while a status request is in flight, the dashboard immediately issues a replacement request for the new workspace instead of waiting for the 60-second background interval.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
