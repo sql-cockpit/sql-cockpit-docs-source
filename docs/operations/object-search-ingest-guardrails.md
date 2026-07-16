@@ -32,6 +32,7 @@ All values are under `service` in the object-search settings file.
 | --- | ---: | --- |
 | `requireWriteCapability` | `true` hosted; `false` only in explicit local examples | Never disable on a shared/hosted service. |
 | `writeTokenSigningKey` | none; minimum 32 characters | Store in the server secret manager and configure the same value for API and sidecar. Never expose to an Agent. |
+| `writeTokenSigningKeyPath` | none | Preferred server-local secret-file path. Test/Prod lane publishing creates and preserves a 48-byte random key outside the artifact and restricts it to SYSTEM/local Administrators. |
 | `writeTokenLifetimeSeconds` | 3600; API accepts 60-3600 | Keep close to the longest supported sync. |
 | `usageLedgerPath` | `./data/object-search/usage-ledger.json` | Must be writable; corrupt/unreadable existing state fails startup closed. |
 | `maxRequestBytes` | 33,554,432 | Keep at/above a valid serialized batch. |
@@ -49,6 +50,7 @@ All values are under `service` in the object-search settings file.
 | `maxConcurrentConnections` | 128 | Coordinate with proxy and memory capacity. |
 
 Environment overrides are available for `SQL_COCKPIT_OBJECT_SEARCH_REQUIRE_WRITE_CAPABILITY`, `SQL_COCKPIT_OBJECT_SEARCH_WRITE_TOKEN_SIGNING_KEY`, `SQL_COCKPIT_OBJECT_SEARCH_USAGE_LEDGER_PATH`, plus the existing listen URL, index root, and API key variables.
+`SQL_COCKPIT_OBJECT_SEARCH_WRITE_TOKEN_SIGNING_KEY_PATH` selects the external secret file. If the Service Host uses a custom identity, grant it read access without granting the customer Agent identity access.
 
 ## Administrative usage API
 
