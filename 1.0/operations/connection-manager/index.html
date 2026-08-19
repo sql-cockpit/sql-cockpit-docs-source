@@ -24,7 +24,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -32,7 +32,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -4831,12 +4831,15 @@
 <p>The bulk action:</p>
 <ul>
 <li>uses the selected instance profile for server, authentication, and certificate settings</li>
-<li>uses the current visible database list, loading it first when needed</li>
+<li>uses the current visible database list, loading it first when needed and consuming the returned database-name array directly</li>
 <li>creates one Connection Manager profile per visible database</li>
 <li>skips any existing profile with the same inherited server and database name</li>
 <li>stores the created profiles in the active workspace profile store</li>
+<li>for SQL-auth instances, inherits <code>hasPassword</code>, <code>secretRef</code>, and <code>credentialMode</code> so the Agent vault resolves the existing secret without putting plaintext into browser state</li>
 </ul>
 <p>Profile names are generated as <code>&lt;instance profile name&gt; / &lt;database name&gt;</code>. Review the generated list after creation and delete profiles for databases that should not be reused by operators.</p>
+<p>The button remains busy during both on-demand discovery and profile creation. If it reports that no databases are visible, use <code>Refresh Databases</code> and verify that the selected instance login can enumerate databases. Discovery still uses the paired Agent and does not fall back to a direct browser or hosted API SQL connection.</p>
+<p>Password-masked SQL-auth profiles are expected: the page sends <code>instanceProfileId</code>, and the API/Agent resolves the saved <code>secretRef</code>. A blank browser-side <code>password</code> is therefore not a reason to block database discovery.</p>
 <h2 id="test-a-connection"><a class="headerlink" href="#test-a-connection" title="Permanent link">¶</a>Test A Connection</h2>
 <p>Click <code>Test Connection</code> to call <code>POST /api/servers/explorer</code>.</p>
 <p>A successful test shows:</p>
@@ -5117,7 +5120,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../javascripts/mermaid-init.js"></script>
       
