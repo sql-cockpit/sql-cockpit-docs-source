@@ -33,6 +33,153 @@ Use this only when the operator accepts losing workstation-local users, sessions
 5. Complete `/setup` again.
 6. Recreate or revalidate saved profiles before running write workflows.
 
+## Consolidate lane SQLite state
+
+Local lanes use one SQLite app-state database:
+
+`E:\ProgramData\SqlCockpit\<lane>\data\sql-cockpit\sql-cockpit-local.sqlite`
+
+Older installs may also contain legacy files such as:
+
+- `data\sql-cockpit\saas-agent-control.sqlite`
+- `data\query-analyser\query-analyser.db`
+- `data\sql-editor\sql-query-editor.db`
+- `data\query-audit\query-audit.db`
+- `data\sql-cockpit\rbac-auth.sqlite`
+
+Do not delete those files until their rows have been copied into
+`sql-cockpit-local.sqlite` and the lane has restarted cleanly.
+
+From `E:\Scripts\SQL Tables Sync`, run the migration with the lane's actual
+paths:
+
+```powershell
+node .\scripts\runtime\migrate-sqlite-lane-state.js `
+  --target "E:\ProgramData\SqlCockpit\test\data\sql-cockpit\sql-cockpit-local.sqlite" `
+  --agentControl "E:\ProgramData\SqlCockpit\test\data\sql-cockpit\saas-agent-control.sqlite" `
+  --queryAnalyser "E:\ProgramData\SqlCockpit\test\data\query-analyser\query-analyser.db" `
+  --sqlQueryEditor "E:\ProgramData\SqlCockpit\test\data\sql-editor\sql-query-editor.db" `
+  --queryAudit "E:\ProgramData\SqlCockpit\test\data\query-audit\query-audit.db" `
+  --rbacAuth "E:\ProgramData\SqlCockpit\test\data\sql-cockpit\rbac-auth.sqlite"
+```
+
+Safe validation:
+
+1. Restart the lane web API.
+2. Confirm `GET /health` returns `200`.
+3. Sign in and check saved users/workspaces.
+4. Confirm SQL Editor tabs/history, Query Analyser history, Query Audit, and
+   Agent Binding still show expected data.
+5. Archive the legacy files only after the lane has run successfully from
+   `sql-cockpit-local.sqlite`.
+
+## Reset a forgotten local admin password
+
+Use this break-glass procedure when a local SQL Cockpit administrator has forgotten their password but the lane's local auth SQLite database is still available. This does not reset SQL Server logins, saved profile secrets, LDAP, or Azure AD accounts.
+
+Prerequisites:
+
+- Run the commands on the host that owns the SQL Cockpit lane.
+- Use an elevated or service-account shell only if that is required to read the lane data directory.
+- Back up the lane SQLite file before changing it.
+- Pick a temporary password that meets the local policy: at least 12 characters with upper-case, lower-case, and numeric characters.
+
+Common lane auth-store paths:
+
+| Lane | Auth store path |
+| --- | --- |
+| Local development checkout | `E:\Scripts\SQL Tables Sync\sql-cockpit-api\data\sql-cockpit\sql-cockpit-local.sqlite` |
+| Development service lane | `E:\ProgramData\SqlCockpit\dev\data\sql-cockpit\sql-cockpit-local.sqlite` |
+| Test service lane | `E:\ProgramData\SqlCockpit\test\data\sql-cockpit\sql-cockpit-local.sqlite` |
+| Production service lane | `E:\ProgramData\SqlCockpit\prod\data\sql-cockpit\sql-cockpit-local.sqlite` |
+
+If the lane was started with a custom `--configStorePath` or `SQL_COCKPIT_CONFIG_STORE_PATH`, use that same SQLite file unless `SQL_COCKPIT_AUTH_STORE_PATH` explicitly points somewhere else.
+
+From `E:\Scripts\SQL Tables Sync\sql-cockpit-api`, run:
+
+```powershell
+$authStorePath = 'E:\ProgramData\SqlCockpit\dev\data\sql-cockpit\sql-cockpit-local.sqlite'
+$adminUsername = 'admin'
+$newPassword = Read-Host -AsSecureString 'New temporary password'
+$plainPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR(
+    [Runtime.InteropServices.Marshal]::SecureStringToBSTR($newPassword)
+)
+
+$env:SQL_COCKPIT_AUTH_STORE_PATH = $authStorePath
+$env:SQL_COCKPIT_NEW_ADMIN_PASSWORD = $plainPassword
+$env:SQL_COCKPIT_ADMIN_USERNAME = $adminUsername
+
+@'
+const { getAuthStore } = require('./lib/local-auth');
+
+(async () => {
+  const store = getAuthStore(process.cwd());
+  const users = store.listUsers();
+  const admin = users.find((user) =>
+    String(user.username || '').toLowerCase() === String(process.env.SQL_COCKPIT_ADMIN_USERNAME || '').toLowerCase()
+  );
+  if (!admin) throw new Error('Local admin user was not found.');
+  if (!admin.isLocalAdmin) throw new Error('Selected user is not a local administrator.');
+
+  await store.adminResetLocalPassword({
+    actorUserId: admin.id,
+    targetUserId: admin.id,
+    newPassword: process.env.SQL_COCKPIT_NEW_ADMIN_PASSWORD,
+    requestId: 'manual-local-admin-password-reset'
+  });
+
+  console.log(JSON.stringify({ ok: true, username: admin.username }));
+})().catch((error) => {
+  console.error(error?.message || String(error));
+  process.exit(1);
+});
+'@ | node -
+
+Remove-Item Env:\SQL_COCKPIT_NEW_ADMIN_PASSWORD -ErrorAction SilentlyContinue
+Remove-Item Env:\SQL_COCKPIT_ADMIN_USERNAME -ErrorAction SilentlyContinue
+Remove-Item Env:\SQL_COCKPIT_AUTH_STORE_PATH -ErrorAction SilentlyContinue
+```
+
+If repeated failed sign-ins have locked the account, clear only failed local login events for that principal:
+
+```powershell
+$authStorePath = 'E:\ProgramData\SqlCockpit\dev\data\sql-cockpit\sql-cockpit-local.sqlite'
+$adminUsername = 'admin'
+
+$env:SQL_COCKPIT_AUTH_STORE_PATH = $authStorePath
+$env:SQL_COCKPIT_ADMIN_USERNAME = $adminUsername
+
+@'
+const Database = require('better-sqlite3');
+const db = new Database(process.env.SQL_COCKPIT_AUTH_STORE_PATH);
+const username = String(process.env.SQL_COCKPIT_ADMIN_USERNAME || '').trim();
+const user = db.prepare('SELECT id, username FROM users WHERE lower(username) = lower(?)').get(username);
+if (!user) throw new Error('Local admin user was not found.');
+
+const result = db.prepare(`
+  DELETE FROM login_events
+  WHERE provider_type = 'local'
+    AND lower(principal) = lower(?)
+    AND success = 0
+`).run(username);
+
+console.log(JSON.stringify({ ok: true, username: user.username, deletedFailedEvents: result.changes }));
+db.close();
+'@ | node -
+
+Remove-Item Env:\SQL_COCKPIT_ADMIN_USERNAME -ErrorAction SilentlyContinue
+Remove-Item Env:\SQL_COCKPIT_AUTH_STORE_PATH -ErrorAction SilentlyContinue
+```
+
+Safe validation:
+
+1. Start or confirm the target lane is healthy, for example `GET http://127.0.0.1:8280/health` for the development lane.
+2. Sign in through that lane's login page with the temporary password.
+3. Change the password again from the user account page if the temporary value was shared through an incident channel.
+4. Review `/admin/audit` or `login_events` for the reset window and keep the backup until the admin confirms access.
+
+Operational risk is high: this is direct local-auth database maintenance. Use it only from the lane host, protect the temporary password, and do not delete successful login events or unrelated users.
+
 ## Change a flag safely
 
 1. Export the current `Sync.TableConfig` row.

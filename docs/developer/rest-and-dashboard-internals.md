@@ -86,7 +86,7 @@ flowchart LR
     A[Open Fleet row action] --> B[Build sql-editor workspaceTabKey]
     B --> C[/Navigate to /sql-editor?workspaceTabKey=.../]
     C --> D[GET /api/sql/editor/tabs?workspaceTabKey=...]
-    D --> E[(data/sql-editor/sql-query-editor.db)]
+    D --> E[(data/sql-cockpit/sql-cockpit-local.sqlite)]
     F[Editor text changes] --> G[POST /api/sql/editor/tabs]
     G --> E
 ```
@@ -98,7 +98,7 @@ Current per-user preference keys:
 - `notificationPreferences`
 - `connectionProfiles`
 - `instanceProfiles`
-- `sql editor tab workspace state` is persisted in `data/sql-editor/sql-query-editor.db` (`sql_query_tabs` table), keyed by signed-in user and `workspaceTabKey`
+- `sql editor tab workspace state` is persisted in `data/sql-cockpit/sql-cockpit-local.sqlite` (`sql_query_tabs` table), keyed by signed-in user and `workspaceTabKey`
 
 `defaultPage` stores the route opened when the user visits `/`. The default is `/` (**Welcome Page**). Invalid or missing values fall back to `/`, legacy `/new-tab` values are normalized to `/`, and users change the value from the Account page profile settings.
 

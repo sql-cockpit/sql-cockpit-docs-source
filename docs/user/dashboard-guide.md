@@ -13,7 +13,7 @@ The left navigation groups pages as follows:
 | Overview | Estate Overview, Instance Manager, Connection Manager |
 | Operations & Monitoring | Agent Jobs (Agent Manager, Runtime Analysis, Job Run History), Agent Runtime Comparison, Query Audit, SQL Bridge, Task Manager |
 | Data Synchronisation | Sync Overview, Sync Launchpad, Fleet View, Live Inspector, Schema Studio, Largest Tables, Index Inspector, Batch Copilot, Bulk Intake |
-| Development & Engineering | Server Explorer, Visual Server Explorer, Views, Stored Procedures, SSIS Inspector, SQL Editor, Query Analyser |
+| Development & Engineering | Server Explorer, Visual Server Explorer, Views, Stored Procedures, SSIS Inspector, SQL Editor, Query Analyser, Migration Dependency Planner |
 | Access & Administration | Users, RBAC, Workspaces (directory, create team, invites), Roles, Auth Providers, Active Sessions, Audit Logs |
 | System Configuration | SMTP Settings, Cache, Service Manager |
 
@@ -58,6 +58,7 @@ Instance Manager SQL Server discovery results render as a table with instance, s
 | View Mapper | Map all views in a selected schema and inspect nested view/table dependencies. | Live SQL catalog metadata only. |
 | View Repointer | Create workspace projects for one selected view and generate repointed local-view SQL through the shared repointer wizard. | Live SQL catalog metadata or Object Cache selectors, plus local workspace project snapshots. |
 | SQL Editor | Draft SQL with syntax highlighting, run lint checks, or load object definitions from command palette. | Local browser state plus object-search read APIs. |
+| Migration Dependency Planner | Paste T-SQL and generate a static migration dependency checklist plus review scaffold. | Browser input plus session-scoped static API response only. |
 | SQL Agent Manager | Read Agent jobs and start or stop approved jobs. | Live `msdb`; job actions call `sp_start_job` or `sp_stop_job`. |
 | SQL Bridge | Review bridge overview counters, inspect invocation history under `/sql-bridge/history`, and copy T-SQL usage snippets under `/sql-bridge/usage`. | Read-only `Cockpit.InvocationLog` and `Cockpit.InvocationOutput` in the bridge control database. |
 | Fleet | Review sync rows and state summaries. | `Sync.TableConfig` and `Sync.TableState`. |
