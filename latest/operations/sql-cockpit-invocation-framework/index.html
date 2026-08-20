@@ -4902,6 +4902,15 @@
 <td>Match invocation, destination, session id, host/login/program, and request state. Prefer cancellation for healthy invocations. Force-kill active SQL only after confirming impact, then wait for rollback before restarting.</td>
 </tr>
 <tr>
+<td>Staging validation failure category</td>
+<td><code>Cockpit.InvocationLog.ErrorCategory</code>; executor JSON error output</td>
+<td><code>StagingValidationFailed</code>, with exit code <code>33</code></td>
+<td>Not emitted unless the protected staging row count differs from the source count</td>
+<td><code>FetchRemote</code> protected staging validation, <code>Cockpit.Sql.psm1</code>, and <code>Invoke-Cockpit.ps1</code></td>
+<td>The destination replacement is deliberately not applied. The failure can indicate source rows changed during the copy, filtering behavior, triggers, or destination-side row effects.</td>
+<td>Read the canonical invocation error for both row counts, confirm the existing destination is intact, investigate source/destination behavior, and retry only after the counts can remain consistent.</td>
+</tr>
+<tr>
 <td>Wrapper invocation name</td>
 <td><code>Cockpit.FetchRemote @DefaultName</code>; <code>Cockpit.FetchRemoteIncremental @DefaultName</code></td>
 <td>Any non-empty text up to 200 characters; for incremental calls it must also be a safe state name when <code>@StateName</code> is omitted</td>
