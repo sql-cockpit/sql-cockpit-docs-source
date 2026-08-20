@@ -4807,7 +4807,7 @@
 <td><code>POST</code></td>
 <td><code>/api/sql-bridge/invocations/{id}/cancel</code></td>
 <td><code>sqlBridge.invocations.cancel</code></td>
-<td>Request cancellation through <code>Cockpit.CancelBridgeInvocation</code>. The optional JSON <code>reason</code> is stored with the request. Hosted tenants route the write through the paired local Agent.</td>
+<td>Request cancellation through <code>Cockpit.CancelBridgeInvocation</code>. The Agent permits this exact procedure under the <code>sql-bridge</code> write policy while rejecting unlisted SQL writes. The optional JSON <code>reason</code> is stored with the request. Hosted tenants route the write through the paired local Agent.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
