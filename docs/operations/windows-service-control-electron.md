@@ -383,3 +383,19 @@ UI diagnostics behavior (current implementation):
 - if settings cannot be read, the status bar now includes a `settings:` warning with the exact error.
 - if the control API is unreachable, the managed-components table now shows `No managed components available` with the runtime error text.
 - if the Windows service query fails, the status bar now includes a `service:` warning while keeping the rest of the UI responsive.
+
+## Agent binding diagnostics and safe recovery
+
+The Agent Binding dialog now separates the local Agent Windows service state from portal registration. Saving a code does not install an Agent. Use **Pair Agent / save code**, then **Install Agent for this lane** when required, or restart the installed lane Agent. **Check pairing status** reports the next action and preserves typed fields.
+
+Before saving or installing, the existing public `/api/auth/status` identity must match the lane's `cloudTenantLane` (falling back to `environmentId`). HTTPS is required except for localhost development; redirects and URLs containing credentials, paths, queries or fragments are rejected. The identity check transmits no binding code, token, cookie or service key. A missing, unreachable or mismatched identity fails before settings/credentials change. Older portals must be updated to report identity.
+
+Replacing an existing registration or clearing a saved invite requires explicit confirmation. A locally stored token is not an online heartbeat: verify the paired Agent in the matching portal. Missing/stopped services do not poll indefinitely. Installer secrets use a temporary payload restricted to the current user, Administrators and SYSTEM and removed after completion; invitations are not embedded in process command lines.
+
+On 2026-10-15, a saved development invite could not be consumed because no lane Agent service existed. Port 8280 was also occupied by a RecordedStartup4/test2 artifact process, so the browser correctly reported that unexpected runtime. Health HTTP 200 alone is insufficient: verify environment identity and listener ownership before pairing. Do not relabel an incorrect runtime or patch test/prod artifacts in place.
+
+## Instances across workspaces
+
+The Instances page is a read-only administrator inventory of every personal and team workspace in the selected local environment. It reads through the existing auth store APIs rather than the Bridge configured user/workspace. Run Control Center elevated; an unelevated request fails closed. Profiles show workspace and owner labels, and shared team workspaces appear once. Passwords and credential references are not returned in inventory rows. Profile IDs that repeat across workspaces remain distinct rows. Create, edit, and delete profiles in the web portal with the intended workspace selected. This prevents cross-workspace writes from aggregate rows. No customer SQL connection is made to list saved profiles.
+
+This aggregate view is local-only. When SQL_COCKPIT_STATE_PROVIDER=azure-sql is configured for the environment it refuses local enumeration; use the hosted portal instead. It does not merge environments or tenants. Refresh the selected environment after saving a profile in the web portal. Source Electron validation is required; no installer rebuild is needed.

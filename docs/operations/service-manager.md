@@ -78,3 +78,11 @@ The following settings were added as desktop operational controls.
 3. Confirm health is `healthy` for all components.
 4. If one service is unhealthy, run `Restart` on that service first.
 5. If repeated unhealthy status continues, inspect the component log path shown in the service row.
+
+## Empty list with Unauthorized responses
+
+Service Manager lists SQL Cockpit background components, not saved SQL Server instance profiles. SQL instances belong in Instance Manager and Estate Overview.
+
+When using a Windows Service Host, the web component must receive `SQL_COCKPIT_SERVICE_HOST_API_KEY` matching that environment's host `apiKey`. Store it only in the ACL-restricted Service Control settings (`components[id=web-api].environment` in the selected environment). Valid value: the exact host credential; default: empty. It is read by `createRemoteRuntimeComponentManager` and sent server-to-server in `X-SqlCockpit-Service-Key`. Never expose it in browser code, screenshots or logs. A missing or incorrect value causes upstream Unauthorized responses even for a signed-in portal administrator. Do not disable host authentication to work around this.
+
+Safe repair: back up the restricted settings, configure the matching key for the intended environment, and restart that environment's Service Host so its web process receives the updated environment. This briefly interrupts that environment's background components. Check `/health`, then authenticated `GET /api/runtime/components`, and confirm all component rows appear. Coordinate credential rotation on both sides and restart the consuming process. Dev was repaired and verified on 15 October 2026; Test/Prod settings were not changed by that repair.
