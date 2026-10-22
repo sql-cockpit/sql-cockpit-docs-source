@@ -869,6 +869,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="If you forget the local password">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compact-desktop-console-toolbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact desktop console toolbar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4770,6 +4787,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="If you forget the local password">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compact-desktop-console-toolbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact desktop console toolbar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4961,6 +4995,33 @@ SQL Cockpit switches the active workspace directly. After <code>POST /api/worksp
 <li>run setup again to create a new local administrator</li>
 </ol>
 <p>This does not change the SQL Server config database. It only resets the workstation-local SQL Cockpit auth store.</p>
+<h3 id="compact-desktop-console-toolbar"><a class="headerlink" href="#compact-desktop-console-toolbar" title="Permanent link">¶</a>Compact desktop console toolbar</h3>
+<p>At desktop widths (1024px and above), the shared console toolbar uses 36px search and utility controls and a 52px minimum header height to leave more room for operational content. Narrower screens retain 44px touch controls and a 68px minimum header height. The header can wrap when space is limited. This is a presentation change in <code>components/dashboard-shell.js</code>; it introduces no stored preference or database flag.</p>
+<p>To verify safely, open the console at desktop and mobile widths, check search suggestions, account controls, and focus mode, and confirm keyboard focus remains visible. No database operation is required.</p>
+<p>The workspace tab strip’s <strong>New tab</strong> (+) button has a bordered surface matching the tab controls in light and dark themes. In the Welcome Page’s Active Workspace widget, the workspace selector and <strong>Switch</strong> button share one row, including on narrow screens. The selector shrinks to fit while the action stays visible. Existing workspace-switch permissions and disabled states still apply. Verify at 375px and desktop widths; these layout changes add no settings or persistence.</p>
+<p>The navigation drawer uses a short perspective-fold transition with edge shadow when entering or leaving focus mode, and when opening or closing mobile navigation. Desktop content shifts with the drawer. Hidden navigation becomes invisible and unavailable to keyboard focus after closing. These navigation transitions run even when the operating system requests reduced motion; other reduced-motion rules still apply. No additional preference is stored. Check the focus toggle in both directions and mobile navigation; enable reduced motion to confirm that drawer, focus rail, backdrop, and desktop content transitions still animate.</p>
+<p>Opening or closing the navigation drawer via the focus-mode toggle does not show a toast notification. The drawer itself provides visual feedback, and the existing focus-mode preference is still saved. Verify by toggling repeatedly and checking that no focus-mode notifications accumulate.</p>
+<p>A successful workspace switch shows one <strong>Workspace changed</strong> toast naming the active workspace, including after the normal page reload. A transient marker in browser tab session storage (<code>sql-cockpit:workspace-switch-toast</code>) contains the target workspace key and creation timestamp; it is consumed once when that workspace is active and expires after 60 seconds. This is not a user setting or database flag. Storage failures do not block switching, but may omit the toast. Safe verification: switch to an accessible workspace, confirm one toast after reload, then refresh again and confirm it does not repeat. Calls that explicitly disable notifications remain silent.</p>
+<p>Console button icons use a shared fully rounded border and solid background in the header, navigation, and page content. Light and dark themes use corresponding solid surfaces; primary buttons use a matching blue icon surface, while edit, success, and danger icons use their parent button’s semantic background and border colours. Icons retain their existing labels and action colours. This adds no preference. Verify icon-only controls, icon-and-text actions, disabled buttons, and narrow layouts in both themes.</p>
+<p>Navigation items and workspace tab titles share route-based feature icons instead of dots. The active route icon uses a highlighted border, background, and glyph; live navigation items retain a small green status marker. Child routes inherit their feature’s icon, and focus navigation uses the same icons. No preferences or permissions change. Check parent/child navigation, desktop tabs, and the mobile active-tab selector.</p>
+<p>Focus-mode navigation rail controls use a single fully rounded outer border with an unframed icon inside, including navigation links and the drawer toggle. Active highlighting and tooltips remain available.</p>
+<p>Focus-rail section headings use compact 8px type with reduced letter spacing to fit the narrow rail; All rail sections use readable names: Overview, Operations, Data Sync, Development, Account, Access, and System. Expanded-menu heading sizes are unchanged.</p>
+<p>The compact agent-status control is centred on the same axis as the focus-rail navigation and uses the same 36px diameter. Its connection-state colour and status marker remain visible.</p>
+<p>Desktop workspace tabs size to their full titles rather than shrinking or truncating labels. When tabs exceed the available row width, use horizontal scrolling or the tab navigation controls. The mobile tab selector keeps its compact layout.</p>
+<p>Workspace-tab arrows scroll smoothly in either direction over 320ms, moving by roughly 70% of the visible strip. Selecting a hidden tab smoothly brings it into view without scrolling the page. Already visible tabs stay in place. Wheel input interrupts the animation. Like the drawer animation, this runs regardless of reduced-motion preference. Verify both arrows and selection of an off-screen tab with an overflowing tab row.</p>
+<p>Navigation help controls use one circular button surface with a plain question-mark glyph, avoiding nested circles in both expanded and focus navigation. Hover, keyboard focus, and help text behavior are preserved.</p>
+<p>The header logo is visible only when the full navigation drawer is hidden: in desktop focus mode or with mobile navigation closed. The expanded drawer supplies the logo when open. No additional preference is stored.</p>
+<p>Expanded navigation groups use a minus icon with the same rounded border and solid surface as the collapsed group’s plus icon. The toggle retains its accessible expanded state and label.</p>
+<p>Welcome Page widget buttons use fully rounded borders: icon-only actions are circular and text actions are pill-shaped. Icon-only actions use a single outer button frame. This includes widget content and widget editing controls. No settings or stored layout values change.</p>
+<p>Across the console, buttons containing only an icon (directly or in a single wrapper) use the button’s outer frame without a second border or background on the icon. Buttons with visible text retain their separate icon styling.</p>
+<p>Expanded navigation labels shrink only on overflow, down to a 10px minimum, and recalculate on resize and font loading. Parent labels start at 14px and child labels at 12px. Longer labels retain a full-name tooltip. No preference is stored.</p>
+<p>Shared dashboard text fitting (<code>components/use-dashboard-text-fit.js</code>) reduces overflowing compact button labels, headings, and truncated labels in half-pixel steps to an 11px minimum (already smaller text is not enlarged). It restores original sizing when space returns and responds to new content, font loading, and resizing. Paragraphs, table data, code, form values, editable content, and icon wrappers are excluded. Existing navigation fitting retains its 10px minimum. Developers can opt a subtree out with <code>data-text-fit="off"</code> or opt a label in with <code>data-text-fit</code>. No user setting or database flag is introduced. Check long labels at desktop and narrow widths, then widen the window to confirm recovery.</p>
+<p>Light-mode neutral buttons and focus-rail links use a stronger slate outline for visibility on white surfaces. Rail hover borders darken, while active navigation retains a blue border. Primary and semantic action button borders keep their intent colours. Dark-mode styling is unchanged.</p>
+<p>Header notification, theme, and account controls share a 36px desktop footprint and 44px mobile footprint. The account trigger displays the saved profile image as a standalone circular avatar, with initials when no image is set. It retains accessible button semantics for keyboard operation and menu state, without a surrounding button surface. Existing profile-picture storage is unchanged.</p>
+<p>Widget task rows, open-tab rows, starting-point actions, and action-search results use 16px horizontal and 10px vertical padding so text and icons remain inset from their rounded edges. Icon-only controls retain their existing dimensions.</p>
+<p>The expanded navigation drawer is 260px wide. Desktop content and explorer-overlay offsets match this width; the compact focus rail remains 84px. Existing label fitting accommodates the narrower menu.</p>
+<p>Expanded-menu help buttons use an 18px circle and an 11px question mark; focus-rail help controls retain their compact sizing.</p>
+<p>In demo mode, the command-palette overlay starts below the demo banner using <code>--demo-banner-height</code> (40px fallback). Its panel height subtracts the banner and existing outer padding in both opening and closing states. Verify by opening search with the demo banner visible and checking that the banner and palette controls remain accessible.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
