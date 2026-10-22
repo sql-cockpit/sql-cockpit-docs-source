@@ -34,7 +34,7 @@ All endpoints require authentication. Unsafe execution is admin-only.
 
 ## Stored History
 
-History is stored in local SQLite at `data/query-analyser/query-analyser.db`.
+History is stored in local SQLite at `data/sql-cockpit/sql-cockpit-local.sqlite`.
 
 The `query_analysis_history` table stores query hash, fingerprint, server, database, connection id, timings, read/write counters, row count, status, warning count, suggestion count, optional plan XML, analysis JSON, and user id.
 

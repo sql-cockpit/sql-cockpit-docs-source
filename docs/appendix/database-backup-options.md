@@ -7,3 +7,5 @@ Phase 1 supports full copy-only backups with checksums. SQL Server must run on t
 The temporary download is available for one hour. API or Agent restart invalidates it; create a fresh backup if it expires. Downloads contain database data: protect the file and check the SHA-256 shown on the page. Verification is not a substitute for a test restore. No restore operation is provided.
 
 Only compression is configurable in this phase. Differential/log backups, custom server destinations, scheduling, remote SQL Server file transfer and hosted tenant downloads are not implemented. Existing Object Backups archive definitions and remain a separate feature. The workflow never opens SQL connections from the browser or hosted API.
+
+Demo Mode blocks backup creation and other state-changing operations, including for administrators. This guide describes a normal authorized installation; it does not grant public demo visitors backup access.
