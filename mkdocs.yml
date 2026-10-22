@@ -98,6 +98,10 @@ nav:
     - Local Auth and Preferences: user/local-auth-and-preferences.md
     - Localization Preferences: user/localization-preferences.md
     - Operational Safety: user/operational-safety.md
+  - Feature Guides:
+    - AutoPilot Conversations: appendix/autopilot-conversations.md
+    - Database Backup Downloads: appendix/database-backup-options.md
+    - Responsive Section Menus: appendix/mobile-section-navigation.md
   - Operations:
     - Common Tasks: operations/common-tasks.md
     - Platform Components: operations/platform-components.md
