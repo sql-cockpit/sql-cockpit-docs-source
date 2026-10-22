@@ -98,6 +98,10 @@ nav:
     - Local Auth and Preferences: user/local-auth-and-preferences.md
     - Localization Preferences: user/localization-preferences.md
     - Operational Safety: user/operational-safety.md
+  - Feature Guides:
+    - AutoPilot Conversations: appendix/autopilot-conversations.md
+    - Database Backup Downloads: appendix/database-backup-options.md
+    - Responsive Section Menus: appendix/mobile-section-navigation.md
   - Operations:
     - Common Tasks: operations/common-tasks.md
     - Platform Components: operations/platform-components.md
@@ -105,6 +109,7 @@ nav:
     - Runbooks: operations/runbooks.md
     - Troubleshooting: operations/troubleshooting.md
     - Windows Service Host: operations/windows-service-host.md
+    - Runtime Lane Isolation: operations/runtime-lane-isolation.md
     - Windows Service Control (Electron): operations/windows-service-control-electron.md
     - SQL Cockpit Prerequisite Setup: operations/sql-cockpit-prerequisite-setup.md
     - SQL Cockpit Agent Identity: operations/sql-cockpit-agent-identity.md
@@ -128,6 +133,7 @@ nav:
     - Object Search Ingest Guardrails: operations/object-search-ingest-guardrails.md
     - SQL Editor: operations/sql-editor.md
     - Query Analyser: operations/query-analyser.md
+    - Migration Dependency Planner: operations/migration-dependency-planner.md
     - Analyze Table Batch Sizing: operations/analyze-table-batch-sizing.md
     - Batch Size Caveats: operations/batch-size-caveats.md
     - Analyze Run Logs: operations/analyze-run-logs.md
