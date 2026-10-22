@@ -2,6 +2,8 @@
 
 `Start-SqlTablesSyncNotificationsServer.ps1` launches a standalone local notification service for SQL Cockpit. Long-running PowerShell jobs, Node scripts, and other local tools can post custom events into this service, and the web frontend listens continuously over WebSocket so the header bell updates without a manual refresh.
 
+Authenticated dashboard sessions keep this WebSocket feed connected on every dashboard page. Producers can scope a notification with `metadata.recipientUserIds`; the client hides it unless the signed-in user is listed. Object Search team sync resolves all active team members server-side, including with asynchronous hosted state providers, and its terminal lifecycle notifications raise deduplicated in-app toasts as well as bell notifications.
+
 Task Manager also publishes `task-run` notifications when a run is queued,
 dispatched, started, or completed. The Task Manager page consumes those
 WebSocket frames directly to show socket health, recent scheduler activity, live
@@ -51,7 +53,7 @@ frames.
   - Slack setup uses `PUT /api/integrations/slack` and `POST /api/integrations/slack/test`
   - PagerDuty setup uses `PUT /api/integrations/pagerduty` and `POST /api/integrations/pagerduty/test`
   - the dashboard loads recent items from `GET /api/notifications/recent`
-  - the dashboard subscribes to `ws://127.0.0.1:8090/ws` or the `wss://` equivalent for continuous updates
+  - server-side publishing and health checks use the loopback listener, while the dashboard receives same-origin public URLs from runtime discovery; for example, `wss://sqlcockpit-prod.peacocks.co.uk/ws` and `https://sqlcockpit-prod.peacocks.co.uk/api/notifications/recent`
   - when the operator enables browser alerts and grants site permission, newly arriving realtime events can also raise native browser notifications through a service-worker-backed browser notification path, with an in-page Notification API fallback
 - retention model: in-memory ring buffer only, capped at 250 recent notifications; restarting the service clears that buffer
 - code paths affected:

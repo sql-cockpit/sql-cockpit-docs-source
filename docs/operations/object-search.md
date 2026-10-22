@@ -13,6 +13,57 @@ No endorsement by the Apache Software Foundation or the Lucene.NET project is im
 
 ## Local-only cache model
 
+The API `GET /health` response is generated in-process and does not start PowerShell or contact a SQL Server. This keeps the Service Host liveness probe responsive while a long Object Search Agent operation is running. The response retains the existing `status`, `listenPrefix`, and `configDatabase` fields. Detailed Object Search readiness remains available from authenticated `GET /api/object-search/health` and sync progress from `GET /api/object-search/status`.
+
+After a sync is accepted, the dashboard retains its optimistic running state if the first status poll still contains a different operation's terminal result. Polling continues until the Agent writes the accepted operation id, preventing an earlier success or failure from suppressing the current operation's terminal toast.
+
+Completed progress is operation-scoped: the modal uses the run's `totalSources`, `uploadedDocumentCount`, and `deletedDocumentCount`. Historical manifests remain available for per-instance “last sync” summaries but do not inflate the completed run totals.
+
+Instance Manager loads Object Search history alongside the active workspace's saved profiles. Rows are not allowed to interpret an outstanding history request as “Never”; they show a compact loading state until the response is available. If the active workspace changes while a status request is in flight, the dashboard immediately issues a replacement request for the new workspace instead of waiting for the 60-second background interval.
+
+## Instance Manager sync modes
+
+The **Sync** control on each saved instance row is a dropdown. **Incremental sync** is the normal, compute-efficient default; **Full sync** is an explicit bootstrap and repair operation. Both choices use the paired SQL Cockpit Agent and the authenticated `POST /api/object-search/index/sync-connection` route. The request requires `instanceProfileId`, accepts `mode=Incremental|Full`, and returns `202 Accepted` with an operation id. The route requires `objectSearch.sync`. No browser or API-host customer SQL connection is opened.
+
+### Incremental workflow
+
+```mermaid
+flowchart LR
+    U[User selects Incremental sync] --> API[API validates profile and workspace]
+    API --> A[Paired Agent]
+    A --> D[Enumerate visible databases]
+    D --> W{Previous successful watermark?}
+    W -- No --> F[Promote source to full sync]
+    W -- Yes --> Q[Read metadata modified since watermark]
+    Q --> M[Read current catalog manifest]
+    M --> C[Upload changed documents]
+    C --> X[Delete stale document IDs]
+    X --> S[Write manifest and success watermark]
+```
+
+Incremental mode still connects to every visible database and reads its current object-id manifest. This lower-cost catalog pass is necessary to identify dropped objects because SQL Server does not provide a single reliable tombstone stream for every indexed child-object type.
+
+### Full workflow
+
+```mermaid
+flowchart LR
+    U[User selects Full sync] --> API[API validates profile and workspace]
+    API --> A[Paired Agent]
+    A --> D[Enumerate visible databases]
+    D --> Q[Read all supported SQL metadata]
+    Q --> B[Build all searchable documents]
+    B --> C[Upload complete document set]
+    C --> X[Delete IDs absent from rebuilt manifest]
+    X --> S[Write new manifest and success watermark]
+```
+
+| Mode | Use | SQL catalog work | Lucene writes | Operational cost |
+| --- | --- | --- | --- | --- |
+| Incremental | Routine refresh | Changed-object extraction plus full ID manifest | Changed/new documents and stale deletes | Lower; depends on modification dates and the previous successful watermark |
+| Full | First population, cleared cache, corrupt/missing manifest, suspected drift | All supported metadata | Complete document set and stale deletes | Highest SQL, Agent CPU, memory, network, and local indexing cost |
+
+Safe test: run a full sync in a non-production lane, then run incremental with no schema changes and confirm minimal uploads. Alter one test object and confirm the next incremental run refreshes it. Drop that object and confirm the next incremental run deletes its stale search document. No database flag, settings-table value, or schema migration controls the dropdown.
+
 ```mermaid
 flowchart LR
     A[Tracked Code and Templates] --> B[Local settings.local.json]
@@ -42,6 +93,31 @@ flowchart LR
 13. Select an indexed object and use the detail dropdown action `Open in SQL Editor` to verify definition hand-off into the editor workflow.
 14. Start an object-search sync and confirm the dashboard refreshes object-search status from the notifications WebSocket; the fallback status refresh should be no more frequent than roughly once per minute unless the sync progress modal is open. Confirm the streamed sync log uses the larger modal space, auto-scrolls by default, preserves the current scroll position when **Auto-scroll** is unchecked, and appends new lines without replacing the whole panel.
 15. Open `/` and confirm Welcome Page status-backed widgets call `GET /api/object-search/status?compact=1`; use full `GET /api/object-search/status` for manifest or sync-diagnostic work.
+
+## Team lifecycle notifications
+
+Object Search sync publishes one authoritative lifecycle notification at the API/Agent boundary for `Started`, `Complete`, `Failed`, or `Locked`. Personal-workspace notifications target the initiating user. Team-workspace notifications resolve every active team member and place those user ids in `metadata.recipientUserIds`. Terminal notifications also raise a deduplicated in-app toast for each signed-in recipient with an open dashboard session.
+
+```mermaid
+sequenceDiagram
+    participant User as Initiating user
+    participant API as SQL Cockpit API
+    participant Agent as Paired SQL Cockpit Agent
+    participant Notify as Notifications service
+    participant Team as Active team members
+    User->>API: Start Object Search sync
+    API->>Notify: Started (recipient user ids)
+    API->>Agent: sql.object-search.sync RPC
+    Agent-->>API: Success or failure
+    API->>Notify: Complete / Failed / Locked
+    Notify-->>Team: Bell notification + terminal toast
+```
+
+Publishing is best effort and does not change the sync result. Recent lifecycle records are in memory and are cleared when the notifications service restarts. Failure messages are operational text returned by the Agent; Agent errors must not contain passwords, tokens, or full connection strings.
+
+The HTTPS lane proxy gives `POST /api/object-search/index/*` requests 31 minutes, slightly longer than the Agent's 30-minute Object Search RPC deadline. Other HTTP requests retain the two-minute proxy timeout. This prevents the initiating browser from receiving a false `502` while a healthy full sync is still running. Every new operation also clears the status file's `lastError` before progress begins, so a previous failed server cannot contaminate the next run's status.
+
+The start endpoints return `202 Accepted` immediately with `{ "status": "accepted", "operationId": "..." }`; they do not wait for SQL extraction or indexing to finish. The API continues the Agent RPC in the background, while Instance Manager follows the persisted status and realtime notification stream. Treat the terminal `Complete`, `Failed`, or `Locked` notification for that operation id as the authoritative result.
 
 ## Sync Log Streaming
 
@@ -291,6 +367,10 @@ Operational behavior:
 - Resume uses the durable spool and checkpoint hashes; if an old checkpoint has
   no hashes, the completed manifest is rebuilt from spooled documents and the
   prior manifest where possible.
+- Resume is source-local. A new operation does not skip a completed database
+  merely because an older manifest/status row exists. The manifest is a catalog
+  baseline, not proof that its documents still exist in Lucene; every source is
+  therefore revalidated after an admin cache clear.
 - Lucene count verification still compares the live source count with
   `manifestDocumentCount`, so skipping unchanged uploads does not hide missing
   or stale documents.
@@ -429,6 +509,7 @@ Robustness note:
 - after documents are built, the sync writes `documents.json` and `checkpoint.json` under `sync.spoolDirectory`; rerunning the same source/mode can reload that spool and continue from the saved `uploadedThrough` or `deletedThrough` offsets
 - resumed `documents.json` files are expanded back into individual documents before upload batching; a resume log should show the original document count, not `Loaded 1 spooled documents`, for a large database
 - completed source syncs remove their spool directory after the manifest file is written
+- a later operation reprocesses completed sources instead of trusting their old status row; only the currently incomplete source can resume from its durable spool checkpoint
 - if a spool is no longer wanted, stop the sync and delete the matching source directory under `sql-cockpit-object-search/data/object-search/spool`; the next run will rebuild from SQL Server
 - upload batches are adaptively split on `400 Bad Request`; if the failing unit is a single document, the sync log records the document id, object type, qualified name, and parent before the run fails
 - a failed stale-delete or manifest-write step can still fail the run, but this happens after the fresh documents have been uploaded
