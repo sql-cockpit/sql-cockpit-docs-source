@@ -186,7 +186,7 @@ The usage page shows copyable T-SQL snippets in a vertical tab control for commo
 
 ## Destination Write Permissions
 
-SQL Bridge Agent mode writes destination tables as the Windows identity running `SqlCockpit.Agent`, not as the SSMS user who called the wrapper. For `LocalTable` writes, `Cockpit.FetchRemote` reads `Cockpit.BridgeConfig.AgentServiceLogin` and automatically attempts to prepare the destination database user and schema grants before it queues Agent work.
+SQL Bridge Agent mode writes destination tables as the Windows identity running `SqlCockpit.Agent`, not as the SSMS user who called the wrapper. For `LocalTable` writes, `Cockpit.FetchRemote` reads `Cockpit.BridgeConfig.AgentServiceLogin` and attempts to prepare the destination database user and schema grants before queuing Agent work only when `Cockpit.BridgeConfig.AutoGrantDestinationPermissions` permits it. The historical default is true; review this operational grant policy before installation.
 
 The automatic grant creates the destination database user for the Agent login when missing, grants `CREATE TABLE` in the destination database, grants `SELECT`, `INSERT`, `UPDATE`, and `DELETE` on the destination schema, and grants `ALTER` when `@TruncateDestination = 1`. SQL Server requires `CREATE TABLE` for first-time destination table creation and `ALTER` for `TRUNCATE TABLE`.
 

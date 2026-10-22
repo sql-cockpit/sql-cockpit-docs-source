@@ -17,7 +17,7 @@ flowchart LR
 
 - `POST /api/migration-dependency-planner/analyse`
 
-All calls require an authenticated SQL Cockpit browser session. The endpoint is same-origin and session-scoped.
+All calls require an authenticated SQL Cockpit browser session. The endpoint is same-origin and session-scoped. Demo Mode currently blocks this POST through the central default-deny policy, even though the normal operation only analyses text. Administrator roles do not bypass Demo Mode.
 
 ## Request Shape
 

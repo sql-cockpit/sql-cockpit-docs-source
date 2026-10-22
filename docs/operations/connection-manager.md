@@ -46,7 +46,7 @@ For older SQL Server instances, set `Encryption` to `Disabled / older SQL Server
 
 SQL Bridge access is a separate per-profile policy. Service Control `View -> Connections` shows the selected lane's profile source of truth: environment, workspace, profile user, bridge config path, and profile store path. A saved connection must have `sqlBridgeEnabled: true` before `Cockpit.FetchRemote` or `Cockpit.FetchRemoteIncremental` can use it. The `sqlBridgePrincipals` list contains exact SQL login or database user names allowed to use that profile from T-SQL; use `*` only for an intentional all-bridge-users exception.
 
-SQL connection compatibility options are stored inside the profile JSON as `encryptConnection` and `trustServerCertificate`. `encryptConnection: false` is the compatibility default for older SQL Server estates; set it to `true` only when the target SQL Server requires encrypted connections. Operational risk is medium: enabling encryption can break older SQL Server instances that cannot complete the newer TLS/login handshake, while disabling encryption may be unacceptable in environments that require encrypted SQL traffic. Change one non-production profile first, use Service Control `Test Credentials`, then run a small SQL Bridge call before using the profile for large transfers.
+SQL connection compatibility options are stored inside the profile JSON as `encryptConnection` and `trustServerCertificate`. `encryptConnection: false` is the compatibility default for older SQL Server estates; configure it according to the approved transport policy. The generic Agent database-RPC path has its own secure defaults; do not infer its behavior from the compatibility UI default. Operational risk is medium: enabling encryption can break older SQL Server instances that cannot complete the newer TLS/login handshake, while disabling encryption may be unacceptable in environments that require encrypted SQL traffic. Change one non-production profile first, use Service Control `Test Credentials`, then run a small SQL Bridge call before using the profile for large transfers.
 
 The Agent resolver checks SQL Bridge profile policy before reading any Agent-side profile secret. A caller with `EXECUTE` on `Cockpit.FetchRemote` cannot use an arbitrary `@SourceProfileId` unless the selected profile allows that SQL caller. Prefer `@SourceProfileId` over `@SourceProfileName` in stored jobs because ids are stable and names can become ambiguous in team workspaces.
 
@@ -106,11 +106,11 @@ Connection Manager also renders the same hierarchy as a compact inline page menu
 
 For SQL authentication, saving runs an Agent-routed credential test before the profile becomes trusted. Use `Test Connection` in the web dashboard, or `Test Credentials` in SQL Cockpit Service Control, when you want to validate credentials without saving.
 
-If an older SQL Server target fails with an SSL provider/login-handshake error, set `Encryption` to `Disabled / older SQL Server compatibility`, leave `Trust server certificate` enabled, and test again.
+For an older SQL Server target with an SSL/login-handshake failure, first verify its TLS support and the approved encryption policy. The compatibility controls can disable encryption or relax certificate validation, but neither should be changed merely to hide an unexplained connection failure. Test an approved exception on a non-production profile.
 
 If the profile will be used from SQL Bridge, open the same lane in Service Control, enable SQL Bridge access, and add the exact SQL login or database user that will run the bridge stored procedure. The web dashboard preserves these policy fields when editing a profile, but Service Control is the operator UI for changing them.
 
-Saved profiles stay in the Connection Manager vault. They do not appear in Instance Manager or SQL Agent Manager.
+Saved database profiles are scoped to the authorized workspace profile store. Instance profiles are a separate profile collection; SQL Agent Manager uses the authorized instance collection.
 
 ## Bulk Create Connections
 
@@ -172,8 +172,8 @@ When an Instance profile is selected, Connection Manager copies its server and c
 ## Operational Interface
 
 - storage location:
-  - saved profiles: browser local storage key `sql-cockpit-database-connection-profiles`
-  - instance profiles: not stored here; Instance Manager uses `sql-cockpit-instance-profiles`
+  - saved profiles: selected workspace preferences `connectionProfiles` behind the auth/state store
+  - instance profiles: separate `instanceProfiles` collection in the selected workspace
   - live metadata test results: browser memory only
 - valid values:
   - instance profile: any saved Instance Manager profile visible in the current workspace
@@ -182,17 +182,17 @@ When an Instance profile is selected, Connection Manager copies its server and c
 - defaults:
   - no instance profile is selected in a blank draft
   - authentication and TLS settings inherit from the selected instance profile
-  - saved profile table defaults to empty in a new browser profile
+  - saved profile table defaults to empty for a new workspace
 - code paths affected:
-  - `webapp/components/dashboard-client.js`
-  - `webapp/app/connection-manager/page.js`
-  - `webapp/app/connection-manager/new/page.js`
-  - `webapp/app/connection-manager/share/page.js`
-  - `webapp/server.js`
+  - `sql-cockpit-api/components/dashboard-client.js`
+  - `sql-cockpit-api/app/connection-manager/page.js`
+  - `sql-cockpit-api/app/connection-manager/new/page.js`
+  - `sql-cockpit-api/app/connection-manager/share/page.js`
+  - `sql-cockpit-api/server.js`
   - `Invoke-SqlTablesSyncRestOperation.ps1`
   - `SqlTablesSync.Tools.psm1`
 - operational risk:
-  - SQL authentication passwords may be stored in the selected Instance Manager profile when that instance uses SQL auth
+  - SQL authentication secrets stay in the paired Agent credential store; workspace metadata holds secret references
   - metadata checks can reveal database and object names to anyone with browser access
   - bulk creation can quickly make many database names visible in the active workspace profile list
   - table layout is a presentation-only change; it does not change who can read, edit, share, or delete profiles
@@ -201,7 +201,7 @@ When an Instance profile is selected, Connection Manager copies its server and c
   2. Use `Refresh Databases` and confirm the database list is expected.
   3. Test one low-risk profile before using it in downstream workflows.
   4. Prefer a least-privilege login with metadata visibility appropriate for the task.
-  5. Avoid saving SQL-auth instance passwords on shared workstations.
+  5. Protect access to the Agent credential store and use approved workspace membership.
   6. After bulk creation, delete profiles for databases that should not be reused.
   7. Delete stale profiles after a migration, role change, or credential rotation.
   8. Restart SQL Cockpit after API or PowerShell route changes.
@@ -221,13 +221,11 @@ Check:
 
 ### Saved Profiles Are Missing
 
-Saved profiles are browser-local. They do not follow you to another browser, another Windows profile, or another machine.
-
-Check whether browser data was cleared, a private browsing window is being used, or the page was opened under a different host name or port.
+Check the signed-in account, selected workspace, team membership and lane state provider. Browser-local storage keys belong to older installs and may require an explicit migration; clearing browser data is not a repair for missing provider-backed profiles.
 
 ### SQL Agent Manager Has No Instances
 
-Open Instance Manager and save an instance profile. SQL Agent Manager reads `sql-cockpit-instance-profiles`, not the Connection Manager vault.
+Open Instance Manager and save an instance profile. SQL Agent Manager reads authorized instance profiles, not the database connection collection.
 
 ## Screenshot
 

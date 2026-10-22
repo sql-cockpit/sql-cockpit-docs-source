@@ -37,7 +37,7 @@ Use this only when the operator accepts losing workstation-local users, sessions
 
 Local lanes use one SQLite app-state database:
 
-`E:\ProgramData\SqlCockpit\<lane>\data\sql-cockpit\sql-cockpit-local.sqlite`
+`%ProgramData%\SqlCockpit\Environments\<lane>\data\sql-cockpit\sql-cockpit-local.sqlite`
 
 Older installs may also contain legacy files such as:
 
@@ -51,11 +51,11 @@ Do not delete those files until their rows have been copied into
 `sql-cockpit-local.sqlite` and the lane has restarted cleanly.
 
 From `E:\Scripts\SQL Tables Sync`, run the migration with the lane's actual
-paths:
+paths. The source paths below are historical examples; the target is the new canonical lane root. Stop the lane and back up all sources and the target before running. This procedure is for SQLite local state only, not hosted SQL Server state:
 
 ```powershell
 node .\scripts\runtime\migrate-sqlite-lane-state.js `
-  --target "E:\ProgramData\SqlCockpit\test\data\sql-cockpit\sql-cockpit-local.sqlite" `
+  --target "$env:ProgramData\SqlCockpit\Environments\test\data\sql-cockpit\sql-cockpit-local.sqlite" `
   --agentControl "E:\ProgramData\SqlCockpit\test\data\sql-cockpit\saas-agent-control.sqlite" `
   --queryAnalyser "E:\ProgramData\SqlCockpit\test\data\query-analyser\query-analyser.db" `
   --sqlQueryEditor "E:\ProgramData\SqlCockpit\test\data\sql-editor\sql-query-editor.db" `
@@ -81,7 +81,9 @@ Prerequisites:
 
 - Run the commands on the host that owns the SQL Cockpit lane.
 - Use an elevated or service-account shell only if that is required to read the lane data directory.
-- Back up the lane SQLite file before changing it.
+- Stop the target lane and back up the exact SQLite file before changing it.
+- This is a local-only, offline break-glass exception. It refuses hosted/provider-backed state and Demo Mode; do not disable those protections to use this runbook.
+- These snippets require `SQL_COCKPIT_ALLOW_LOCAL_AUTH_BREAK_GLASS=true`, unset by default. This variable gates only the manual snippets, not the application. Set it in the temporary operator shell only after reviewing the backup and selected lane; remove it immediately afterwards.
 - Pick a temporary password that meets the local policy: at least 12 characters with upper-case, lower-case, and numeric characters.
 
 Common lane auth-store paths:
@@ -98,23 +100,30 @@ If the lane was started with a custom `--configStorePath` or `SQL_COCKPIT_CONFIG
 From `E:\Scripts\SQL Tables Sync\sql-cockpit-api`, run:
 
 ```powershell
-$authStorePath = 'E:\ProgramData\SqlCockpit\dev\data\sql-cockpit\sql-cockpit-local.sqlite'
+$authStorePath = Join-Path $env:ProgramData 'SqlCockpit/Environments/dev/data/sql-cockpit/sql-cockpit-local.sqlite'
 $adminUsername = 'admin'
 $newPassword = Read-Host -AsSecureString 'New temporary password'
-$plainPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR(
-    [Runtime.InteropServices.Marshal]::SecureStringToBSTR($newPassword)
-)
+$passwordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($newPassword)
+try { $plainPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($passwordPointer) }
+finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($passwordPointer) }
 
 $env:SQL_COCKPIT_AUTH_STORE_PATH = $authStorePath
 $env:SQL_COCKPIT_NEW_ADMIN_PASSWORD = $plainPassword
 $env:SQL_COCKPIT_ADMIN_USERNAME = $adminUsername
 
 @'
+if (process.env.SQL_COCKPIT_ALLOW_LOCAL_AUTH_BREAK_GLASS !== 'true') throw new Error('Explicit local break-glass opt-in is required.');
+const provider = String(process.env.SQL_COCKPIT_STATE_PROVIDER || '').toLowerCase();
+const authProvider = String(process.env.SQL_COCKPIT_AUTH_STORE_PROVIDER || '').toLowerCase();
+if (!['', 'sqlite', 'sqlite3', 'file'].includes(provider) || !['', 'sqlite'].includes(authProvider)
+    || process.env.SQL_COCKPIT_RUNTIME_PROFILE === 'hosted-tenant' || process.env.SQL_COCKPIT_HOSTING_MODEL === 'tenant'
+    || String(process.env.SQL_COCKPIT_DEMO_MODE).toLowerCase() === 'true') throw new Error('Hosted/provider-backed and demo state are not supported.');
+if (!process.env.SQL_COCKPIT_AUTH_STORE_PATH || !require('node:fs').existsSync(process.env.SQL_COCKPIT_AUTH_STORE_PATH)) throw new Error('An existing explicit local auth file is required.');
 const { getAuthStore } = require('./lib/local-auth');
 
 (async () => {
   const store = getAuthStore(process.cwd());
-  const users = store.listUsers();
+  const users = await store.listUsers();
   const admin = users.find((user) =>
     String(user.username || '').toLowerCase() === String(process.env.SQL_COCKPIT_ADMIN_USERNAME || '').toLowerCase()
   );
@@ -138,23 +147,32 @@ const { getAuthStore } = require('./lib/local-auth');
 Remove-Item Env:\SQL_COCKPIT_NEW_ADMIN_PASSWORD -ErrorAction SilentlyContinue
 Remove-Item Env:\SQL_COCKPIT_ADMIN_USERNAME -ErrorAction SilentlyContinue
 Remove-Item Env:\SQL_COCKPIT_AUTH_STORE_PATH -ErrorAction SilentlyContinue
+Remove-Item Env:\SQL_COCKPIT_ALLOW_LOCAL_AUTH_BREAK_GLASS -ErrorAction SilentlyContinue
+$plainPassword = $null
 ```
 
-If repeated failed sign-ins have locked the account, clear only failed local login events for that principal:
+If repeated failed sign-ins have locked the account, re-check the backup, stopped lane and explicit break-glass opt-in before clearing only failed local login events for that principal. This is destructive audit maintenance and does not restore a disabled account:
 
 ```powershell
-$authStorePath = 'E:\ProgramData\SqlCockpit\dev\data\sql-cockpit\sql-cockpit-local.sqlite'
+$authStorePath = Join-Path $env:ProgramData 'SqlCockpit/Environments/dev/data/sql-cockpit/sql-cockpit-local.sqlite'
 $adminUsername = 'admin'
 
 $env:SQL_COCKPIT_AUTH_STORE_PATH = $authStorePath
 $env:SQL_COCKPIT_ADMIN_USERNAME = $adminUsername
 
 @'
+if (process.env.SQL_COCKPIT_ALLOW_LOCAL_AUTH_BREAK_GLASS !== 'true') throw new Error('Explicit local break-glass opt-in is required.');
+const provider = String(process.env.SQL_COCKPIT_STATE_PROVIDER || '').toLowerCase();
+const authProvider = String(process.env.SQL_COCKPIT_AUTH_STORE_PROVIDER || '').toLowerCase();
+if (!['', 'sqlite', 'sqlite3', 'file'].includes(provider) || !['', 'sqlite'].includes(authProvider)
+    || process.env.SQL_COCKPIT_RUNTIME_PROFILE === 'hosted-tenant' || process.env.SQL_COCKPIT_HOSTING_MODEL === 'tenant'
+    || String(process.env.SQL_COCKPIT_DEMO_MODE).toLowerCase() === 'true') throw new Error('Hosted/provider-backed and demo state are not supported.');
+if (!process.env.SQL_COCKPIT_AUTH_STORE_PATH || !require('node:fs').existsSync(process.env.SQL_COCKPIT_AUTH_STORE_PATH)) throw new Error('An existing explicit local auth file is required.');
 const Database = require('better-sqlite3');
-const db = new Database(process.env.SQL_COCKPIT_AUTH_STORE_PATH);
+const db = new Database(process.env.SQL_COCKPIT_AUTH_STORE_PATH, { fileMustExist: true });
 const username = String(process.env.SQL_COCKPIT_ADMIN_USERNAME || '').trim();
-const user = db.prepare('SELECT id, username FROM users WHERE lower(username) = lower(?)').get(username);
-if (!user) throw new Error('Local admin user was not found.');
+const user = db.prepare('SELECT id, username, is_local_admin FROM users WHERE lower(username) = lower(?)').get(username);
+if (!user || !user.is_local_admin) throw new Error('Local admin user was not found.');
 
 const result = db.prepare(`
   DELETE FROM login_events
@@ -169,6 +187,8 @@ db.close();
 
 Remove-Item Env:\SQL_COCKPIT_ADMIN_USERNAME -ErrorAction SilentlyContinue
 Remove-Item Env:\SQL_COCKPIT_AUTH_STORE_PATH -ErrorAction SilentlyContinue
+Remove-Item Env:\SQL_COCKPIT_ALLOW_LOCAL_AUTH_BREAK_GLASS -ErrorAction SilentlyContinue
+$plainPassword = $null
 ```
 
 Safe validation:
@@ -179,6 +199,8 @@ Safe validation:
 4. Review `/admin/audit` or `login_events` for the reset window and keep the backup until the admin confirms access.
 
 Operational risk is high: this is direct local-auth database maintenance. Use it only from the lane host, protect the temporary password, and do not delete successful login events or unrelated users.
+
+Legacy E-drive paths in the table are examples from older installs. Resolve the actual configured path first; new service lanes use `%ProgramData%/SqlCockpit/Environments/<lane>`. Do not execute either snippet against a running provider or a guessed path.
 
 ## Change a flag safely
 
