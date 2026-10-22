@@ -287,3 +287,5 @@ On phones the command palette fills the viewport with compact search, modes, fil
 The top bar, left navigation drawer/rail and right account drawer share a near-black grey gradient in both appearance themes. Drawer text and workspace controls retain light foregrounds for contrast.
 
 On mobile the palette mode switcher is the top row, with the shared animated circular close control. The demo banner has an OK acknowledgement that hides it for the current mounted session and releases its reserved height; all read-only restrictions and accessible action explanations remain active. No preference is persisted.
+
+The demo banner uses a compact two-column layout: heading and message stacked on the left, with the acknowledgement button on the right. Phone spacing and typography are reduced while preserving the full read-only explanation.
