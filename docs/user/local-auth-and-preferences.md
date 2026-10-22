@@ -275,3 +275,11 @@ The account drawer close control uses a pointer cursor, hover rotation and press
 The mobile navigation drawer and account drawer share the same circular close-control styling and hover/press feedback.
 
 Statistics cards use neutral glass surfaces in both themes. Muted blue, sage and sand accents distinguish informational, success and warning tones in icons and badges without saturated card fills.
+
+The dashboard top bar uses a charcoal-to-black gradient in both light and dark themes, with light search text and outlined utility controls. The selected theme still controls the rest of the dashboard.
+
+On phone viewports below 640px, both navigation and account drawers fill the available screen width and dynamic viewport height, with safe-area padding. Demo mode keeps the banner visible above the drawers. Larger screens retain the compact drawer widths.
+
+The workspace tab manager fills phone viewports below 640px, retaining search and footer actions with a scrollable tab list and explicit close control. Safe-area insets and the demo banner remain respected.
+
+On phones the command palette fills the viewport with compact search, modes, filters and results. Repeated criteria and keyboard hints are hidden. Object details replace the results with a Back to results control instead of splitting the screen.
