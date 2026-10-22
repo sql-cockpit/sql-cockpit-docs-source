@@ -239,3 +239,10 @@ Open Instance Manager and save an instance profile. SQL Agent Manager reads auth
 
 *Connection Manager stores reusable database-level connection profiles and validates them against live SQL Server metadata.*
 <!-- AUTO_SCREENSHOT:connection-manager:END -->
+
+
+### Estate Overview with SQL Server Express
+
+Estate Overview detects Express/LocalDB using `SERVERPROPERTY(EngineEdition)=4` or the edition name. It skips msdb SQL Server Agent queries, returns `Agent.IsSupported=false`, `Agent.IsAvailable=false`, and a human-readable `Agent.UnsupportedReason`, and does not subtract health points for this edition limitation. Supported-edition query/permission failures continue to populate `Agent.Error` and affect health. The UI shows **Not supported** and disables Open Agent Manager for Express/LocalDB instead of implying that zero jobs were checked. The SQL Cockpit Agent is still required; it is separate from SQL Server Agent.
+
+`POST /api/sql-estate/overview` retains existing authentication/RBAC and active-workspace saved-profile resolution. Send `instances` containing `instanceProfileId`; response instances include Server, Capacity, Databases, Agent and Health. All customer SQL executes through the paired SQL Cockpit Agent. Refreshing performs read-only metadata queries and may add server load. Safe test: refresh one Express profile and confirm supported metrics remain visible and SQL Agent is Not supported; compare one Standard/Developer profile and confirm jobs and genuine query errors still appear. No flags or persistent settings are added. Seven edition-classification cases and PowerShell/JSX syntax were checked; a live Express instance was not available for this task.

@@ -234,3 +234,44 @@ The expanded navigation drawer is 260px wide. Desktop content and explorer-overl
 Expanded-menu help buttons use an 18px circle and an 11px question mark; focus-rail help controls retain their compact sizing.
 
 In demo mode, the command-palette overlay starts below the demo banner using `--demo-banner-height` (40px fallback). Its panel height subtracts the banner and existing outer padding in both opening and closing states. Verify by opening search with the demo banner visible and checking that the banner and palette controls remain accessible.
+
+
+### Glass console surfaces
+
+The console uses a shared glass theme with the existing blue/slate palette: translucent panels, fine highlighted edges, soft depth shadows, frosted navigation/header/tab surfaces, and inset form controls. Shared panels, cards, Welcome Page widgets, account menus, command palette, and footer use the theme. Semantic warning/success/danger colours remain distinct. Widget/panel padding is 20px on desktop and 16px on narrow screens; widget grids use 16px gaps (12px on mobile).
+
+Implementation: `dashboard-glass-theme` in `components/dashboard-shell.js`, surface classes in `components/dashboard-density.js`, and scoped CSS tokens in `app/globals.css`. These are presentation tokens, not database settings; the existing saved `theme` preference still selects light or dark. No new persisted settings, API endpoints, permissions, or agent routing changes are introduced. The system reduced-transparency preference selects opaque surfaces; browsers without blur support retain translucent gradient backgrounds. Blur is restricted to structural surfaces to limit rendering cost.
+
+Safe verification: inspect Welcome Page widgets, a form, a table, navigation/focus mode, and account menu in both themes at desktop and mobile widths. Confirm text and intent colours remain legible and popups are not clipped. The agent-required boundary remains enforced; do not bypass it to inspect live SQL workflows.
+
+Glass-theme actions are compact: 32px normal buttons, 28px compact actions, and 30px icon-only widget buttons, with 12px labels. Text widget rows use 8px vertical/14px horizontal padding; shared form inputs use a 34px minimum. The header is 56px minimum. Coarse-pointer devices retain 40px action targets. Panel spacing stays generous. These are CSS presentation defaults, not stored settings.
+
+The glass workspace tab strip is 46px high with a blue active underline. The Tabs manager is available whenever multiple tabs are open, not only after seven tabs. Its focused search filters open tabs by title or page name, with an explicit empty result state; route icons match the sidebar. Closing and switching retain existing behavior, and keyboard focus reveals tab-close controls. Search is transient React state and resets when reopening the desktop manager; no stored preference is added. Verify filtering, empty results, selection, close, and the mobile selector.
+
+The scrolling tab strip uses equal 30px arrow/new-tab controls, subtle edge fades where additional tabs exist, and compact circular close targets. Scroll arrows disable at the corresponding end. Overflow updates on scrolling, resizing, and tab changes. Full titles, smooth scrolling, reordering, and the mobile selector remain available. Check both scroll limits and opening/closing tabs while the row overflows.
+
+Hovering over a workspace-tab scroll arrow with a mouse scrolls continuously at approximately 360px/second. Scrolling stops on pointer leave/cancel, window blur, reaching the end, wheel input, or unmount. Click and keyboard activation still perform the existing smooth page step; touch does not trigger hover scrolling. No preference is stored. Verify both hover directions and stopping after moving the pointer away.
+
+The command palette now applies light-mode styling throughout results, details, filters, scope selectors, metadata chips, and definition preview. Light mode uses dark slate text, white inputs, pale blue selected controls, and visible boundaries; dark mode retains its existing palette. Verify Server Objects and Quick Links, selected filters, empty results, detail/code previews, and disabled controls in both themes.
+
+Quick Links and object-result cards in the light command palette use white surfaces, slate titles/descriptions, pale route badges, and a blue selected-row indicator. Hover and keyboard selection have separate visible states; result rows retain their existing navigation behavior.
+
+AutoPilot chat uses light message surfaces, blue user bubbles/avatars, readable prompt suggestions, dark slate composer text, and darker warning/success labels in light mode. These styles apply to embedded command-palette chat and standalone chat, while dark mode remains unchanged. This changes presentation only; inference destinations, providers, and conversation data are unaffected.
+
+Notification and theme controls share the same header-button sizing class: 36px desktop and 44px mobile, including when notifications are inside a popup wrapper.
+
+Core Navigation widget links use the same route icons as the sidebar and workspace tabs, alongside their text labels.
+
+The profile avatar opens a viewport-anchored right-side glass drawer with a mirrored 3D fold on opening and closing. Existing workspace selection, account, workspace management, preferences, and sign-out controls are retained. The drawer scrolls independently, traps keyboard focus, closes on Escape/backdrop/close button, and restores focus to the avatar. The animation follows the existing navigation override for reduced motion. Demo-banner spacing is retained. No new preference is stored. The duplicate footer product label is removed; copyright and build details remain.
+
+The footer copyright notice includes the current calendar year and 8px vertical/12px horizontal padding.
+
+Mobile navigation is independent of the saved desktop focus-mode preference: the hamburger remains available and opens the left drawer even if desktop focus mode is enabled. Opening the right account drawer closes the mobile left drawer, and opening mobile navigation closes the account drawer. Escape closes either drawer. Desktop focus-mode toggles retain the left navigation/rail behavior.
+
+Upcoming tasks on the Welcome Page are informational panels with compact rounded corners and consistent internal padding. Use the task scheduler action in the widget header to manage tasks.
+
+The account drawer close control uses a pointer cursor, hover rotation and press feedback. The close-control animation remains enabled regardless of the system motion preference.
+
+The mobile navigation drawer and account drawer share the same circular close-control styling and hover/press feedback.
+
+Statistics cards use neutral glass surfaces in both themes. Muted blue, sage and sand accents distinguish informational, success and warning tones in icons and badges without saturated card fills.

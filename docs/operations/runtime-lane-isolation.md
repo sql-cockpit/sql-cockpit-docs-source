@@ -74,3 +74,17 @@ Explicit missing settings/lane requests fail closed. Opening scoped lane setting
 The Host passes the data root to child processes as `SQL_COCKPIT_SQLITE_STATE_ROOT` and sets the local auth file below that root. Hosted `SQL_COCKPIT_STATE_PROVIDER` selection remains inherited; local paths do not authorize hosted SQLite fallback. Release and commit values are metadata, not artifact promotion.
 
 Confidence: contracts checked against merged API/Agent code and ServiceManager PR #3. Source tests and isolated diagnostics passed there; existing-state migration and a real SCM installation remain unverified. No installed lane is changed by this documentation PR.
+
+
+## Dev agent reports prod identity or Prisma rejects lane fields
+
+A running Windows service is not proof of successful API heartbeats. In the dev repair on 22 October 2026, the agent live-log pipe reported HTTP 403 (`Agent environment [prod] cannot heartbeat against tenant environment [dev]`). The installed agent binary predated lane-identity support even though `Agent.EnvironmentId` in its appsettings was `dev`. Updating the dev agent exposed a second stale artifact: Prisma rejected `environmentId` in `agent.updateMany`. Regenerating both provider clients resolved that validation failure. The console then reported the existing agent Online.
+
+Safe repair procedure:
+
+1. Read only the affected lane’s service identity, configured API URL, and redacted agent live logs. Never print tokens or replace a binding to hide a version mismatch.
+2. Back up the lane agent app directory. Stop only its named Windows service. Deploy a compatible development build while preserving its appsettings, object-search settings, service account, credential namespace, and binding credentials. Restart that service.
+3. If the API reports unknown Prisma fields, stop only that lane’s web-api through its Service Host component API before running `npm run prisma:generate` in its API source. The generated query engine can be locked while Node is running. Start the same component afterward; no production Next build or database reset is needed.
+4. Check heartbeat success, the console’s Online/Bound indicator, and lane component health. Retry the originally blocked page. Continue checking after at least one heartbeat interval.
+
+The 22 October dev-only binary backup is under `%ProgramData%/SqlCockpit/Environments/dev/Agent/backup-before-lane-repair-20261022`. Keep this private because the backup contains lane configuration. The isolated SDK is under the current administrator’s `.codex/runtimes/dotnet8`; it is not required by the deployed self-contained agent. Test and prod were not changed. Confidence: confirmed by live agent logs, generated-client errors, and restored Online status.
