@@ -283,3 +283,7 @@ On phone viewports below 640px, both navigation and account drawers fill the ava
 The workspace tab manager fills phone viewports below 640px, retaining search and footer actions with a scrollable tab list and explicit close control. Safe-area insets and the demo banner remain respected.
 
 On phones the command palette fills the viewport with compact search, modes, filters and results. Repeated criteria and keyboard hints are hidden. Object details replace the results with a Back to results control instead of splitting the screen.
+
+The top bar, left navigation drawer/rail and right account drawer share a near-black grey gradient in both appearance themes. Drawer text and workspace controls retain light foregrounds for contrast.
+
+On mobile the palette mode switcher is the top row, with the shared animated circular close control. The demo banner has an OK acknowledgement that hides it for the current mounted session and releases its reserved height; all read-only restrictions and accessible action explanations remain active. No preference is persisted.
