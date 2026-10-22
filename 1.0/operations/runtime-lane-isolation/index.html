@@ -1282,6 +1282,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#dev-agent-reports-prod-identity-or-prisma-rejects-lane-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dev agent reports prod identity or Prisma rejects lane fields
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4706,6 +4717,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#dev-agent-reports-prod-identity-or-prisma-rejects-lane-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dev agent reports prod identity or Prisma rejects lane fields
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4874,6 +4896,16 @@
 </table>
 <p>The Host passes the data root to child processes as <code>SQL_COCKPIT_SQLITE_STATE_ROOT</code> and sets the local auth file below that root. Hosted <code>SQL_COCKPIT_STATE_PROVIDER</code> selection remains inherited; local paths do not authorize hosted SQLite fallback. Release and commit values are metadata, not artifact promotion.</p>
 <p>Confidence: contracts checked against merged API/Agent code and ServiceManager PR <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/sql-cockpit/sql-cockpit/issues/3" title="GitHub Issue: sql-cockpit/sql-cockpit #3">#3</a>. Source tests and isolated diagnostics passed there; existing-state migration and a real SCM installation remain unverified. No installed lane is changed by this documentation PR.</p>
+<h2 id="dev-agent-reports-prod-identity-or-prisma-rejects-lane-fields"><a class="headerlink" href="#dev-agent-reports-prod-identity-or-prisma-rejects-lane-fields" title="Permanent link">¶</a>Dev agent reports prod identity or Prisma rejects lane fields</h2>
+<p>A running Windows service is not proof of successful API heartbeats. In the dev repair on 22 October 2026, the agent live-log pipe reported HTTP 403 (<code>Agent environment [prod] cannot heartbeat against tenant environment [dev]</code>). The installed agent binary predated lane-identity support even though <code>Agent.EnvironmentId</code> in its appsettings was <code>dev</code>. Updating the dev agent exposed a second stale artifact: Prisma rejected <code>environmentId</code> in <code>agent.updateMany</code>. Regenerating both provider clients resolved that validation failure. The console then reported the existing agent Online.</p>
+<p>Safe repair procedure:</p>
+<ol>
+<li>Read only the affected lane’s service identity, configured API URL, and redacted agent live logs. Never print tokens or replace a binding to hide a version mismatch.</li>
+<li>Back up the lane agent app directory. Stop only its named Windows service. Deploy a compatible development build while preserving its appsettings, object-search settings, service account, credential namespace, and binding credentials. Restart that service.</li>
+<li>If the API reports unknown Prisma fields, stop only that lane’s web-api through its Service Host component API before running <code>npm run prisma:generate</code> in its API source. The generated query engine can be locked while Node is running. Start the same component afterward; no production Next build or database reset is needed.</li>
+<li>Check heartbeat success, the console’s Online/Bound indicator, and lane component health. Retry the originally blocked page. Continue checking after at least one heartbeat interval.</li>
+</ol>
+<p>The 22 October dev-only binary backup is under <code>%ProgramData%/SqlCockpit/Environments/dev/Agent/backup-before-lane-repair-20261022</code>. Keep this private because the backup contains lane configuration. The isolated SDK is under the current administrator’s <code>.codex/runtimes/dotnet8</code>; it is not required by the deployed self-contained agent. Test and prod were not changed. Confidence: confirmed by live agent logs, generated-client errors, and restored Online status.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>

@@ -1553,6 +1553,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Screenshot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estate-overview-with-sql-server-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estate Overview with SQL Server Express
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4914,6 +4931,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Screenshot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estate-overview-with-sql-server-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estate Overview with SQL Server Express
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -5180,10 +5214,13 @@
 <p>Open Instance Manager and save an instance profile. SQL Agent Manager reads authorized instance profiles, not the database connection collection.</p>
 <h2 id="screenshot"><a class="headerlink" href="#screenshot" title="Permanent link">¶</a>Screenshot</h2>
 <!-- AUTO_SCREENSHOT:connection-manager:START -->
-<p></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../../assets/screenshots/connection-manager.png" data-title="Connection Manager page in SQL Cockpit" data-desc-position="bottom"><img alt="Connection Manager page in SQL Cockpit" src="../../assets/screenshots/connection-manager.png"></a></p>
 <p><em>Connection Manager stores reusable database-level connection profiles and validates them against live SQL Server metadata.</em></p>
 <!-- AUTO_SCREENSHOT:connection-manager:END -->
 
+<h3 id="estate-overview-with-sql-server-express"><a class="headerlink" href="#estate-overview-with-sql-server-express" title="Permanent link">¶</a>Estate Overview with SQL Server Express</h3>
+<p>Estate Overview detects Express/LocalDB using <code>SERVERPROPERTY(EngineEdition)=4</code> or the edition name. It skips msdb SQL Server Agent queries, returns <code>Agent.IsSupported=false</code>, <code>Agent.IsAvailable=false</code>, and a human-readable <code>Agent.UnsupportedReason</code>, and does not subtract health points for this edition limitation. Supported-edition query/permission failures continue to populate <code>Agent.Error</code> and affect health. The UI shows <strong>Not supported</strong> and disables Open Agent Manager for Express/LocalDB instead of implying that zero jobs were checked. The SQL Cockpit Agent is still required; it is separate from SQL Server Agent.</p>
+<p><code>POST /api/sql-estate/overview</code> retains existing authentication/RBAC and active-workspace saved-profile resolution. Send <code>instances</code> containing <code>instanceProfileId</code>; response instances include Server, Capacity, Databases, Agent and Health. All customer SQL executes through the paired SQL Cockpit Agent. Refreshing performs read-only metadata queries and may add server load. Safe test: refresh one Express profile and confirm supported metrics remain visible and SQL Agent is Not supported; compare one Standard/Developer profile and confirm jobs and genuine query errors still appear. No flags or persistent settings are added. Seven edition-classification cases and PowerShell/JSX syntax were checked; a live Express instance was not available for this task.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
