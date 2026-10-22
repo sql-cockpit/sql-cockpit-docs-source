@@ -99,12 +99,17 @@ Use `Create Profiles For All Databases` when you want to seed Connection Manager
 The bulk action:
 
 - uses the selected instance profile for server, authentication, and certificate settings
-- uses the current visible database list, loading it first when needed
+- uses the current visible database list, loading it first when needed and consuming the returned database-name array directly
 - creates one Connection Manager profile per visible database
 - skips any existing profile with the same inherited server and database name
 - stores the created profiles in the active workspace profile store
+- for SQL-auth instances, inherits `hasPassword`, `secretRef`, and `credentialMode` so the Agent vault resolves the existing secret without putting plaintext into browser state
 
 Profile names are generated as `<instance profile name> / <database name>`. Review the generated list after creation and delete profiles for databases that should not be reused by operators.
+
+The button remains busy during both on-demand discovery and profile creation. If it reports that no databases are visible, use `Refresh Databases` and verify that the selected instance login can enumerate databases. Discovery still uses the paired Agent and does not fall back to a direct browser or hosted API SQL connection.
+
+Password-masked SQL-auth profiles are expected: the page sends `instanceProfileId`, and the API/Agent resolves the saved `secretRef`. A blank browser-side `password` is therefore not a reason to block database discovery.
 
 ## Test A Connection
 

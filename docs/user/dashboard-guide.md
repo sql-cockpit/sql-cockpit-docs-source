@@ -30,7 +30,11 @@ Each left-navigation item includes a question-mark help icon. Hover or keyboard-
 
 Users with SaaS agent visibility also see an Agent connection indicator in the left navigation. It polls `GET /api/saas/agents` every 30 seconds and shows the active bound agent as `Online`, `Offline`, `Not Paired`, or `Unavailable`. The primary navigation does not show stale historical registration counts; selecting the indicator opens `/admin/agent-details`, and focus mode keeps the same state visible as a compact rail icon with a status dot.
 
-On Agent Details, **Refresh** reloads only the connected-agent data inside the current dashboard tab.
+If the agent check confirms `Not Paired`, SQL Cockpit opens an `/agent-required` workspace tab and blocks live dashboard pages until an agent is assigned. `/admin/agent-binding` and `/admin/agent-details` remain reachable so an administrator can create a binding code, pair the local agent for the current environment lane, and retry the original tab. This fails closed because browser and API workflows must not connect directly to customer SQL Server instances.
+
+SQL Cockpit is intended to run as a single page application. Use workspace tabs, dashboard navigation, and tab reload actions instead of the browser refresh button. The dashboard warns before hard refreshes; keyboard refresh shortcuts show SQL Cockpit's warning text, while browser-toolbar refresh uses the browser's native unload confirmation.
+
+On Agent Details, **Refresh** reloads only the connected-agent data inside the current dashboard tab. Admins with Agent control permission can also run **SQL Bridge Diagnostics**, which asks the paired local Agent to report bridge worker, queue, executor, and latest-invocation health without the hosted API connecting directly to customer SQL Server.
 
 Every left-navigation dashboard page renders the shared intro card above the page body. The card shows the SQL Cockpit eyebrow, page title, page description, and a docs action that points to the matching MkDocs page path. The docs link is shown even when that documentation page is planned but not yet built.
 
@@ -128,6 +132,17 @@ Command palette search uses the object-search cache and is now workspace-scoped.
   - You search only metadata indexed for your personal workspace.
 - Team workspace:
   - You search metadata indexed for that team workspace and shared by team members.
+
+Object-search dashboard APIs are protected by explicit RBAC permissions:
+
+- `objectSearch.view`: health, status, sync-log, and summary widgets.
+- `objectSearch.search`: command palette search, recent objects, analytics, and object details.
+- `objectSearch.sync`: syncing one saved instance profile into the active workspace.
+- `objectSearch.manage`: broad rebuild/refresh cache administration.
+
+The built-in `standard_user` role includes `objectSearch.view`, `objectSearch.search`, and `objectSearch.sync` so normal signed-in users can use the command palette and workspace sync flow. It does not include `objectSearch.manage`.
+
+If a migrated account has a stale active workspace selection, object-search reads fall back to the signed-in user's personal workspace instead of repeatedly failing with workspace authorization errors.
 
 If one team member syncs a database into object search while in the team workspace, other members can search that metadata without re-syncing it under their own accounts.
 
