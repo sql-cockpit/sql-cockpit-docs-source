@@ -105,6 +105,7 @@ nav:
     - Runbooks: operations/runbooks.md
     - Troubleshooting: operations/troubleshooting.md
     - Windows Service Host: operations/windows-service-host.md
+    - Runtime Lane Isolation: operations/runtime-lane-isolation.md
     - Windows Service Control (Electron): operations/windows-service-control-electron.md
     - SQL Cockpit Prerequisite Setup: operations/sql-cockpit-prerequisite-setup.md
     - SQL Cockpit Agent Identity: operations/sql-cockpit-agent-identity.md
