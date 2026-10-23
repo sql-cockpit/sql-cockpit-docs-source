@@ -899,6 +899,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#install-sql-cockpit-on-a-phone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install SQL Cockpit on a phone
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4828,6 +4839,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#install-sql-cockpit-on-a-phone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install SQL Cockpit on a phone
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5071,6 +5093,12 @@ SQL Cockpit switches the active workspace directly. After <code>POST /api/worksp
 <p>The top bar, left navigation drawer/rail and right account drawer share a near-black grey gradient in both appearance themes. Drawer text and workspace controls retain light foregrounds for contrast.</p>
 <p>On mobile the palette mode switcher is the top row, with the shared animated circular close control. The demo banner has an OK acknowledgement that hides it for the current mounted session and releases its reserved height; all read-only restrictions and accessible action explanations remain active. No preference is persisted.</p>
 <p>The demo banner uses a compact two-column layout: heading and message stacked on the left, with the acknowledgement button on the right. Phone spacing and typography are reduced while preserving the full read-only explanation.</p>
+<p>Navigation drawers close when a page is selected or navigation begins. On phones, notifications open as a viewport-level fullscreen panel with a scrolling list, safe-area padding and demo-banner offset; header/footer controls remain available.</p>
+<h2 id="install-sql-cockpit-on-a-phone"><a class="headerlink" href="#install-sql-cockpit-on-a-phone" title="Permanent link">¶</a>Install SQL Cockpit on a phone</h2>
+<p>The app advertises <code>/manifest.webmanifest</code> with stable ID/start URL <code>/</code>, standalone display, near-black launch colour, 192/512px icons and a separate maskable icon. iOS uses a 180px Apple touch icon. Installation requires HTTPS (localhost is accepted for development). An installed app still needs sign-in and connectivity for operational features; installation grants no SQL, notification or account permissions.</p>
+<p>On mobile touch screens, a dismissible Add to Home Screen suggestion appears after 30 seconds when a supported browser advertises installation, or on iPhone/iPad where Share-menu instructions are provided. Android/Chromium installation is launched only after tapping the button and uses the one-shot <code>beforeinstallprompt</code> event. iOS uses Share → Add to Home Screen → Add; no native install prompt is simulated. Already installed/standalone sessions and login/setup screens suppress promotion. Dismissal is stored only as a timestamp in browser localStorage key <code>sql-cockpit-install-dismissed-until</code> (14-day cooldown, absent default). Demo sessions dismiss in memory only. Clearing that one key safely resets the suggestion; it affects no server state or customer data.</p>
+<p>Production registers <code>/sw.js</code> with scope <code>/</code> and no HTTP cache. It caches only the public <code>/offline.html</code> reconnect page. Navigations use the network and fall back only on network failure; HTTP error/auth/maintenance responses are preserved. API calls, SQL data, authenticated pages, static bundles and account responses are never cached by this worker. Development does not register it, avoiding stale hot-reload assets. Updates use the browser's normal worker lifecycle; no forced reload interrupts unsaved work. Existing installations can be removed through browser/OS app settings, or the worker through browser developer tools if troubleshooting.</p>
+<p>Safe verification: run <code>node --test tests/pwa.test.js</code> from the API repo, check the manifest/icons and <code>/sw.js</code> over HTTPS, then test Android installation and iOS Share-menu installation on physical devices. Confirm standalone launch, dismissal cooldown, online sign-in, offline reconnect screen, and no cached API/SQL responses. Desktop/in-app browser checks cannot reproduce the native OS install dialog. No feature flag, persistence provider or API endpoint is added.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
