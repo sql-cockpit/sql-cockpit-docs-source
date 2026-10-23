@@ -331,3 +331,64 @@ The responsive widget editor device selector uses a 32px container with full-hei
 Expanded navigation rows no longer draw a vertical separator beside the child-menu expand/collapse control.
 
 The top-bar logo has a soft blue artwork-shaped glow on hover or keyboard focus, with a stronger glow and subtle press feedback when clicked.
+
+On mobile, the top-bar logo artwork matches the 44px navigation controls. Top-bar controls share a blue-tinted hover and keyboard-focus shadow in both colour modes.
+
+
+Configure widgets uses the shared primary blue gradient icon-button style in both colour modes.
+
+
+The SQL Bridge refresh-status badge uses the same compact 32px minimum height and small text as the adjacent refresh controls.
+
+
+The navbar notification bell always displays the unread, unarchived count, including zero, capped visually at 99+. Its accessible label includes the full count.
+
+
+The notification count badge uses a red background with white text in both colour modes.
+
+
+The notification bell briefly swings when a new unread, unarchived notification ID arrives. Initial rendering, read/archive changes and repeated refreshes of existing items do not ring it; a new arrival restarts the animation.
+
+
+The theme toggle rotates and scales its sun/moon icon into view when the selected theme changes, retaining the current button dimensions and accessible action label.
+
+The theme-toggle and notification-arrival animations run even when the device requests reduced motion, as explicitly requested for these controls.
+
+
+The theme toggle now gently crossfades and reshapes the sun/moon artwork, with no rotation or movement of the button itself.
+
+
+The theme icon uses an SVG crescent mask: the sun's rays fade as the disc becomes a moon, with a 380ms Web Animations transition independent of stylesheet motion overrides. The button stays stationary.
+
+
+The navbar mounts the notification menu immediately on page load, rather than replacing a lazy placeholder after the first click. The red unread-count badge and arrival animation use the same component throughout.
+
+
+The bell glyph remains unframed when its count badge is present. Desktop notification popups use up to 640px of height, bounded by the viewport, with a scrolling list and fixed header/footer; mobile remains fullscreen.
+
+
+The bell explicitly clears inherited SVG background, border and padding so its count badge cannot trigger a second icon frame.
+
+
+The red notification counter has fixed equal 20px dimensions and no padding, keeping it circular for all displayed counts.
+
+
+The command palette uses the same blue-grey surface theme in both light and dark app modes, with locally scoped dark control styling and matching result/detail panels.
+
+
+Command-palette results emphasise object names with brighter semibold text, clearer source context and a blue database chip, while timestamps remain secondary. Selected results have a stronger blue edge.
+
+
+The command palette uses liquid-glass blue layers: a translucent blurred shell, soft specular borders, inset search field, glass filters and result cards, and a translucent detail pane. The palette keeps readable text, scrolling regions and fullscreen mobile layout in both app themes.
+
+
+On desktop, the command-palette mode tabs float centrally across the panel's top edge, with space reserved above the search field. Mobile retains its in-panel top controls.
+
+
+Desktop keyboard shortcuts float centrally across the command palette's bottom edge, matching the top mode tabs. They stay hidden on phone layouts to preserve results space.
+
+
+Dashboard recovery screens use a neutral glass-style panel, a primary retry action and expandable technical details instead of a full red error card. Command-palette loading placeholders no longer reference result-view state outside their component scope.
+
+
+All shared page-introduction documentation links and buttons match their adjacent introduction toggle at 30px square, with matching icon size, padding and corners, regardless of link or button semantics.
