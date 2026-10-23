@@ -466,3 +466,6 @@ The command-palette search field has one glass border and wrapper focus ring; th
 
 The command-palette close control matches drawer close styling, with a blue hover surface, rotating X, slight hover enlargement and press feedback, including when reduced motion is selected as requested.
 
+
+Object detail sections use an icon-led tab bar connected to the content panel below. Active tabs have an underline and shared surface; arrow keys and Home/End move focus and selection, with one tab in the keyboard tab order.
+
