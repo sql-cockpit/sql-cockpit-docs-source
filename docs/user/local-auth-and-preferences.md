@@ -301,3 +301,33 @@ On mobile touch screens, a dismissible Add to Home Screen suggestion appears aft
 Production registers `/sw.js` with scope `/` and no HTTP cache. It caches only the public `/offline.html` reconnect page. Navigations use the network and fall back only on network failure; HTTP error/auth/maintenance responses are preserved. API calls, SQL data, authenticated pages, static bundles and account responses are never cached by this worker. Development does not register it, avoiding stale hot-reload assets. Updates use the browser's normal worker lifecycle; no forced reload interrupts unsaved work. Existing installations can be removed through browser/OS app settings, or the worker through browser developer tools if troubleshooting.
 
 Safe verification: run `node --test tests/pwa.test.js` from the API repo, check the manifest/icons and `/sw.js` over HTTPS, then test Android installation and iOS Share-menu installation on physical devices. Confirm standalone launch, dismissal cooldown, online sign-in, offline reconnect screen, and no cached API/SQL responses. Desktop/in-app browser checks cannot reproduce the native OS install dialog. No feature flag, persistence provider or API endpoint is added.
+
+## Device styling with Ionic
+
+The dashboard loads Ionic Core 9's toolbar custom element in the browser and its required core stylesheet. Ionic detects iOS/Material mode; `IonicDeviceStyle` exposes the resolved mode as `data-ionic-mode` and standalone/browser display as `data-app-display` on the document root. Neither attribute is a persisted preference or server flag. Existing theme classes remain authoritative for the light/dark palette; the toolbar keeps the near-black chrome in both themes.
+
+On screens below 1024px, iOS uses softer panel/control corners and subdued press feedback, while Material uses circular top-bar controls and its platform toolbar sizing. Controls have 44px touch footprints. Safe-area top padding protects the status bar/notch in standalone mode; left/right/bottom insets protect landscape controls and the home indicator. The visible demo banner owns the top inset while present. Phone overlays remain fullscreen with square outer edges; rounded cards sit inside them rather than cropping the usable screen. Inputs use 16px mobile text to prevent focus zoom; pinch zoom remains enabled. Next continues to own routes, document scrolling and existing drawers; Ionic's global layout/typography resets and router are deliberately not installed.
+
+Verification: check a mobile browser and installed iPhone/Android app in portrait/landscape, light/dark appearance, visible/dismissed demo banner, and keyboard open. Confirm toolbar controls remain accessible, no horizontal overflow, fullscreen menus retain close controls, and browser/OS status-bar areas do not cover content. Desktop should keep its established density. Browser previews do not reproduce real notch/status-bar insets. No API, database or network-boundary changes are involved.
+
+Reference: [Ionic platform modes](https://ionicframework.com/docs/theming/platform-styles).
+
+Navigation and account drawers always use a local dark theme, including their nested text, controls, active/hover states and native form colour scheme. Switching the page to light mode preserves the same drawer appearance without changing the rest of the page theme.
+
+Only the collapsed navigation rail uses the muted blue gradient and brighter hover surface in both themes. Expanded drawer navigation and other dashboard controls retain their established styling.
+
+The toolbar search keeps its compact 36px height, 12px desktop text and subtle blue focus treatment independently of Ionic toolbar typography.
+
+Toolbar autocomplete escapes Ionic toolbar clipping and appears above page content, with a viewport-bounded scrolling list. Full-screen overlays retain their higher stacking level.
+
+An active toolbar search dropdown dims the page with a lightbox backdrop (35% black in light mode, 45% in dark mode). The header and suggestions remain above it; clicking outside or pressing Escape dismisses suggestions and the mask together.
+
+Navigation chrome uses a dark blue-grey gradient (#283544 to #1a2634) in both themes. Dark-theme popup surfaces use matching slate tones rather than near-black, while light-theme popups retain their light surfaces.
+
+The expanded sidebar collapse control matches the collapsed rail expand control: circular blue gradient, matching outline and hover treatment.
+
+The responsive widget editor device selector uses a 32px container with full-height buttons and no extra bottom padding.
+
+Expanded navigation rows no longer draw a vertical separator beside the child-menu expand/collapse control.
+
+The top-bar logo has a soft blue artwork-shaped glow on hover or keyboard focus, with a stronger glow and subtle press feedback when clicked.
