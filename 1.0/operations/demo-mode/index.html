@@ -4541,6 +4541,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#standard-user-demo-personas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard-user demo personas
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4599,6 +4610,12 @@
 <p>OVH configuration writes these fields only for Demo Mode into the protected existing <code>/srv/sql-cockpit/config/api.env</code>, using the already provisioned administrator username/password. Ordinary deployment sets the flag false and omits the credential fields. It does not reset or create accounts. New settings take effect after deployment/restart. To disable public entry, remove/disable the flag and restart; normal administrator authentication remains. This public demo feature does not change session persistence providers or tenant scoping.</p>
 <p>Safe test: run <code>node --test tests/demo-mode.test.js</code> in the API. Test the button against an isolated synthetic demo; verify status and responses contain no credential, a session cookie is HttpOnly, mutation/SQL calls still return demo 403, and non-demo or missing-configuration entry returns 403. Review public admin-readable content before enabling. No live credential is needed for automated tests.</p>
 <p>OVH serializes the private credential as <code>SQL_COCKPIT_DEMO_ADMIN_PASSWORD_BASE64</code> (base64 of the UTF-8 password; no default) to prevent Compose from interpolating dollar signs or special characters. This is encoding, not encryption: protect it like the original password. It takes precedence over the plain environment input; neither value is exposed to the client.</p>
+<h2 id="standard-user-demo-personas"><a class="headerlink" href="#standard-user-demo-personas" title="Permanent link">¶</a>Standard-user demo personas</h2>
+<p>The synthetic live demo provisions ten additional local accounts, <code>demo.user01</code> through <code>demo.user10</code>, each with exactly the <code>standard_user</code> role and no local-admin flag. The login page lists their names and shared workspaces beside the existing administrator entry. Selecting one sends POST <code>/api/auth/login</code> with <code>{ "demoUser": "demo-persona-01" }</code> (fixed IDs 01–10). It uses normal credential validation, lockout, HttpOnly cookies and session revocation. No password is sent to the browser. Public GET <code>/api/auth/status</code> includes <code>demo.users</code> (id, username, displayName, role, workspace names). RBAC still applies and the central Demo Mode policy still rejects mutations for every account.</p>
+<p>Deployment creates Demo Operations, Demo Analytics and Demo Development teams, each with a shared workspace. Users are distributed round-robin; users 09 and 10 also belong to a second team. Each user retains a personal workspace. The verification stage seeds the existing read-only SQL demo profile and its Agent-backed object index for each personal/shared workspace; no hosted code opens customer SQL connections. Workspace authorization follows real membership.</p>
+<p>Configuration lives in root-protected <code>/srv/sql-cockpit/config/api.env</code>: <code>SQL_COCKPIT_DEMO_PERSONAS_ENABLED</code> accepts <code>true</code>/<code>false</code>, defaults false, and is true only for a <code>demo_mode=true</code> deployment. <code>SQL_COCKPIT_DEMO_PERSONA_SECRET_BASE64</code> is a base64 encoding of a stable random 32-byte root-owned <code>/srv/sql-cockpit/config/demo-persona-key</code>; absent by default. It derives per-user passwords with HMAC, used only by deployment provisioning and server login resolution. <code>bootstrap.json</code> carries the same protected secret to the prepare/verify jobs. Normal runtime, non-synthetic demo configurations, unknown IDs and missing secrets fail closed.</p>
+<p>Provisioning is deployment-only through the auth store's <code>provisionDemoPersonas</code>; local SQLite and hosted Azure SQL/provider-backed app state share the same injected adapter. It uses existing users, local_password_credentials, auth_identities, user_roles, teams, workspaces and team_memberships tables. Stable reserved IDs allow repeat deployment without duplicates or password resets. Existing elevated/conflicting accounts or team/workspace IDs stop provisioning rather than being overwritten. <code>validateDemoPersona</code> permits only expected local accounts, the single standard_user role, known workspace memberships and no inherited team roles. Public requests cannot invoke provisioning; Demo Mode blocks it.</p>
+<p>Operational risk: these accounts are intentionally accessible to any demo visitor, so they must hold only synthetic data. Back up the persona key with protected configuration and retain it across deploys. Do not rotate/delete it casually: existing passwords are not reset automatically, so replacing the key stops one-click login until an operator explicitly resets the reserved demo accounts. To disable public persona login, set the enabled flag false and restart the API; do not remove the central demo policy. Safe verification is to sign in as each account, inspect the expected shared workspaces, verify foreign-workspace access fails and verify POST/PUT/DELETE mutations return DEMO_MODE_READ_ONLY. The deployment's verify stage authenticates every account before completing.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
