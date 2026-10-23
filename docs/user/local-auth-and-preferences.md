@@ -392,3 +392,5 @@ Dashboard recovery screens use a neutral glass-style panel, a primary retry acti
 
 
 All shared page-introduction documentation links and buttons match their adjacent introduction toggle at 30px square, with matching icon size, padding and corners, regardless of link or button semantics.
+
+Expanded navigation uses consistent 13px labels and larger 28px route icons. Overflowing labels scroll to reveal their full text while their link is hovered or keyboard-focused, then return to the start when leaving. Labels that fit remain still.
