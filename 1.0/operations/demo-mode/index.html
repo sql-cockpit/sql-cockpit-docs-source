@@ -4530,6 +4530,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#public-administrator-exploration-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public administrator exploration entry
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4555,6 +4566,39 @@
 <h2 id="safe-exploration-controls"><a class="headerlink" href="#safe-exploration-controls" title="Permanent link">¶</a>Safe exploration controls</h2>
 <p>Demo presentation explicitly enables reviewed Welcome Page navigation cards, account/workspace/preferences navigation, tab scrolling and local new tabs, plus pure task/schedule validation. Opening a page does not grant its write permissions. Labels such as Notifications and pagination are recognized as UI browsing. All backend endpoint, RBAC, store and Agent restrictions remain unchanged: validation cannot schedule or run tasks, and SQL execution, saved configuration changes, service control and ingestion remain blocked. Unknown controls still default to unavailable. No new flags or persistence are introduced.</p>
 <p>Safe check: sign into the demo, open widget links and drawer panels, scroll/create local tabs and inspect existing records. Check pure validation where the composer is authorized; confirm Save, Run, Sync and service actions remain unavailable and direct mutation requests still return the demo 403. UI changes remain in memory only.</p>
+<h2 id="public-administrator-exploration-entry"><a class="headerlink" href="#public-administrator-exploration-entry" title="Permanent link">¶</a>Public administrator exploration entry</h2>
+<p>In the isolated synthetic demo, the login page can show “Here to try the demo?” with “Login as administrator”. The browser posts <code>{ "demoAdministrator": true }</code> to the existing <code>POST /api/auth/login</code>. The server substitutes its protected configured local administrator credential and runs normal local authentication and lockout checks; no credential is shipped in JavaScript, HTML, auth status or the response. Successful response remains <code>{user}</code> plus the existing HttpOnly session cookie. Invalid configuration returns 403; failed credentials return 401. Normal username/password sign-in remains available.</p>
+<p><code>GET /api/auth/status</code> adds <code>demo: {enabled, administratorLoginAvailable}</code> booleans. Both operations remain unauthenticated entry points; ordinary Origin checks and authentication throttling are retained. Administrator access exposes more of the synthetic demo's readable configuration to visitors, but the independent demo policy continues to block all persistent feature changes, SQL execution, service actions and unclassified routes, even for this administrator session. Never enable this feature on a tenant with non-synthetic data.</p>
+<p>Settings (database storage: none):</p>
+<table>
+<thead>
+<tr>
+<th>Environment setting</th>
+<th>Values / default</th>
+<th>Effect and risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQL_COCKPIT_DEMO_ADMIN_LOGIN_ENABLED</code></td>
+<td>Exact <code>true</code> enables; absent/other values disable</td>
+<td>Opts into public administrator exploration; also requires exact enabled synthetic Demo Mode and a validated reader account.</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_DEMO_ADMIN_USERNAME</code></td>
+<td>Existing local account name, 3–64 letters/digits/dot/underscore/hyphen; no default</td>
+<td>Selects the existing administrator. A non-admin authentication result is revoked and denied.</td>
+</tr>
+<tr>
+<td><code>SQL_COCKPIT_DEMO_ADMIN_PASSWORD</code></td>
+<td>Existing protected credential, minimum 16 characters; no default</td>
+<td>Server-only input to normal local authentication. Never put in frontend environment variables, logs, source or documentation.</td>
+</tr>
+</tbody>
+</table>
+<p>OVH configuration writes these fields only for Demo Mode into the protected existing <code>/srv/sql-cockpit/config/api.env</code>, using the already provisioned administrator username/password. Ordinary deployment sets the flag false and omits the credential fields. It does not reset or create accounts. New settings take effect after deployment/restart. To disable public entry, remove/disable the flag and restart; normal administrator authentication remains. This public demo feature does not change session persistence providers or tenant scoping.</p>
+<p>Safe test: run <code>node --test tests/demo-mode.test.js</code> in the API. Test the button against an isolated synthetic demo; verify status and responses contain no credential, a session cookie is HttpOnly, mutation/SQL calls still return demo 403, and non-demo or missing-configuration entry returns 403. Review public admin-readable content before enabling. No live credential is needed for automated tests.</p>
+<p>OVH serializes the private credential as <code>SQL_COCKPIT_DEMO_ADMIN_PASSWORD_BASE64</code> (base64 of the UTF-8 password; no default) to prevent Compose from interpolating dollar signs or special characters. This is encoding, not encryption: protect it like the original password. It takes precedence over the plain environment input; neither value is exposed to the client.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
