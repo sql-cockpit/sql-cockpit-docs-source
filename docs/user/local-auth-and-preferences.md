@@ -396,3 +396,73 @@ All shared page-introduction documentation links and buttons match their adjacen
 Expanded navigation uses consistent 13px labels and larger 28px route icons. Overflowing labels scroll to reveal their full text while their link is hovered or keyboard-focused, then return to the start when leaving. Labels that fit remain still.
 
 Workspace tabs use compact 144px widths and scroll overflowing titles on hover or keyboard focus, leaving the icon and close control fixed.
+
+The collapsed navigation rail's expand control is centred within the measured navbar height, aligning it vertically with the toolbar logo instead of using fixed top padding.
+
+
+The expanded menu header also uses the measured navbar height so its logo and collapse control align with the toolbar controls.
+
+
+The collapsed menu no longer includes the redundant bottom SC home shortcut; the toolbar logo remains the dashboard link.
+
+
+On touch/mobile layouts, menu help opens a native modal dialog with close/backdrop dismissal and focus restoration; desktop hover help remains. Command-palette mode tabs show their icons on phones. Object filters measure the available width and keep one row, moving overflow entries into More without hiding their selection options.
+
+
+The floating shortcuts bar rests at 70% opacity, returns to full opacity on hover or focus within, and uses a pointer cursor.
+
+
+The floating shortcuts bar omits the Copy Actions hint.
+
+All object types are eligible for the command-palette filter row, in common-first order. The row shows as many as fit and reserves More only when types remain; More disappears when all types fit.
+
+
+Filter fitting measures real buttons with their inherited typography rather than smaller spans, so the overflow calculation matches the visible control widths. The hidden measurement row is clipped to avoid contributing page overflow.
+
+
+The desktop command palette defaults to 30% results / 70% details. Its divider snaps in 5% steps between 30/70 and 70/30, supports arrow keys and Home/End, and resets to 30/70 on double-click. Neither pane can shrink below 30% of the available pane width.
+
+
+The desktop split divider has a highlighted drag grip and visible 30/70, 50/50 and 70/30 preset buttons; the current preset is highlighted. All presets retain the 30% minimum per pane.
+
+
+Command-palette result cards omit the Matched on preview line, keeping the object identity and metadata without repeated match explanations.
+
+
+Object result cards also omit the duplicate type/server/database/schema summary line, retaining the individual metadata rows below the object name.
+
+
+Result attributes use consistent glass-highlighted chips with icons for server, database, schema, parent and modified date. Database chips receive stronger emphasis, while dates stay secondary; long values wrap within the results pane.
+
+
+Split presets use proportional two-column icons instead of numbers, retaining exact ratios in tooltips and accessible labels.
+
+
+Split preset controls rest at 70% opacity and return to full opacity on hover or keyboard focus within.
+
+
+Command-palette scope labels sit above their selects. A Workspace selector lists the existing authorized workspace options and filters only the search, without switching active workspace or reloading. Desktop shows three columns; narrow phones place workspace above instance/database.
+
+
+### Search-only workspace scope
+
+The command palette Workspace dropdown changes only local search criteria. It does not call `/api/workspace/switch`, save `activeWorkspace`, or reload the page. Instance/database selections, old results and detail are cleared when the search scope changes. Cached status/recent lists are keyed by selected workspace and superseded responses are ignored.
+
+Authenticated GET `/api/object-search/status`, `/api/object-search/search`, `/api/object-search/recent` and `/api/object-search/objects/{id}` accept optional `workspace=personal:personal`, `personal:<workspaceId>` or `team:<teamId>`. Without it, existing active-workspace scope applies. Status requires `objectSearch.view`; the other reads require `objectSearch.search`. The auth store resolves ownership/team membership before the server generates the index workspace key. Raw `workspaceKey` remains rejected. Invalid selectors return 400, unauthorized workspaces 403; no fallback widens access. Response envelopes remain unchanged; `/openapi.json` and `/api-docs` describe the parameter.
+
+Risk: indexed metadata must never cross workspace authorization boundaries. Safe verification: search an owned personal workspace and a member team, verify non-member/foreign selections fail, and confirm the active-workspace preference is unchanged. This reads the existing object index; it opens no customer SQL connections and adds no persisted settings.
+
+The command-palette summary displays Last workspace sync using the newest successful source-sync timestamp within the selected workspace. It does not reuse the runtime's global last-run completion time; loading and no-success states are explicit.
+
+
+SQL definition previews use a monospace SQL code block with keyword, type, string, comment, number and variable highlighting. Original whitespace and copy content are preserved, with horizontal scrolling for long SQL lines; search-term highlighting remains available.
+
+
+Result attribute boxes fill the metadata column width. Detail lists expand from the More button to at most 1,000 items, offer Show less, and display an explicit truncation notice for longer lists; reference expansion resets when selecting a different object.
+
+
+The command-palette search field has one glass border and wrapper focus ring; the input itself has no nested outline. An inline clear button appears when text is entered, clears only the query and returns focus to the input.
+
+
+The command-palette close control matches drawer close styling, with a blue hover surface, rotating X, slight hover enlargement and press feedback, including when reduced motion is selected as requested.
+
