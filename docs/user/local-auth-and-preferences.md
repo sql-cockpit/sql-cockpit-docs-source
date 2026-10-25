@@ -469,3 +469,8 @@ The command-palette close control matches drawer close styling, with a blue hove
 
 Object detail sections use an icon-led tab bar connected to the content panel below. Active tabs have an underline and shared surface; arrow keys and Home/End move focus and selection, with one tab in the keyboard tab order.
 
+
+
+### Demo banner in installed apps
+
+The demo notice shares the slate toolbar surface, including the iOS status-bar safe area. Amber is limited to the demo title; the read-only explanation stays legible and the acknowledgement button has a separate touch target. Dismissing the notice transfers top safe-area padding back to the toolbar. Demo restrictions and settings are unchanged. Verify in an installed iOS PWA with the notice visible and dismissed, and with navigation/account drawers open.
