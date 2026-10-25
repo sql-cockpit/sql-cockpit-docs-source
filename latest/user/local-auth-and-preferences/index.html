@@ -944,6 +944,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#installed-pwa-app-frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installed PWA app frame
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4923,6 +4934,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#installed-pwa-app-frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installed PWA app frame
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5179,7 +5201,7 @@ SQL Cockpit switches the active workspace directly. After <code>POST /api/worksp
 <p>Safe verification: run <code>node --test tests/pwa.test.js</code> from the API repo, check the manifest/icons and <code>/sw.js</code> over HTTPS, then test Android installation and iOS Share-menu installation on physical devices. Confirm standalone launch, dismissal cooldown, online sign-in, offline reconnect screen, and no cached API/SQL responses. Desktop/in-app browser checks cannot reproduce the native OS install dialog. No feature flag, persistence provider or API endpoint is added.</p>
 <h2 id="device-styling-with-ionic"><a class="headerlink" href="#device-styling-with-ionic" title="Permanent link">¶</a>Device styling with Ionic</h2>
 <p>The dashboard loads Ionic Core 9's toolbar custom element in the browser and its required core stylesheet. Ionic detects iOS/Material mode; <code>IonicDeviceStyle</code> exposes the resolved mode as <code>data-ionic-mode</code> and standalone/browser display as <code>data-app-display</code> on the document root. Neither attribute is a persisted preference or server flag. Existing theme classes remain authoritative for the light/dark palette; the toolbar keeps the near-black chrome in both themes.</p>
-<p>On screens below 1024px, iOS uses softer panel/control corners and subdued press feedback, while Material uses circular top-bar controls and its platform toolbar sizing. Controls have 44px touch footprints. Safe-area top padding protects the status bar/notch in standalone mode; left/right/bottom insets protect landscape controls and the home indicator. The visible demo banner owns the top inset while present. Phone overlays remain fullscreen with square outer edges; rounded cards sit inside them rather than cropping the usable screen. Inputs use 16px mobile text to prevent focus zoom; pinch zoom remains enabled. Next continues to own routes, document scrolling and existing drawers; Ionic's global layout/typography resets and router are deliberately not installed.</p>
+<p>On screens below 1024px, iOS uses softer panel/control corners and subdued press feedback, while Material uses circular top-bar controls and its platform toolbar sizing. Controls have 44px touch footprints. Safe-area top padding protects the status bar/notch in standalone mode; left/right/bottom insets protect landscape controls and the home indicator. The visible demo banner owns the top inset while present. Phone overlays remain fullscreen with square outer edges; rounded cards sit inside them rather than cropping the usable screen. Inputs use 16px mobile text to prevent focus zoom; pinch zoom remains enabled. Next continues to own routes and existing drawers; installed mobile PWAs use an inner page scroller while normal browser tabs retain document scrolling. Ionic's global layout/typography resets and router are deliberately not installed.</p>
 <p>Verification: check a mobile browser and installed iPhone/Android app in portrait/landscape, light/dark appearance, visible/dismissed demo banner, and keyboard open. Confirm toolbar controls remain accessible, no horizontal overflow, fullscreen menus retain close controls, and browser/OS status-bar areas do not cover content. Desktop should keep its established density. Browser previews do not reproduce real notch/status-bar insets. No API, database or network-boundary changes are involved.</p>
 <p>Reference: <a href="https://ionicframework.com/docs/theming/platform-styles">Ionic platform modes</a>.</p>
 <p>Navigation and account drawers always use a local dark theme, including their nested text, controls, active/hover states and native form colour scheme. Switching the page to light mode preserves the same drawer appearance without changing the rest of the page theme.</p>
@@ -5244,6 +5266,9 @@ SQL Cockpit switches the active workspace directly. After <code>POST /api/worksp
 <h3 id="demo-banner-in-installed-apps"><a class="headerlink" href="#demo-banner-in-installed-apps" title="Permanent link">¶</a>Demo banner in installed apps</h3>
 <p>The demo notice shares the slate toolbar surface, including the iOS status-bar safe area. Amber is limited to the demo title; the read-only explanation stays legible and the acknowledgement button has a separate touch target. Dismissing the notice transfers top safe-area padding back to the toolbar. Demo restrictions and settings are unchanged. Verify in an installed iOS PWA with the notice visible and dismissed, and with navigation/account drawers open.</p>
 <p>The installed PWA has a fixed, opaque slate status-area surface; mobile toolbar and drawers do not apply backdrop blur. Layout uses CSS safe-area-inset-top/right/bottom/left directly, so controls follow the browser-reported notch, Dynamic Island and landscape insets rather than a model-specific pixel offset. Inset simulations cover flat phones, notched phones, Dynamic Island, landscape cutouts and tablets with the notice visible/dismissed. These are layout checks, not certification of every device; confirm iOS scroll-edge rendering on real hardware.</p>
+<h3 id="installed-pwa-app-frame"><a class="headerlink" href="#installed-pwa-app-frame" title="Permanent link">¶</a>Installed PWA app frame</h3>
+<p>Installed mobile PWAs now use the app-frame layout used by Ionic and Framework7: the browser document is fixed, the demo notice and toolbar sit outside the page scroller, and dashboard-main scrolls within the remaining viewport. This prevents page scrolling beneath the native status-area scroll edge. Tab position restoration and pull-to-refresh read the active page scroller; normal browser tabs keep window scrolling. Display mode is detected before Ionic downloads. The opaque status surface has a 6px minimum so it does not disappear when iOS reports a zero top inset; this minimum is a rendering guard, not a device-specific notch size. Safe-area insets still determine all actual cutout spacing. Verified optimized CSS in five simulated device layouts, root scroll confinement, toolbar stability and tab restoration. Real iOS confirmation remains necessary.</p>
+<p>References: <a href="https://ionicframework.com/docs/api/content">Ionic content layout</a>, <a href="https://github.com/ionic-team/ionic-framework/blob/main/core/src/css/structure.scss">Ionic document structure</a>, <a href="https://github.com/framework7io/framework7/blob/master/src/core/components/page/page.less">Framework7 pages</a>.</p>
 <!-- Common footer content -->
 <hr>
 <p><strong>SQL Cockpit</strong> - PowerShell-based SQL tooling suite</p>
