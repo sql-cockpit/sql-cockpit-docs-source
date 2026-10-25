@@ -474,3 +474,6 @@ Object detail sections use an icon-led tab bar connected to the content panel be
 ### Demo banner in installed apps
 
 The demo notice shares the slate toolbar surface, including the iOS status-bar safe area. Amber is limited to the demo title; the read-only explanation stays legible and the acknowledgement button has a separate touch target. Dismissing the notice transfers top safe-area padding back to the toolbar. Demo restrictions and settings are unchanged. Verify in an installed iOS PWA with the notice visible and dismissed, and with navigation/account drawers open.
+
+
+The installed PWA has a fixed, opaque slate status-area surface; mobile toolbar and drawers do not apply backdrop blur. Layout uses CSS safe-area-inset-top/right/bottom/left directly, so controls follow the browser-reported notch, Dynamic Island and landscape insets rather than a model-specific pixel offset. Inset simulations cover flat phones, notched phones, Dynamic Island, landscape cutouts and tablets with the notice visible/dismissed. These are layout checks, not certification of every device; confirm iOS scroll-edge rendering on real hardware.
